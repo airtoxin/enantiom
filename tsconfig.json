@@ -18,5 +18,5 @@
     "strict": true,
     "target": "ES5"
   },
-  "include": ["src"]
+  "include": ["./src"]
 }

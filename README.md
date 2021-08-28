@@ -13,7 +13,7 @@
 
 ```json5
 {
-  "artifact_path": "./path/to/directory or s3://bucket/path/to/directory",
+  artifact_path: "./path/to/directory or s3://bucket/path/to/directory",
   AWS_ACCESS_KEY_ID: "optional",
   AWS_SECRET_ACCESS_KEY: "optional",
   AWS_DEFAULT_REGION: "optional",
