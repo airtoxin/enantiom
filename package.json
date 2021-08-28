@@ -14,6 +14,7 @@
   "author": "airtoxin <airtoxin@icloud.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^16.7.4",
     "prettier": "^2.3.2"
   }
 }
