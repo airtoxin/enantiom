@@ -1,0 +1,19 @@
+{
+  "name": "enantiom",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "format": "prettier --ignore-path .gitignore --write ."
+  },
+  "repository": "git@github.com:airtoxin/enantiom.git",
+  "author": "airtoxin <airtoxin@icloud.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^2.3.2"
+  }
+}
