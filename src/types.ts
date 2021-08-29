@@ -1,6 +1,7 @@
 export type EnantiomInternalConfig = {
   readonly artifactPath: string;
   readonly outDirname: string;
+  readonly prevOutDirname?: string;
   readonly screenshotDetails: ScreenshotDetailConfigObject[];
 };
 

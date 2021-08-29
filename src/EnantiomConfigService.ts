@@ -3,6 +3,7 @@ import { EnantiomInternalConfig, ScreenshotDetailConfigObject } from "./types";
 import { readFile } from "fs/promises";
 import { join } from "path";
 import { format } from "date-fns";
+import { MetaFileService } from "./MetaFileService";
 
 const defaultBrowser = "chromium";
 const defaultSize = { width: 800, height: 600 };
@@ -17,9 +18,13 @@ export class EnantiomConfigService {
     });
     this.config = EnantiomConfig.parse(JSON.parse(raw));
 
+    const metaFileService = new MetaFileService(this.config.artifact_path);
+    const metaFile = await metaFileService.loadPrev();
+
     return {
       artifactPath: this.config.artifact_path,
       outDirname: format(new Date(), "yyyy-MM-dd-HH-mm-ss-SSS"),
+      prevOutDirname: metaFile?.last_result,
       screenshotDetails: this.createScreenshotDetail(),
     };
   }

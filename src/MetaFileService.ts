@@ -1,7 +1,7 @@
-import { EnantiomInternalConfig } from "./types";
 import { z } from "zod";
 import fs from "fs/promises";
 import { join } from "path";
+import { ScreenshotAndDiffResult } from "./ScreenshotService";
 
 type MetaFile = z.infer<typeof MetaFile>;
 const MetaFile = z.object({
@@ -9,16 +9,14 @@ const MetaFile = z.object({
 });
 
 export class MetaFileService {
-  constructor(private readonly config: EnantiomInternalConfig) {}
-  private readonly prevMetaFilePath = join(
-    this.config.artifactPath,
-    "meta.json"
-  );
+  constructor(private artifactPath: string) {}
+  private readonly prevMetaFilePath = join(this.artifactPath, "meta.json");
   private readonly metaFilePath = join("public", "meta.json");
 
-  public async save() {
+  public async save(outDirname: string, results: ScreenshotAndDiffResult[]) {
+    console.log("@results", results);
     const metaFile: MetaFile = {
-      last_result: this.config.outDirname,
+      last_result: outDirname,
     };
 
     await fs.writeFile(this.metaFilePath, JSON.stringify(metaFile, null, 2), {
@@ -26,15 +24,9 @@ export class MetaFileService {
     });
   }
 
-  public async load(
-    {
-      prev = false,
-    }: {
-      prev: boolean;
-    } = { prev: false }
-  ): Promise<MetaFile | null> {
+  public async loadPrev(): Promise<MetaFile | null> {
     const raw = await fs
-      .readFile(prev ? this.prevMetaFilePath : this.metaFilePath, {
+      .readFile(this.prevMetaFilePath, {
         encoding: "utf8",
       })
       .catch(() => null);
