@@ -3,19 +3,26 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "ts-node src",
-    "format": "prettier --ignore-path .gitignore --write ."
+    "format": "prettier --ignore-path .gitignore --write .",
+    "site:dev": "next dev",
+    "site:build": "next build && next export",
+    "site:lint": "next lint"
   },
   "repository": "git@github.com:airtoxin/enantiom.git",
   "author": "airtoxin <airtoxin@icloud.com>",
   "license": "MIT",
   "dependencies": {
     "date-fns": "^2.23.0",
+    "next": "^11.1.0",
     "odiff-bin": "^2.4.2",
     "playwright": "^1.14.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "zod": "^3.8.1"
   },
   "devDependencies": {
     "@types/node": "^16.7.4",
+    "@types/react": "^17.0.19",
     "prettier": "^2.3.2",
     "ts-command-line-args": "^2.1.0",
     "ts-node": "^10.2.1",
