@@ -1,38 +1,35 @@
 import playwright from "playwright";
-import {
-  EnantiomInternalConfig,
-  EnantiomScreenshotUrlInternalConfigObject,
-} from "./types";
+import { EnantiomInternalConfig, ScreenshotDetailConfigObject } from "./types";
 import { join } from "path";
 
 export type ScreenshotResult = {
-  readonly urlConfig: EnantiomScreenshotUrlInternalConfigObject;
+  readonly detail: ScreenshotDetailConfigObject;
   readonly screenshotFileName: string;
 };
 
 export const takeScreenshots = async (
   config: EnantiomInternalConfig
 ): Promise<ScreenshotResult[]> => {
-  const result = await Promise.all(
-    config.urls.map<Promise<ScreenshotResult>>(async (urlConfig) => {
-      const browser = await playwright[urlConfig.browser].launch();
+  return Promise.all(
+    config.screenshotDetails.map<Promise<ScreenshotResult>>(async (detail) => {
+      const browser = await playwright[detail.browser].launch();
       const context = await browser.newContext();
       const page = await context.newPage();
-      await page.goto(urlConfig.url);
-      const fileName = `${urlConfig.url}-${urlConfig.browser}.png`
+      await page.goto(detail.url);
+
+      const fileName = `${detail.url}-${detail.browser}.png`
         .replace(new RegExp(":", "g"), "__")
         .replace(new RegExp("/", "g"), "__");
-      const screenshotFilePath = join(config.distDirPath, fileName);
+      const screenshotFilePath = join("public", config.outDirname, fileName);
       await page.screenshot({
         path: screenshotFilePath,
       });
       await browser.close();
 
       return {
-        urlConfig,
+        detail,
         screenshotFileName: fileName,
       };
     })
   );
-  return result;
 };

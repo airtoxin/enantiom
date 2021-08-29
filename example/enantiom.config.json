@@ -1,13 +1,17 @@
 {
-  "artifactPath": "artifact",
-  "urls": [
-    {
-      "url": "https://example.com",
-      "browser": "chromium"
-    },
+  "artifact_path": "./dist",
+  "browsers": "chromium",
+  "screenshots": [
+    "https://example.com",
     {
       "url": "https://www.google.com",
-      "browser": "webkit"
+      "browsers": [
+        "webkit",
+        {
+          "browser": "chromium",
+          "sizes": { "width": 520, "height": 340 }
+        }
+      ]
     }
   ]
 }

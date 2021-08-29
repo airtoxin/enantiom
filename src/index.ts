@@ -1,54 +1,52 @@
 import { parse } from "ts-command-line-args";
 import { takeScreenshots } from "./screenshot";
-import { parseConfig } from "./configParser";
 import { MetaFileService } from "./MetaFileService";
 import { compare } from "odiff-bin";
 import { join } from "path";
 import fs from "fs/promises";
 import { spawn as cspawn } from "child_process";
+import { EnantiomConfigService } from "./EnantiomConfigService";
 
 export type EnantiomCliArgument = {
-  "artifact-path": string;
-  url: string[];
+  config: string;
 };
 
 const args = parse<EnantiomCliArgument>({
-  "artifact-path": { type: String, alias: "a" },
-  url: { type: String, multiple: true, alias: "u" },
+  config: { type: String, alias: "c" },
 });
 
 const main = async () => {
-  const config = parseConfig(args);
+  const configService = new EnantiomConfigService(args.config);
+  const config = await configService.load();
   const metaFileService = new MetaFileService(config);
   const screenshotResults = await takeScreenshots(config);
-  const lastMetaFile = await metaFileService.load();
+  const lastMetaFile = await metaFileService.load({ prev: true });
+  console.log("@lastMetaFile", lastMetaFile);
   if (lastMetaFile != null) {
     await fs.mkdir(
-      join(
-        config.artifactPath,
-        `${lastMetaFile.lastResultDirName}_${config.distDirName}`
-      )
+      join("public", `${lastMetaFile.last_result}_${config.outDirname}`)
     );
     await Promise.all(
       screenshotResults.map(async (screenshotResult) => {
         const lastFilePath = join(
-          config.artifactPath,
-          lastMetaFile.lastResultDirName,
+          "public",
+          lastMetaFile.last_result,
           screenshotResult.screenshotFileName
         );
-        const latestFilePath = join(
-          config.artifactPath,
-          config.distDirName,
+        const currentFilePath = join(
+          "public",
+          config.outDirname,
           screenshotResult.screenshotFileName
         );
         const diffPath = join(
-          config.artifactPath,
-          `${lastMetaFile.lastResultDirName}_${config.distDirName}`,
+          "public",
+          `${lastMetaFile.last_result}_${config.outDirname}`,
           screenshotResult.screenshotFileName
         );
-        await compare(lastFilePath, latestFilePath, diffPath, {
+        const result = await compare(lastFilePath, currentFilePath, diffPath, {
           outputDiffMask: true,
         });
+        console.log("@result", result);
       })
     );
   }
@@ -56,7 +54,7 @@ const main = async () => {
 
   const next = join(__dirname, "../node_modules/.bin/next");
   await spawn(next, ["build"]);
-  await spawn(next, ["export"]);
+  await spawn(next, ["export", "-o", config.artifactPath]);
 };
 
 const spawn = (cmd: string, args: string[]) =>

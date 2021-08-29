@@ -1,11 +1,11 @@
 export type EnantiomInternalConfig = {
   readonly artifactPath: string;
-  readonly distDirName: string;
-  readonly distDirPath: string;
-  readonly urls: EnantiomScreenshotUrlInternalConfigObject[];
+  readonly outDirname: string;
+  readonly screenshotDetails: ScreenshotDetailConfigObject[];
 };
 
-export type EnantiomScreenshotUrlInternalConfigObject = {
+export type ScreenshotDetailConfigObject = {
   readonly url: string;
   readonly browser: "chromium" | "firefox" | "webkit";
+  readonly size: { width: number; height: number };
 };
