@@ -1,0 +1,13 @@
+{
+  "artifactPath": "artifact",
+  "urls": [
+    {
+      "url": "https://example.com",
+      "browser": "chromium"
+    },
+    {
+      "url": "https://www.google.com",
+      "browser": "webkit"
+    }
+  ]
+}
