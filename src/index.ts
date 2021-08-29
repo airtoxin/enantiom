@@ -5,6 +5,7 @@ import { MetaFileService } from "./MetaFileService";
 import { compare } from "odiff-bin";
 import { join } from "path";
 import fs from "fs/promises";
+import { spawn as cspawn } from "child_process";
 
 export type EnantiomCliArgument = {
   "artifact-path": string;
@@ -21,7 +22,6 @@ const main = async () => {
   const metaFileService = new MetaFileService(config);
   const screenshotResults = await takeScreenshots(config);
   const lastMetaFile = await metaFileService.load();
-  console.log("@lastMetaFile", lastMetaFile);
   if (lastMetaFile != null) {
     await fs.mkdir(
       join(
@@ -46,14 +46,27 @@ const main = async () => {
           `${lastMetaFile.lastResultDirName}_${config.distDirName}`,
           screenshotResult.screenshotFileName
         );
-        const result = await compare(lastFilePath, latestFilePath, diffPath, {
+        await compare(lastFilePath, latestFilePath, diffPath, {
           outputDiffMask: true,
         });
-        console.log("@result", result);
       })
     );
   }
   await metaFileService.save();
+
+  const next = join(__dirname, "../node_modules/.bin/next");
+  await spawn(next, ["build"]);
+  await spawn(next, ["export"]);
 };
+
+const spawn = (cmd: string, args: string[]) =>
+  new Promise<void>((resolve, reject) => {
+    const p = cspawn(cmd, args);
+    p.stdout.pipe(process.stdout);
+    p.stderr.pipe(process.stderr);
+    p.on("close", (code) => {
+      return code ? reject() : resolve();
+    });
+  });
 
 main().then(() => process.exit(0));
