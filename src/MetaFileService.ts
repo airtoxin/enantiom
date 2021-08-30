@@ -1,12 +1,6 @@
-import { z } from "zod";
 import fs from "fs/promises";
 import { join } from "path";
-import { ScreenshotAndDiffResult } from "./types";
-
-type MetaFile = z.infer<typeof MetaFile>;
-const MetaFile = z.object({
-  last_result: z.string(),
-});
+import { MetaFile, ScreenshotAndDiffResult } from "./types";
 
 export class MetaFileService {
   constructor(private artifactPath: string) {}
@@ -17,6 +11,7 @@ export class MetaFileService {
     console.log("@results", results);
     const metaFile: MetaFile = {
       last_result: outDirname,
+      results,
     };
 
     await fs.writeFile(this.metaFilePath, JSON.stringify(metaFile, null, 2), {
