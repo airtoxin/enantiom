@@ -1,7 +1,7 @@
 import { z } from "zod";
 import fs from "fs/promises";
 import { join } from "path";
-import { ScreenshotAndDiffResult } from "./ScreenshotService";
+import { ScreenshotAndDiffResult } from "./types";
 
 type MetaFile = z.infer<typeof MetaFile>;
 const MetaFile = z.object({

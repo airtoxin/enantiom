@@ -1,17 +1,8 @@
-import { EnantiomInternalConfig, ScreenshotDetailConfigObject } from "./types";
+import { EnantiomInternalConfig, ScreenshotAndDiffResult } from "./types";
 import playwright from "playwright";
 import { join } from "path";
 import { compare } from "odiff-bin";
-import { PromiseType } from "utility-types";
 import { mkdir } from "fs/promises";
-
-export type ScreenshotAndDiffResult = ScreenshotDetailConfigObject & {
-  readonly filename: string;
-  readonly filepath: string;
-  readonly prevFilepath?: string;
-  readonly diffFilepath?: string;
-  readonly diffResult?: PromiseType<ReturnType<typeof compare>>;
-};
 
 export class ScreenshotService {
   constructor(private config: EnantiomInternalConfig) {}
