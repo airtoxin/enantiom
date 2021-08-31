@@ -1,11 +1,13 @@
-import "antd/dist/antd.css";
-import { AppComponent } from "next/dist/shared/lib/router/router";
+import { FunctionComponent } from "react";
 import { Breadcrumb, Layout, Menu } from "antd";
 import Link from "next/link";
+import { MetaFile } from "../types";
 
 const { Header, Sider } = Layout;
 
-const MyApp: AppComponent = ({ Component, pageProps }) => {
+export const AppLayout: FunctionComponent<{ metaFile: MetaFile }> = ({
+  children,
+}) => {
   return (
     <Layout style={{ height: "100vh" }}>
       <Header className="header">
@@ -82,11 +84,9 @@ const MyApp: AppComponent = ({ Component, pageProps }) => {
             <Breadcrumb.Item>List</Breadcrumb.Item>
             <Breadcrumb.Item>App</Breadcrumb.Item>
           </Breadcrumb>
-          <Component {...pageProps} />;
+          {children}
         </Layout>
       </Layout>
     </Layout>
   );
 };
-
-export default MyApp;
