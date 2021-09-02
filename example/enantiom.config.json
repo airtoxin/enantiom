@@ -1,17 +1,7 @@
 {
-  "artifact_path": "./dist",
-  "browsers": "chromium",
+  "artifact_path": "./enantiom_out",
   "screenshots": [
     "https://example.com",
-    {
-      "url": "https://www.google.com",
-      "browsers": [
-        "webkit",
-        {
-          "browser": "chromium",
-          "sizes": { "width": 520, "height": 340 }
-        }
-      ]
-    }
+    "https://www.google.com"
   ]
 }
