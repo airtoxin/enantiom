@@ -12,7 +12,6 @@ const HomePage: VoidFunctionComponent<{ state: State }> = ({ state }) => {
   return (
     <AppLayout state={state}>
       <Content
-        className="site-layout-background"
         style={{
           padding: 24,
           margin: 0,

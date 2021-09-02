@@ -11,9 +11,14 @@ export const AppLayout: FunctionComponent<{ state: State }> = ({
 }) => {
   return (
     <Layout style={{ height: "100vh" }}>
-      <Header className="header">
-        <div className="logo" />
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
+      <Header
+        style={{
+          float: "left",
+          padding: 0,
+          background: "rgba(255, 255, 255, 0.3)",
+        }}
+      >
+        <Menu theme="dark" mode="horizontal">
           <Menu.Item key="1">nav 1</Menu.Item>
           <Menu.Item key="2">nav 2</Menu.Item>
           <Menu.Item key="3">nav 3</Menu.Item>
@@ -21,8 +26,8 @@ export const AppLayout: FunctionComponent<{ state: State }> = ({
       </Header>
 
       <Layout>
-        <Sider width={250} style={{ overflowY: "scroll" }}>
-          <Menu>
+        <Sider theme={"dark"} width={250} style={{ overflowY: "scroll" }}>
+          <Menu theme={"dark"}>
             {state.results.map((result) => (
               <Menu.Item key={result.timestamp}>
                 <Link href={`/result/${result.timestamp}`}>
