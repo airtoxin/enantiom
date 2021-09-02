@@ -2,11 +2,11 @@ import { z } from "zod";
 import { readFile } from "fs/promises";
 import { join } from "path";
 import { EnantiomConfig, EnantiomInternalConfig } from "./EnantiomConfig";
-import { ScreenshotConfig } from "./State";
+import { ScreenshotConfig, State } from "./State";
 
-export class EnantiomConfigService {
+export class EnantiomConfigLoader {
   private config!: z.infer<typeof EnantiomConfig>;
-  constructor(private configPath: string) {}
+  constructor(private configPath: string, private state: State) {}
 
   public async load(): Promise<EnantiomInternalConfig> {
     const raw = await readFile(join(process.cwd(), this.configPath), {
@@ -18,6 +18,7 @@ export class EnantiomConfigService {
       artifactPath: this.config.artifact_path,
       currentTimestamp: `${Date.now()}`,
       screenshotConfigs: this.createScreenshotConfigs(),
+      prevTimestamp: this.state.results[0]?.timestamp,
     };
   }
 

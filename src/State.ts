@@ -43,13 +43,10 @@ export const ScreenshotResult = z.lazy(() =>
       .object({
         diffFilepath: z.string(),
         result: z.union([
-          z.object({ match: z.literal(true) }),
           z.object({
-            match: z.literal(false),
             reason: z.literal("layout-diff"),
           }),
           z.object({
-            match: z.literal(false),
             reason: z.literal("pixel-diff"),
             diffCount: z.number(),
             diffPercentage: z.number(),
