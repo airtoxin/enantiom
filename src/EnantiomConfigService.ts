@@ -4,6 +4,7 @@ import { readFile } from "fs/promises";
 import { join } from "path";
 import { format } from "date-fns";
 import { MetaFileService } from "./MetaFileService";
+import { EnantiomConfig } from "./EnantiomConfig";
 
 const defaultBrowser = "chromium";
 const defaultSize = { width: 800, height: 600 };
@@ -103,55 +104,3 @@ export class EnantiomConfigService {
     }
   }
 }
-
-type SizeConfig = z.infer<typeof SizeConfig>;
-const SizeConfig = z.object({
-  width: z.number(),
-  height: z.number(),
-});
-
-type SizesConfigValue = z.infer<typeof SizesConfigValue>;
-const SizesConfigValue = z.union([SizeConfig, z.array(SizeConfig)]).optional();
-
-type SupportedBrowserName = z.infer<typeof SupportedBrowserName>;
-const SupportedBrowserName = z.union([
-  z.literal("chromium"),
-  z.literal("firefox"),
-  z.literal("webkit"),
-]);
-
-type BrowserConfig = z.infer<typeof BrowserConfig>;
-const BrowserConfig = z.object({
-  browser: SupportedBrowserName,
-  sizes: SizesConfigValue,
-});
-
-type BrowsersConfigValue = z.infer<typeof BrowsersConfigValue>;
-const BrowsersConfigValue = z
-  .union([
-    SupportedBrowserName,
-    z.array(SupportedBrowserName),
-    z.array(z.union([SupportedBrowserName, BrowserConfig])),
-  ])
-  .optional();
-
-type ScreenshotConfig = z.infer<typeof ScreenshotConfig>;
-const ScreenshotConfig = z.object({
-  url: z.string(),
-  browsers: BrowsersConfigValue,
-});
-
-type ScreenshotConfigValue = z.infer<typeof ScreenshotConfigValue>;
-const ScreenshotConfigValue = z.union([
-  z.string(),
-  ScreenshotConfig,
-  z.array(z.union([z.string(), ScreenshotConfig])),
-]);
-
-type EnantiomConfig = z.infer<typeof EnantiomConfig>;
-const EnantiomConfig = z.object({
-  artifact_path: z.string(),
-  browsers: BrowsersConfigValue,
-  sizes: SizesConfigValue,
-  screenshots: ScreenshotConfigValue,
-});
