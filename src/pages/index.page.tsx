@@ -3,16 +3,14 @@ import { GetStaticProps } from "next";
 import { Image, Layout, List } from "antd";
 import { join } from "path";
 import { promises as fs } from "fs";
-import { MetaFile } from "../types";
 import { AppLayout } from "./AppLayout";
+import { State } from "../State";
 
 const { Content } = Layout;
 
-const HomePage: VoidFunctionComponent<{ metaFile: MetaFile }> = ({
-  metaFile,
-}) => {
+const HomePage: VoidFunctionComponent<{ state: State }> = ({ state }) => {
   return (
-    <AppLayout metaFile={metaFile}>
+    <AppLayout state={state}>
       <Content
         className="site-layout-background"
         style={{
@@ -22,13 +20,12 @@ const HomePage: VoidFunctionComponent<{ metaFile: MetaFile }> = ({
         }}
       >
         <List>
-          {metaFile.results.map((result) => (
-            <List.Item key={result.filepath}>
+          {state.results.map((result) => (
+            <List.Item key={result.timestamp}>
               <Image
                 preview
-                src={result.filepath.replace("public", "")}
-                width={result.size.width}
-                height={result.size.height}
+                src={result.screenshots[0]!.filepath}
+                {...result.screenshots[0]!.config.size}
               />
             </List.Item>
           ))}
@@ -39,13 +36,17 @@ const HomePage: VoidFunctionComponent<{ metaFile: MetaFile }> = ({
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const metaFilePath = join(process.cwd(), "public/meta.json");
-  const rawFile = await fs.readFile(metaFilePath, { encoding: "utf-8" });
-  const metaFile = MetaFile.parse(JSON.parse(rawFile));
+  const rawFile = await fs.readFile(
+    join(process.cwd(), "public/assets/state.json"),
+    {
+      encoding: "utf-8",
+    }
+  );
+  const state = State.parse(JSON.parse(rawFile));
 
   return {
     props: {
-      metaFile,
+      state,
     },
   };
 };

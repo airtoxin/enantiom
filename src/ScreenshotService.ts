@@ -1,37 +1,47 @@
-import { EnantiomInternalConfig, ScreenshotAndDiffResult } from "./types";
 import playwright from "playwright";
 import { join } from "path";
-import { compare } from "odiff-bin";
-import { mkdir } from "fs/promises";
+import { Result, ScreenshotResult } from "./State";
+import objectHash from "object-hash";
+import mkdirp from "mkdirp";
+import { EnantiomInternalConfig } from "./EnantiomConfig";
 
 export class ScreenshotService {
   constructor(private config: EnantiomInternalConfig) {}
 
-  public async takeScreenshotAndDiff(): Promise<ScreenshotAndDiffResult[]> {
-    const screenshots = await this.takeScreenshot();
-    return this.saveDiff(screenshots);
+  public async takeScreenshotAndDiff(outDirPath: string): Promise<Result> {
+    const results = await this.takeScreenshot(outDirPath);
+    const screenshots = await this.saveDiff(outDirPath, results);
+    return {
+      timestamp: this.config.currentTimestamp,
+      screenshots,
+    };
   }
 
-  private async takeScreenshot(): Promise<ScreenshotAndDiffResult[]> {
+  private async takeScreenshot(
+    outDirPath: string
+  ): Promise<ScreenshotResult[]> {
     return Promise.all(
-      this.config.screenshotDetails.map(async (detail) => {
-        const browser = await playwright[detail.browser].launch();
+      this.config.screenshotConfigs.map(async (screenshotConfig) => {
+        const browser = await playwright[screenshotConfig.browser].launch();
         const context = await browser.newContext();
         const page = await context.newPage();
-        await page.goto(detail.url);
+        await page.setViewportSize(screenshotConfig.size);
+        await page.goto(screenshotConfig.url);
 
-        const filename = `${detail.url}-${detail.browser}.png`
-          .replace(new RegExp(":", "g"), "__")
-          .replace(new RegExp("/", "g"), "__");
-        const filepath = join("public", this.config.outDirname, filename);
+        const hash = objectHash(screenshotConfig);
+        const filename = `${hash}.png`;
+        const dirname = join(outDirPath, this.config.currentTimestamp);
+        await mkdirp(dirname);
+        const filepath = join(dirname, filename);
+
         await page.screenshot({
           path: filepath,
         });
         await browser.close();
 
         return {
-          ...detail,
-          filename,
+          hash,
+          config: screenshotConfig,
           filepath,
         };
       })
@@ -39,36 +49,38 @@ export class ScreenshotService {
   }
 
   private async saveDiff(
-    results: ScreenshotAndDiffResult[]
-  ): Promise<ScreenshotAndDiffResult[]> {
+    _outDirPath: string,
+    results: ScreenshotResult[]
+  ): Promise<ScreenshotResult[]> {
     return Promise.all(
       results.map(async (result) => {
-        if (this.config.prevOutDirname == null) return result;
-        const { prevOutDirname, outDirname } = this.config;
+        if (this.config.prevTimestamp == null) return result;
+        // TODO
+        return result;
 
-        const prevFilePath = join("public", prevOutDirname, result.filename);
-        const currentFilePath = result.filepath;
-
-        const diffDirName = `${prevOutDirname}_${outDirname}`;
-        const diffFilepath = join("public", diffDirName, result.filename);
-        mkdir(join("public", diffDirName)).catch();
-
-        const diffResult = await compare(
-          prevFilePath,
-          currentFilePath,
-          diffFilepath,
-          {
-            outputDiffMask: true,
-          }
-        );
-
-        if (diffResult.match) return result;
-
-        return {
-          ...result,
-          diffFilepath,
-          diffResult,
-        };
+        // const prevFilePath = join(outDirPath, prevOutDirname, result.filename);
+        // const currentFilePath = result.filepath;
+        //
+        // const diffDirName = `${prevOutDirname}_${outDirname}`;
+        // const diffFilepath = join(outDirPath, diffDirName, result.filename);
+        // mkdir(join(outDirPath, diffDirName)).catch();
+        //
+        // const diffResult = await compare(
+        //   prevFilePath,
+        //   currentFilePath,
+        //   diffFilepath,
+        //   {
+        //     outputDiffMask: true,
+        //   }
+        // );
+        //
+        // if (diffResult.match) return result;
+        //
+        // return {
+        //   ...result,
+        //   diffFilepath,
+        //   diffResult,
+        // };
       })
     );
   }

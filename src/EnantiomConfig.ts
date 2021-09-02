@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { State } from "./State";
+import { ScreenshotConfig } from "./State";
 
 export type EnantiomConfig = z.infer<typeof EnantiomConfig>;
 export const EnantiomConfig = z.lazy(() =>
@@ -14,5 +14,5 @@ export const EnantiomInternalConfig = z.object({
   artifactPath: z.string(),
   currentTimestamp: z.string(),
   prevTimestamp: z.string().optional(),
-  state: State,
+  screenshotConfigs: z.array(ScreenshotConfig),
 });

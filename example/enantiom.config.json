@@ -1,5 +1,5 @@
 {
-  "artifact_path": "./enantiom_out",
+  "artifact_path": "./dist",
   "screenshots": [
     "https://example.com",
     "https://www.google.com"

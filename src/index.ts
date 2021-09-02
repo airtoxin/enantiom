@@ -1,9 +1,10 @@
 import { parse } from "ts-command-line-args";
-import { MetaFileService } from "./MetaFileService";
 import { join } from "path";
 import { spawn as cspawn } from "child_process";
 import { EnantiomConfigService } from "./EnantiomConfigService";
 import { ScreenshotService } from "./ScreenshotService";
+import { StateFileService } from "./StateFileService";
+import { copy } from "fs-extra";
 
 export type EnantiomCliArgument = {
   config: string;
@@ -13,15 +14,28 @@ const args = parse<EnantiomCliArgument>({
   config: { type: String, alias: "c" },
 });
 
+const OUTPUT_DIRNAME = join("public", "assets");
+
 const main = async () => {
   const configService = new EnantiomConfigService(args.config);
   const config = await configService.load();
-  const metaFileService = new MetaFileService(config.artifactPath);
+
+  // sync previous output
+  await copy(
+    join(process.cwd(), config.artifactPath, "assets"),
+    join(process.cwd(), "public", "assets")
+  );
+
   const screenshotService = new ScreenshotService(config);
-  const results = await screenshotService.takeScreenshotAndDiff();
-  await metaFileService.save(config.outDirname, results);
+  const result = await screenshotService.takeScreenshotAndDiff(OUTPUT_DIRNAME);
+
+  const stateFileService = new StateFileService(OUTPUT_DIRNAME);
+  // const state = await stateFileService.load();
+  // console.log("@state", state);
+  await stateFileService.appendSave(result);
 
   const next = join(__dirname, "../node_modules/.bin/next");
+  console.log("@next", next);
   await spawn(next, ["build"]);
   await spawn(next, ["export", "-o", config.artifactPath]);
 };
