@@ -3,15 +3,15 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { join } from "path";
 import { promises as fs } from "fs";
 import { AppLayout } from "../AppLayout";
-import { Layout, List } from "antd";
-import { State } from "../../State";
+import { Image, Layout, List } from "antd";
+import { Result, State } from "../../State";
 
 const { Content } = Layout;
 
 export const ResultPage: VoidFunctionComponent<{
   state: State;
-  timestamp: string;
-}> = ({ state, timestamp }) => {
+  result: Result;
+}> = ({ state, result }) => {
   return (
     <AppLayout state={state}>
       <Content
@@ -22,13 +22,20 @@ export const ResultPage: VoidFunctionComponent<{
           minHeight: 280,
         }}
       >
-        <List>{timestamp}</List>
+        {result.screenshots.map((screenshot) => (
+          <List key={screenshot.hash}>
+            <Image src={screenshot.filepath.slice(6)} width={300} />
+            {screenshot.diff && (
+              <Image src={screenshot.diff.diffFilepath.slice(6)} width={300} />
+            )}
+          </List>
+        ))}
       </Content>
     </AppLayout>
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const rawFile = await fs.readFile(
     join(process.cwd(), "public/assets/state.json"),
     {
@@ -36,12 +43,20 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   );
   const state = State.parse(JSON.parse(rawFile));
+  const result = state.results.find(
+    (result) => result.timestamp === params?.timestamp
+  );
 
-  return {
-    props: {
-      state,
-    },
-  };
+  return result == null
+    ? {
+        notFound: true,
+      }
+    : {
+        props: {
+          state,
+          result,
+        },
+      };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
