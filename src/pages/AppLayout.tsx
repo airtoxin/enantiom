@@ -6,10 +6,10 @@ import { formatTimestamp } from "../utils";
 
 const { Header, Sider } = Layout;
 
-export const AppLayout: FunctionComponent<{ state: State }> = ({
-  children,
-  state,
-}) => {
+export const AppLayout: FunctionComponent<{
+  state: State;
+  timestamp?: string;
+}> = ({ children, state, timestamp }) => {
   return (
     <Layout style={{ height: "100vh" }}>
       <Header
@@ -28,7 +28,7 @@ export const AppLayout: FunctionComponent<{ state: State }> = ({
 
       <Layout>
         <Sider theme={"dark"} width={250} style={{ overflowY: "scroll" }}>
-          <Menu theme={"dark"}>
+          <Menu theme={"dark"} selectedKeys={timestamp ? [timestamp] : []}>
             {state.results.map((result) => (
               <Menu.Item key={result.timestamp}>
                 <Link href={`/result/${result.timestamp}`}>

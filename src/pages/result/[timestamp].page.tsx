@@ -32,7 +32,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
   links,
 }) => {
   return (
-    <AppLayout state={state}>
+    <AppLayout state={state} timestamp={result.timestamp}>
       <Row justify="space-between" style={{ padding: 16 }}>
         <Col>
           {links.newer && (
