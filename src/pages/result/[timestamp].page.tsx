@@ -3,7 +3,17 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { join } from "path";
 import { promises as fs } from "fs";
 import { AppLayout } from "../AppLayout";
-import { Col, Empty, Image, Layout, List, Row, Typography } from "antd";
+import {
+  Card,
+  Col,
+  Empty,
+  Image,
+  Layout,
+  Row,
+  Space,
+  Tag,
+  Typography,
+} from "antd";
 import { Result, State } from "../../State";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { formatTimestamp } from "../../utils";
@@ -48,42 +58,41 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
           minHeight: 280,
         }}
       >
-        <List>
-          <Row align="middle" gutter={[16, 16]}>
-            <Col span={8}>
-              <Text strong>Newest</Text>
-            </Col>
-            <Col span={8}>
-              <Text strong>Diff</Text>
-            </Col>
-            <Col span={8}>
-              <Text strong>Previous</Text>
-            </Col>
-          </Row>
-        </List>
         <Image.PreviewGroup>
           {result.screenshots.map((screenshot) => (
-            <List key={screenshot.hash}>
-              <Row align="middle">
-                <Col span={8}>
-                  <Image src={screenshot.filepath.slice(6)} />
-                </Col>
-                <Col span={8}>
-                  {screenshot.diff ? (
-                    <Image src={screenshot.diff.diffFilepath.slice(6)} />
-                  ) : (
-                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                  )}
-                </Col>
-                <Col span={8}>
-                  {screenshot.prevFilepath ? (
-                    <Image src={screenshot.prevFilepath.slice(6)} />
-                  ) : (
-                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                  )}
-                </Col>
-              </Row>
-            </List>
+            <Card
+              key={screenshot.hash}
+              bordered={false}
+              style={{ marginBottom: "1rem" }}
+              title={
+                <Space>
+                  <Text strong>{screenshot.config.url}</Text>
+                  <Tag color="magenta">{screenshot.config.browser}</Tag>
+                  <Tag color="cyan">
+                    {screenshot.config.size.width}x
+                    {screenshot.config.size.height}
+                  </Tag>
+                </Space>
+              }
+            >
+              <Card.Grid hoverable={false}>
+                <Image src={screenshot.filepath.slice(6)} />
+              </Card.Grid>
+              <Card.Grid hoverable={false}>
+                {screenshot.diff ? (
+                  <Image src={screenshot.diff.diffFilepath.slice(6)} />
+                ) : (
+                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                )}
+              </Card.Grid>
+              <Card.Grid hoverable={false}>
+                {screenshot.prevFilepath ? (
+                  <Image src={screenshot.prevFilepath.slice(6)} />
+                ) : (
+                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                )}
+              </Card.Grid>
+            </Card>
           ))}
         </Image.PreviewGroup>
       </Content>
