@@ -1,7 +1,8 @@
 import { FunctionComponent } from "react";
-import { Breadcrumb, Layout, Menu } from "antd";
+import { Layout, Menu } from "antd";
 import Link from "next/link";
 import { State } from "../State";
+import { formatTimestamp } from "../utils";
 
 const { Header, Sider } = Layout;
 
@@ -31,22 +32,13 @@ export const AppLayout: FunctionComponent<{ state: State }> = ({
             {state.results.map((result) => (
               <Menu.Item key={result.timestamp}>
                 <Link href={`/result/${result.timestamp}`}>
-                  <a>
-                    {new Date(
-                      Number.parseInt(result.timestamp, 10)
-                    ).toISOString()}
-                  </a>
+                  <a>{formatTimestamp(result.timestamp)}</a>
                 </Link>
               </Menu.Item>
             ))}
           </Menu>
         </Sider>
         <Layout style={{ padding: "0 24px 24px", overflowY: "scroll" }}>
-          <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
-          </Breadcrumb>
           {children}
         </Layout>
       </Layout>
