@@ -1,11 +1,11 @@
-import { VoidFunctionComponent } from "react";
+import { useMemo, VoidFunctionComponent } from "react";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { join } from "path";
 import { promises as fs } from "fs";
 import { AppLayout } from "../AppLayout";
 import {
-  Card,
   Col,
+  Collapse,
   Empty,
   Image,
   Layout,
@@ -20,6 +20,7 @@ import { formatTimestamp } from "../../utils";
 
 const { Text, Link } = Typography;
 const { Content } = Layout;
+const { Panel } = Collapse;
 
 type Props = {
   state: State;
@@ -31,6 +32,10 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
   result,
   links,
 }) => {
+  const activeScreenshots = useMemo(
+    () => result.screenshots.filter((s) => s.diff != null).map((s) => s.hash),
+    [result]
+  );
   return (
     <AppLayout state={state} timestamp={result.timestamp}>
       <Row justify="space-between" style={{ padding: 16 }}>
@@ -59,41 +64,43 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
         }}
       >
         <Image.PreviewGroup>
-          {result.screenshots.map((screenshot) => (
-            <Card
-              key={screenshot.hash}
-              bordered={false}
-              style={{ marginBottom: "1rem" }}
-              title={
-                <Space>
-                  <Text strong>{screenshot.config.url}</Text>
-                  <Tag color="magenta">{screenshot.config.browser}</Tag>
-                  <Tag color="cyan">
-                    {screenshot.config.size.width}x
-                    {screenshot.config.size.height}
-                  </Tag>
-                </Space>
-              }
-            >
-              <Card.Grid hoverable={false}>
-                <Image src={screenshot.filepath.slice(6)} />
-              </Card.Grid>
-              <Card.Grid hoverable={false}>
-                {screenshot.diff ? (
-                  <Image src={screenshot.diff.diffFilepath.slice(6)} />
-                ) : (
-                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                )}
-              </Card.Grid>
-              <Card.Grid hoverable={false}>
-                {screenshot.prevFilepath ? (
-                  <Image src={screenshot.prevFilepath.slice(6)} />
-                ) : (
-                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                )}
-              </Card.Grid>
-            </Card>
-          ))}
+          <Collapse defaultActiveKey={activeScreenshots}>
+            {result.screenshots.map((screenshot) => (
+              <Panel
+                key={screenshot.hash}
+                header={
+                  <Space>
+                    <Text strong>{screenshot.config.url}</Text>
+                    <Tag color="magenta">{screenshot.config.browser}</Tag>
+                    <Tag color="cyan">
+                      {screenshot.config.size.width}x
+                      {screenshot.config.size.height}
+                    </Tag>
+                  </Space>
+                }
+              >
+                <Row>
+                  <Col span={8}>
+                    <Image src={screenshot.filepath.slice(6)} />
+                  </Col>
+                  <Col span={8}>
+                    {screenshot.diff ? (
+                      <Image src={screenshot.diff.diffFilepath.slice(6)} />
+                    ) : (
+                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    )}
+                  </Col>
+                  <Col span={8}>
+                    {screenshot.prevFilepath ? (
+                      <Image src={screenshot.prevFilepath.slice(6)} />
+                    ) : (
+                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    )}
+                  </Col>
+                </Row>
+              </Panel>
+            ))}
+          </Collapse>
         </Image.PreviewGroup>
       </Content>
     </AppLayout>
