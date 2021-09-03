@@ -1,6 +1,6 @@
 import { VoidFunctionComponent } from "react";
 import { GetStaticProps } from "next";
-import { Image, Layout, List } from "antd";
+import { Layout } from "antd";
 import { join } from "path";
 import { promises as fs } from "fs";
 import { AppLayout } from "./AppLayout";
@@ -17,19 +17,7 @@ const HomePage: VoidFunctionComponent<{ state: State }> = ({ state }) => {
           margin: 0,
           minHeight: 280,
         }}
-      >
-        <List>
-          {state.results.map((result) => (
-            <List.Item key={result.timestamp}>
-              <Image
-                preview
-                src={result.screenshots[0]!.filepath}
-                {...result.screenshots[0]!.config.size}
-              />
-            </List.Item>
-          ))}
-        </List>
-      </Content>
+      />
     </AppLayout>
   );
 };
