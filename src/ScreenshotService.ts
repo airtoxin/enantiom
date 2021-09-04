@@ -107,16 +107,19 @@ export class ScreenshotService {
           }
         );
 
-        if (diff.match) return result;
-
-        return {
-          ...result,
-          prevFilepath,
-          diff: {
-            diffFilepath,
-            result: diff,
-          },
-        };
+        return diff.match
+          ? {
+              ...result,
+              prevFilepath,
+            }
+          : {
+              ...result,
+              prevFilepath,
+              diff: {
+                diffFilepath,
+                result: diff,
+              },
+            };
       })
     );
   }
