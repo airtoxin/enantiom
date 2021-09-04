@@ -42,6 +42,8 @@ export class EnantiomConfigLoader {
       const url = typeof screenshot === "string" ? screenshot : screenshot.url;
       const screenshotBrowserConfig =
         typeof screenshot === "string" ? null : screenshot.browsers;
+      const screenshotSizeConfig =
+        typeof screenshot === "string" ? null : screenshot.sizes;
 
       return [
         screenshotBrowserConfig ?? this.config.browsers ?? DEFAULT_BROWSER,
@@ -49,13 +51,20 @@ export class EnantiomConfigLoader {
         .flat()
         .flatMap((browser) => {
           if (typeof browser === "string") {
-            return [this.config.sizes ?? DEFAULT_SIZE].flat().map((size) => ({
-              url,
-              browser,
-              size,
-            }));
+            return [screenshotSizeConfig ?? this.config.sizes ?? DEFAULT_SIZE]
+              .flat()
+              .map((size) => ({
+                url,
+                browser,
+                size,
+              }));
           } else {
-            return [browser.sizes ?? this.config.sizes ?? DEFAULT_SIZE]
+            return [
+              browser.sizes ??
+                screenshotSizeConfig ??
+                this.config.sizes ??
+                DEFAULT_SIZE,
+            ]
               .flat()
               .map((size) => ({
                 url,

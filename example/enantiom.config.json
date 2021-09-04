@@ -10,6 +10,13 @@
   ],
   "screenshots": [
     "https://example.com",
-    { "url": "https://time.is/ja/" }
+    {
+      "url": "https://time.is/ja/",
+      "browsers": ["chromium", "webkit"],
+      "sizes": [
+        { "width": 300, "height": 300 },
+        { "width": 400, "height": 400 }
+      ]
+    }
   ]
 }

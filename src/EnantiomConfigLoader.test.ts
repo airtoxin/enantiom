@@ -212,8 +212,7 @@ describe("EnantiomConfigLoader", () => {
     });
 
     test("simple screenshot object config", () => {
-      const { loader, config } = createDefaultContext();
-      const url = "https://example.com/aaaa";
+      const { loader, config, url } = createDefaultContext();
       config.screenshots = [{ url }];
       expect(loader["createScreenshotConfigs"]()).toEqual([
         {
@@ -225,8 +224,7 @@ describe("EnantiomConfigLoader", () => {
     });
 
     test("simple browser config in screenshot object config", () => {
-      const { loader, config } = createDefaultContext();
-      const url = "https://example.com/aaaa";
+      const { loader, config, url } = createDefaultContext();
       config.screenshots = [{ url, browsers: "firefox" }];
       expect(loader["createScreenshotConfigs"]()).toEqual([
         {
@@ -238,8 +236,7 @@ describe("EnantiomConfigLoader", () => {
     });
 
     test("size config in browser object config in screenshot object config", () => {
-      const { loader, config } = createDefaultContext();
-      const url = "https://example.com/aaaa";
+      const { loader, config, url } = createDefaultContext();
       const customSize = { width: 200, height: 200 };
       config.screenshots = [
         { url, browsers: { browser: "firefox", sizes: customSize } },
@@ -254,8 +251,7 @@ describe("EnantiomConfigLoader", () => {
     });
 
     test("multiple sizes config in multiple browsers object config in screenshot object config", () => {
-      const { loader, config } = createDefaultContext();
-      const url = "https://example.com/aaaa";
+      const { loader, config, url } = createDefaultContext();
       const customSize1 = { width: 100, height: 100 };
       const customSize2 = { width: 200, height: 200 };
       const customSize3 = { width: 300, height: 300 };
@@ -353,6 +349,46 @@ describe("EnantiomConfigLoader", () => {
           url: url2,
           browser: "webkit",
           size: customSize3,
+        },
+      ]);
+    });
+
+    test("screenshot config with mixed browser config and sizes config", () => {
+      const { loader, config, url } = createDefaultContext();
+      const customSize1 = { width: 100, height: 100 };
+      const customSize2 = { width: 200, height: 200 };
+      const customSize3 = { width: 300, height: 300 };
+      const customSize4 = { width: 400, height: 400 };
+      config.screenshots = [
+        {
+          url,
+          browsers: [
+            "chromium",
+            { browser: "firefox", sizes: [customSize1, customSize2] },
+          ],
+          sizes: [customSize3, customSize4],
+        },
+      ];
+      expect(loader["createScreenshotConfigs"]()).toEqual([
+        {
+          url,
+          browser: "chromium",
+          size: customSize3,
+        },
+        {
+          url,
+          browser: "chromium",
+          size: customSize4,
+        },
+        {
+          url,
+          browser: "firefox",
+          size: customSize1,
+        },
+        {
+          url,
+          browser: "firefox",
+          size: customSize2,
         },
       ]);
     });

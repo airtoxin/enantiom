@@ -42,5 +42,6 @@ export const ScreenshotConfigObject = z.lazy(() =>
     browsers: arrayOrValue(
       z.union([SupportedBrowser, BrowserConfigObject])
     ).optional(),
+    sizes: arrayOrValue(BrowserSize).optional(),
   })
 );
