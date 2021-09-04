@@ -7,10 +7,10 @@ export const EnantiomConfig = z.lazy(() =>
   z.object({
     artifact_path: z.string(),
     browsers: arrayOrValue(
-      z.union([SupportedBrowser, BrowserConfig])
+      z.union([SupportedBrowser, BrowserConfigObject])
     ).optional(),
     sizes: arrayOrValue(BrowserSize).optional(),
-    screenshots: z.array(z.string()),
+    screenshots: z.array(z.union([z.string(), ScreenshotConfigObject])),
   })
 );
 
@@ -19,8 +19,8 @@ export const SupportedBrowser = z.lazy(() =>
   z.union([z.literal("chromium"), z.literal("firefox"), z.literal("webkit")])
 );
 
-export type BrowserConfig = z.infer<typeof BrowserConfig>;
-export const BrowserConfig = z.lazy(() =>
+export type BrowserConfigObject = z.infer<typeof BrowserConfigObject>;
+export const BrowserConfigObject = z.lazy(() =>
   z.object({
     browser: SupportedBrowser,
     sizes: arrayOrValue(BrowserSize).optional(),
@@ -32,5 +32,15 @@ export const BrowserSize = z.lazy(() =>
   z.object({
     width: z.number(),
     height: z.number(),
+  })
+);
+
+export type ScreenshotConfigObject = z.infer<typeof ScreenshotConfigObject>;
+export const ScreenshotConfigObject = z.lazy(() =>
+  z.object({
+    url: z.string(),
+    browsers: arrayOrValue(
+      z.union([SupportedBrowser, BrowserConfigObject])
+    ).optional(),
   })
 );

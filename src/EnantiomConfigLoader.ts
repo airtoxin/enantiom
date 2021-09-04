@@ -38,24 +38,32 @@ export class EnantiomConfigLoader {
   }
 
   private createScreenshotConfigs(): ScreenshotConfig[] {
-    return this.config.screenshots.flatMap((url) =>
-      [this.config.browsers ?? DEFAULT_BROWSER].flat().flatMap((browser) => {
-        if (typeof browser === "string") {
-          return [this.config.sizes ?? DEFAULT_SIZE].flat().map((size) => ({
-            url,
-            browser,
-            size,
-          }));
-        } else {
-          return [browser.sizes ?? this.config.sizes ?? DEFAULT_SIZE]
-            .flat()
-            .map((size) => ({
+    return this.config.screenshots.flatMap((screenshot) => {
+      const url = typeof screenshot === "string" ? screenshot : screenshot.url;
+      const screenshotBrowserConfig =
+        typeof screenshot === "string" ? null : screenshot.browsers;
+
+      return [
+        screenshotBrowserConfig ?? this.config.browsers ?? DEFAULT_BROWSER,
+      ]
+        .flat()
+        .flatMap((browser) => {
+          if (typeof browser === "string") {
+            return [this.config.sizes ?? DEFAULT_SIZE].flat().map((size) => ({
               url,
-              browser: browser.browser,
+              browser,
               size,
             }));
-        }
-      })
-    );
+          } else {
+            return [browser.sizes ?? this.config.sizes ?? DEFAULT_SIZE]
+              .flat()
+              .map((size) => ({
+                url,
+                browser: browser.browser,
+                size,
+              }));
+          }
+        });
+    });
   }
 }
