@@ -14,13 +14,18 @@ import {
   Tag,
   Typography,
 } from "antd";
-import { Result, State } from "../../State";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { formatTimestamp } from "../../utils";
+import { Result, ScreenshotResult, State } from "../../State";
+import {
+  CheckCircleTwoTone,
+  ExclamationCircleTwoTone,
+  FileAddTwoTone,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
+import { formatTimestamp, switcher } from "../../utils";
 
-const { Text, Link } = Typography;
+const { Link } = Typography;
 const { Content } = Layout;
-const { Panel } = Collapse;
 
 type Props = {
   state: State;
@@ -69,11 +74,14 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
         <Image.PreviewGroup>
           <Collapse defaultActiveKey={activeScreenshots}>
             {result.screenshots.map((screenshot) => (
-              <Panel
+              <Collapse.Panel
                 key={`${result.timestamp}_${screenshot.hash}`}
                 header={
                   <Space>
-                    <Text strong>{screenshot.config.url}</Text>
+                    <ResultSummaryIcon screenshot={screenshot} />
+                    <Typography.Text strong>
+                      {screenshot.config.url}
+                    </Typography.Text>
                     <Tag color="magenta">{screenshot.config.browser}</Tag>
                     <Tag color="cyan">
                       {screenshot.config.size.width}x
@@ -101,13 +109,29 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                     )}
                   </Col>
                 </Row>
-              </Panel>
+              </Collapse.Panel>
             ))}
           </Collapse>
         </Image.PreviewGroup>
       </Content>
     </AppLayout>
   );
+};
+
+const ResultSummaryIcon: VoidFunctionComponent<{
+  screenshot: ScreenshotResult;
+}> = ({ screenshot }) => {
+  const resultType =
+    screenshot.diff != null
+      ? "diff"
+      : screenshot.prevFilepath != null
+      ? "noDiff"
+      : "add";
+  return switcher({
+    diff: <ExclamationCircleTwoTone twoToneColor="#f5222d" />,
+    noDiff: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    add: <FileAddTwoTone twoToneColor="#1890ff" />,
+  })(resultType);
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
