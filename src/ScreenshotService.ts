@@ -2,9 +2,9 @@ import playwright from "playwright";
 import { join } from "path";
 import { Result, ScreenshotResult } from "./State";
 import objectHash from "object-hash";
-import { EnantiomInternalConfig } from "./EnantiomConfig";
 import { access, ensureDir } from "fs-extra";
 import { compare } from "odiff-bin";
+import { EnantiomInternalConfig } from "./EnantiomInternalConfig";
 
 export class ScreenshotService {
   constructor(private config: EnantiomInternalConfig) {}

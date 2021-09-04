@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { EnantiomSupportedBrowser } from "./EnantiomConfig";
 
 export type State = z.infer<typeof State>;
 export const State = z.lazy(() =>
@@ -20,11 +21,7 @@ export type ScreenshotConfig = z.infer<typeof ScreenshotConfig>;
 export const ScreenshotConfig = z.lazy(() =>
   z.object({
     url: z.string(),
-    browser: z.union([
-      z.literal("chromium"),
-      z.literal("firefox"),
-      z.literal("webkit"),
-    ]),
+    browser: EnantiomSupportedBrowser,
     size: z.object({
       width: z.number(),
       height: z.number(),

@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { readFile } from "fs/promises";
-import { EnantiomConfig, EnantiomInternalConfig } from "./EnantiomConfig";
+import { EnantiomConfig } from "./EnantiomConfig";
 import { ScreenshotConfig, State } from "./State";
+import { EnantiomInternalConfig } from "./EnantiomInternalConfig";
 
 export class EnantiomConfigLoader {
   private config!: z.infer<typeof EnantiomConfig>;
@@ -35,13 +36,11 @@ export class EnantiomConfigLoader {
 
   private createScreenshotConfigs(): ScreenshotConfig[] {
     return this.config.screenshots.flatMap((url) => {
-      return [
-        {
-          url,
-          browser: "chromium",
-          size: { width: 800, height: 600 },
-        },
-      ];
+      return [this.config.browsers ?? "chromium"].flat().map((browser) => ({
+        url,
+        browser,
+        size: { width: 800, height: 600 },
+      }));
     });
   }
 }
