@@ -6,9 +6,17 @@ import { ScreenshotConfig, State } from "./State";
 
 export class EnantiomConfigLoader {
   private config!: z.infer<typeof EnantiomConfig>;
-  constructor(private configPath: string, private state: State) {}
+  constructor(private configPath: string) {}
 
-  public async load(): Promise<EnantiomInternalConfig> {
+  public async loadRaw(): Promise<EnantiomConfig> {
+    const raw = await readFile(join(process.cwd(), this.configPath), {
+      encoding: "utf-8",
+    });
+    this.config = EnantiomConfig.parse(JSON.parse(raw));
+    return this.config;
+  }
+
+  public async load(state: State): Promise<EnantiomInternalConfig> {
     const raw = await readFile(join(process.cwd(), this.configPath), {
       encoding: "utf-8",
     });
@@ -18,7 +26,7 @@ export class EnantiomConfigLoader {
       artifactPath: this.config.artifact_path,
       currentTimestamp: `${Date.now()}`,
       screenshotConfigs: this.createScreenshotConfigs(),
-      prevTimestamp: this.state.results[0]?.timestamp,
+      prevTimestamp: state.results[0]?.timestamp,
     };
   }
 

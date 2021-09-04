@@ -17,20 +17,21 @@ const args = parse<EnantiomCliArgument>({
 const OUTPUT_DIRNAME = join("public", "assets");
 
 const main = async () => {
-  const stateFileService = new StateFileService(OUTPUT_DIRNAME);
-  const state = await stateFileService.load();
-  const configService = new EnantiomConfigLoader(args.config, state);
-  const config = await configService.load();
-
+  const configService = new EnantiomConfigLoader(args.config);
+  const rawConfig = await configService.loadRaw();
   // sync previous output
   try {
     await copy(
-      join(process.cwd(), config.artifactPath, "assets"),
+      join(process.cwd(), rawConfig.artifact_path, "assets"),
       join(process.cwd(), "public", "assets")
     );
   } catch {
     // nothing to do
   }
+
+  const stateFileService = new StateFileService(OUTPUT_DIRNAME);
+  const state = await stateFileService.load();
+  const config = await configService.load(state);
 
   const screenshotService = new ScreenshotService(config);
   const result = await screenshotService.takeScreenshotAndDiff(OUTPUT_DIRNAME);
