@@ -45,7 +45,7 @@ export const AppLayout: FunctionComponent<{
                 }
               >
                 <Link href={`/result/${result.timestamp}`}>
-                  <a>{formatTimestamp(result.timestamp)}</a>
+                  {formatTimestamp(result.timestamp)}
                 </Link>
               </Menu.Item>
             ))}

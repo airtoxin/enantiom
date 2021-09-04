@@ -33,7 +33,10 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
   links,
 }) => {
   const activeScreenshots = useMemo(
-    () => result.screenshots.filter((s) => s.diff != null).map((s) => s.hash),
+    () =>
+      result.screenshots
+        .filter((s) => s.diff != null)
+        .map((s) => `${result.timestamp}_${s.hash}`),
     [result]
   );
   return (
@@ -67,7 +70,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
           <Collapse defaultActiveKey={activeScreenshots}>
             {result.screenshots.map((screenshot) => (
               <Panel
-                key={screenshot.hash}
+                key={`${result.timestamp}_${screenshot.hash}`}
                 header={
                   <Space>
                     <Text strong>{screenshot.config.url}</Text>
