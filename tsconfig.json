@@ -5,9 +5,7 @@
     "forceConsistentCasingInFileNames": true,
     "downlevelIteration": true,
     "isolatedModules": true,
-    "lib": [
-      "ES2019"
-    ],
+    "lib": ["ES2019"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -23,10 +21,6 @@
     "outDir": "js",
     "noEmit": false
   },
-  "include": [
-    "./src"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["./src"],
+  "exclude": ["node_modules"]
 }
