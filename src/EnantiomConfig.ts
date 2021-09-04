@@ -1,13 +1,14 @@
-import { z } from "zod";
+import { z, ZodTypeAny } from "zod";
+
+const arrayOrValue = <T extends ZodTypeAny>(t: T) => z.union([t, z.array(t)]);
 
 export type EnantiomConfig = z.infer<typeof EnantiomConfig>;
 export const EnantiomConfig = z.lazy(() =>
   z.object({
     artifact_path: z.string(),
-    browsers: z // "chromium" | ["chromium"]
-      .union([EnantiomSupportedBrowser, z.array(EnantiomSupportedBrowser)])
-      .optional(),
-    screenshots: z.array(z.string()), // URL[]
+    browsers: arrayOrValue(EnantiomSupportedBrowser).optional(),
+    sizes: arrayOrValue(BrowserSize).optional(),
+    screenshots: z.array(z.string()),
   })
 );
 
@@ -17,3 +18,9 @@ export const EnantiomSupportedBrowser = z.union([
   z.literal("firefox"),
   z.literal("webkit"),
 ]);
+
+export type BrowserSize = z.infer<typeof BrowserSize>;
+export const BrowserSize = z.object({
+  width: z.number(),
+  height: z.number(),
+});

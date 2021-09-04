@@ -4,6 +4,9 @@ import { EnantiomConfig } from "./EnantiomConfig";
 import { ScreenshotConfig, State } from "./State";
 import { EnantiomInternalConfig } from "./EnantiomInternalConfig";
 
+const DEFAULT_BROWSER = "chromium";
+const DEFAULT_SIZE = { width: 800, height: 600 };
+
 export class EnantiomConfigLoader {
   private config!: z.infer<typeof EnantiomConfig>;
   constructor(
@@ -35,12 +38,14 @@ export class EnantiomConfigLoader {
   }
 
   private createScreenshotConfigs(): ScreenshotConfig[] {
-    return this.config.screenshots.flatMap((url) => {
-      return [this.config.browsers ?? "chromium"].flat().map((browser) => ({
-        url,
-        browser,
-        size: { width: 800, height: 600 },
-      }));
-    });
+    return this.config.screenshots.flatMap((url) =>
+      [this.config.browsers ?? DEFAULT_BROWSER].flat().flatMap((browser) =>
+        [this.config.sizes ?? DEFAULT_SIZE].flat().map((size) => ({
+          url,
+          browser,
+          size,
+        }))
+      )
+    );
   }
 }
