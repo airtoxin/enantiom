@@ -9,9 +9,7 @@ All-in-one web page screenshot testing tool.
 ```json
 {
   "artifact_path": "path to artifact directory (absolute or relative from pwd)",
-  "screenshots": [
-    "list of screenshot url"
-  ]
+  "screenshots": ["list of screenshot url"]
 }
 ```
 
