@@ -1,6 +1,9 @@
 {
   "artifact_path": "./dist",
-  "browsers": ["chromium", "firefox"],
+  "browsers": [
+    "chromium",
+    { "browser": "firefox", "sizes": { "width": 500, "height": 500 } }
+  ],
   "sizes": [
     { "width": 800, "height": 600 },
     { "width": 375, "height": 667 }
