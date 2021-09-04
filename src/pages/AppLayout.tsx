@@ -3,6 +3,10 @@ import { Layout, Menu } from "antd";
 import Link from "next/link";
 import { State } from "../State";
 import { formatTimestamp } from "../utils";
+import {
+  CheckCircleTwoTone,
+  ExclamationCircleTwoTone,
+} from "@ant-design/icons";
 
 const { Header, Sider } = Layout;
 
@@ -27,10 +31,19 @@ export const AppLayout: FunctionComponent<{
       </Header>
 
       <Layout>
-        <Sider theme={"dark"} width={250} style={{ overflowY: "scroll" }}>
+        <Sider theme={"dark"} width={260} style={{ overflowY: "scroll" }}>
           <Menu theme={"dark"} selectedKeys={timestamp ? [timestamp] : []}>
             {state.results.map((result) => (
-              <Menu.Item key={result.timestamp}>
+              <Menu.Item
+                key={result.timestamp}
+                icon={
+                  result.screenshots.some((s) => s.diff != null) ? (
+                    <ExclamationCircleTwoTone twoToneColor="#f5222d" />
+                  ) : (
+                    <CheckCircleTwoTone twoToneColor="#52c41a" />
+                  )
+                }
+              >
                 <Link href={`/result/${result.timestamp}`}>
                   <a>{formatTimestamp(result.timestamp)}</a>
                 </Link>
