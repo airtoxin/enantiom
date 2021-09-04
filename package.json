@@ -20,7 +20,7 @@
     "antd": "^4.16.13",
     "date-fns": "^2.23.0",
     "fs-extra": "^10.0.0",
-    "next": "^11.1.0",
+    "next": "^11.1.1",
     "object-hash": "^2.2.0",
     "odiff-bin": "^2.4.2",
     "playwright": "^1.14.1",
