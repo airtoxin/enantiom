@@ -1,7 +1,7 @@
 import { VoidFunctionComponent } from "react";
 import { GetStaticProps } from "next";
 import { Layout } from "antd";
-import { join } from "path";
+import { resolve } from "path";
 import { promises as fs } from "fs";
 import { AppLayout } from "./AppLayout";
 import { State } from "../State";
@@ -24,7 +24,7 @@ const HomePage: VoidFunctionComponent<{ state: State }> = ({ state }) => {
 
 export const getStaticProps: GetStaticProps = async () => {
   const rawFile = await fs.readFile(
-    join(process.cwd(), "public/assets/state.json"),
+    resolve(process.cwd(), "public/assets/state.json"),
     {
       encoding: "utf-8",
     }

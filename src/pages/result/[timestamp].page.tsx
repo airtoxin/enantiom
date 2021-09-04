@@ -1,6 +1,6 @@
 import { useMemo, VoidFunctionComponent } from "react";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { join } from "path";
+import { resolve } from "path";
 import { promises as fs } from "fs";
 import { AppLayout } from "../AppLayout";
 import {
@@ -112,7 +112,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const rawFile = await fs.readFile(
-    join(process.cwd(), "public/assets/state.json"),
+    resolve(process.cwd(), "public/assets/state.json"),
     {
       encoding: "utf-8",
     }
@@ -144,7 +144,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const rawFile = await fs.readFile(
-    join(process.cwd(), "public/assets/state.json"),
+    resolve(process.cwd(), "public/assets/state.json"),
     {
       encoding: "utf-8",
     }

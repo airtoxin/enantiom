@@ -1,10 +1,12 @@
+#!/usr/bin/env node
+
 import { parse } from "ts-command-line-args";
-import { join } from "path";
+import { join, resolve } from "path";
 import { spawn as cspawn } from "child_process";
 import { EnantiomConfigLoader } from "./EnantiomConfigLoader";
 import { ScreenshotService } from "./ScreenshotService";
 import { StateFileService } from "./StateFileService";
-import { copy } from "fs-extra";
+import { copy, ensureDir } from "fs-extra";
 
 export type EnantiomCliArgument = {
   config: string;
@@ -17,19 +19,26 @@ const args = parse<EnantiomCliArgument>({
 const OUTPUT_DIRNAME = join("public", "assets");
 
 const main = async () => {
-  const configService = new EnantiomConfigLoader(args.config);
+  const projectPath = resolve(__dirname, "..");
+  const configService = new EnantiomConfigLoader(
+    projectPath,
+    resolve(process.cwd(), args.config)
+  );
   const rawConfig = await configService.loadRaw();
   // sync previous output
   try {
+    await ensureDir(resolve(projectPath, OUTPUT_DIRNAME));
     await copy(
-      join(process.cwd(), rawConfig.artifact_path, "assets"),
-      join(process.cwd(), "public", "assets")
+      resolve(process.cwd(), rawConfig.artifact_path, "assets"),
+      resolve(projectPath, OUTPUT_DIRNAME)
     );
   } catch {
     // nothing to do
   }
 
-  const stateFileService = new StateFileService(OUTPUT_DIRNAME);
+  const stateFileService = new StateFileService(
+    resolve(projectPath, OUTPUT_DIRNAME, "state.json")
+  );
   const state = await stateFileService.load();
   const config = await configService.load(state);
 
@@ -38,18 +47,23 @@ const main = async () => {
 
   await stateFileService.appendSave(result);
 
-  const next = join(__dirname, "../node_modules/.bin/next");
+  const next = resolve(config.projectPath, "node_modules/.bin/next");
   await spawn(next, ["build"]);
-  await spawn(next, ["export", "-o", config.artifactPath]);
+  await spawn(next, [
+    "export",
+    "-o",
+    resolve(process.cwd(), config.artifactPath),
+  ]);
 };
 
 const spawn = (cmd: string, args: string[]) =>
-  new Promise<void>((resolve, reject) => {
-    const p = cspawn(cmd, args);
+  new Promise<void>((resolvePromise, reject) => {
+    const projectPath = resolve(__dirname, "..");
+    const p = cspawn(cmd, args, { cwd: projectPath });
     p.stdout.pipe(process.stdout);
     p.stderr.pipe(process.stderr);
     p.on("close", (code) => {
-      return code ? reject() : resolve();
+      return code ? reject() : resolvePromise();
     });
   });
 

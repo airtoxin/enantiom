@@ -1,8 +1,5 @@
 import { Result, State } from "./State";
-import { join } from "path";
-import { writeJson, readJson } from "fs-extra";
-
-const FILE_NAME = "state.json";
+import { readJson, writeJson } from "fs-extra";
 
 const DEFAULT: State = {
   stateVersion: "1",
@@ -10,12 +7,7 @@ const DEFAULT: State = {
 };
 
 export class StateFileService {
-  constructor(private readonly outputDirname: string) {}
-  private readonly filepath = join(
-    process.cwd(),
-    this.outputDirname,
-    FILE_NAME
-  );
+  constructor(private readonly filepath: string) {}
 
   public async appendSave(result: Result): Promise<State> {
     const state = await this.load();

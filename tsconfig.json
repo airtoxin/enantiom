@@ -10,7 +10,6 @@
     ],
     "module": "commonjs",
     "moduleResolution": "node",
-    "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -20,7 +19,9 @@
     "strict": true,
     "target": "ES5",
     "jsx": "preserve",
-    "allowJs": false
+    "allowJs": false,
+    "outDir": "js",
+    "noEmit": false
   },
   "include": [
     "./src"

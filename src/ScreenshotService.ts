@@ -2,7 +2,6 @@ import playwright from "playwright";
 import { join } from "path";
 import { Result, ScreenshotResult } from "./State";
 import objectHash from "object-hash";
-import mkdirp from "mkdirp";
 import { EnantiomInternalConfig } from "./EnantiomConfig";
 import { access, ensureDir } from "fs-extra";
 import { compare } from "odiff-bin";
@@ -32,12 +31,21 @@ export class ScreenshotService {
 
         const hash = objectHash(screenshotConfig);
         const filename = `${hash}.png`;
-        const dirname = join(outDirPath, this.config.currentTimestamp);
-        await mkdirp(dirname);
-        const filepath = join(dirname, filename);
+        const dirname = join(
+          this.config.projectPath,
+          outDirPath,
+          this.config.currentTimestamp
+        );
+        await ensureDir(dirname);
+        const absoluteFilepath = join(dirname, filename);
+        const filepath = join(
+          outDirPath,
+          this.config.currentTimestamp,
+          filename
+        );
 
         await page.screenshot({
-          path: filepath,
+          path: absoluteFilepath,
         });
         await browser.close();
 
@@ -65,26 +73,35 @@ export class ScreenshotService {
         );
         // Ensure existence of prevFile
         try {
-          await access(prevFilepath);
+          await access(join(this.config.projectPath, prevFilepath));
         } catch {
           return result;
         }
 
-        const currentFilePath = result.filepath;
+        const currentFilepath = result.filepath;
 
         const diffFileHash = objectHash({
           currentTimestamp: this.config.currentTimestamp,
           prevTimestamp: this.config.prevTimestamp,
           config: result.config,
         });
-        const diffFilename = `${diffFileHash}.png`;
-        const diffDirPath = join(outDirPath, this.config.currentTimestamp);
-        await ensureDir(diffDirPath);
+        const diffFilepath = join(
+          outDirPath,
+          this.config.currentTimestamp,
+          `${diffFileHash}.png`
+        );
 
+        await ensureDir(
+          join(
+            this.config.projectPath,
+            outDirPath,
+            this.config.currentTimestamp
+          )
+        );
         const diff = await compare(
-          join(process.cwd(), prevFilepath),
-          join(process.cwd(), currentFilePath),
-          join(process.cwd(), diffDirPath, diffFilename),
+          join(this.config.projectPath, prevFilepath),
+          join(this.config.projectPath, currentFilepath),
+          join(this.config.projectPath, diffFilepath),
           {
             outputDiffMask: true,
           }
@@ -96,7 +113,7 @@ export class ScreenshotService {
           ...result,
           prevFilepath,
           diff: {
-            diffFilepath: join(diffDirPath, diffFilename),
+            diffFilepath,
             result: diff,
           },
         };
