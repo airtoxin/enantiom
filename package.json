@@ -8,7 +8,8 @@
     "dev": "ts-node src",
     "build": "tsc",
     "format": "prettier --ignore-path .gitignore --write .",
-    "test": "jest",
+    "test": "run-s site:lint test:unit",
+    "test:unit": "jest",
     "site:dev": "next dev",
     "site:build": "next build && next export",
     "site:lint": "next lint"
@@ -38,6 +39,7 @@
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
     "jest": "^27.1.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.3.2",
     "ts-command-line-args": "^2.1.0",
     "ts-jest": "^27.0.5",
