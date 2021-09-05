@@ -1,9 +1,22 @@
 {
   "artifact_path": "./dist",
-  "browsers": ["chromium", "firefox"],
+  "browsers": [
+    "chromium",
+    { "browser": "firefox", "sizes": { "width": 500, "height": 500 } }
+  ],
   "sizes": [
     { "width": 800, "height": 600 },
     { "width": 375, "height": 667 }
   ],
-  "screenshots": ["https://example.com", "https://time.is/ja/"]
+  "screenshots": [
+    "https://example.com",
+    {
+      "url": "https://time.is/ja/",
+      "browsers": ["chromium", "webkit"],
+      "sizes": [
+        { "width": 300, "height": 300 },
+        { "width": 400, "height": 400 }
+      ]
+    }
+  ]
 }
