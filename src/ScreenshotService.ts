@@ -1,5 +1,5 @@
 import playwright from "playwright";
-import { join } from "path";
+import { join, resolve } from "path";
 import { Result, ScreenshotResult } from "./State";
 import objectHash from "object-hash";
 import { access, ensureDir } from "fs-extra";
@@ -28,6 +28,15 @@ export class ScreenshotService {
         const page = await context.newPage();
         await page.setViewportSize(screenshotConfig.size);
         await page.goto(screenshotConfig.url);
+        if (screenshotConfig.preScriptPath) {
+          const preScript = require(resolve(
+            process.cwd(),
+            screenshotConfig.preScriptPath
+          ));
+          if (typeof preScript === "function") {
+            preScript(page, browser, context);
+          }
+        }
 
         const hash = objectHash(screenshotConfig);
         const filename = `${hash}.png`;
