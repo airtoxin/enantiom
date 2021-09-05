@@ -392,5 +392,161 @@ describe("EnantiomConfigLoader", () => {
         },
       ]);
     });
+
+    it("complex pattern", () => {
+      const { loader, config } = createDefaultContext();
+      const url1 = "https://example.com/1";
+      const url2 = "https://example.com/2";
+      const url3 = "https://example.com/3";
+      const url4 = "https://example.com/4";
+      const url5 = "https://example.com/5";
+      const customSize1 = { width: 100, height: 100 };
+      const customSize2 = { width: 200, height: 200 };
+      const customSize3 = { width: 300, height: 300 };
+      const customSize4 = { width: 400, height: 400 };
+      const customSize5 = { width: 500, height: 500 };
+      const customSize6 = { width: 600, height: 600 };
+      config.browsers = [
+        "chromium",
+        { browser: "firefox" },
+        { browser: "webkit", sizes: [customSize1, customSize2] },
+      ];
+      config.sizes = [customSize3, customSize4];
+      config.screenshots = [
+        url1,
+        { url: url2 },
+        { url: url3, sizes: [customSize5, customSize6] },
+        { url: url4, browsers: "webkit" },
+        {
+          url: url5,
+          browsers: [
+            "firefox",
+            { browser: "webkit", sizes: [customSize5, customSize6] },
+          ],
+        },
+      ];
+      expect(loader["createScreenshotConfigs"]()).toEqual([
+        {
+          url: url1,
+          browser: "chromium",
+          size: customSize3,
+        },
+        {
+          url: url1,
+          browser: "chromium",
+          size: customSize4,
+        },
+        {
+          url: url1,
+          browser: "firefox",
+          size: customSize3,
+        },
+        {
+          url: url1,
+          browser: "firefox",
+          size: customSize4,
+        },
+        {
+          url: url1,
+          browser: "webkit",
+          size: customSize1,
+        },
+        {
+          url: url1,
+          browser: "webkit",
+          size: customSize2,
+        },
+        {
+          url: url2,
+          browser: "chromium",
+          size: customSize3,
+        },
+        {
+          url: url2,
+          browser: "chromium",
+          size: customSize4,
+        },
+        {
+          url: url2,
+          browser: "firefox",
+          size: customSize3,
+        },
+        {
+          url: url2,
+          browser: "firefox",
+          size: customSize4,
+        },
+        {
+          url: url2,
+          browser: "webkit",
+          size: customSize1,
+        },
+        {
+          url: url2,
+          browser: "webkit",
+          size: customSize2,
+        },
+        {
+          url: url3,
+          browser: "chromium",
+          size: customSize5,
+        },
+        {
+          url: url3,
+          browser: "chromium",
+          size: customSize6,
+        },
+        {
+          url: url3,
+          browser: "firefox",
+          size: customSize5,
+        },
+        {
+          url: url3,
+          browser: "firefox",
+          size: customSize6,
+        },
+        {
+          url: url3,
+          browser: "webkit",
+          size: customSize1,
+        },
+        {
+          url: url3,
+          browser: "webkit",
+          size: customSize2,
+        },
+        {
+          url: url4,
+          browser: "webkit",
+          size: customSize3,
+        },
+        {
+          url: url4,
+          browser: "webkit",
+          size: customSize4,
+        },
+        {
+          url: url5,
+          browser: "firefox",
+          size: customSize3,
+        },
+        {
+          url: url5,
+          browser: "firefox",
+          size: customSize4,
+        },
+        {
+          url: url5,
+          browser: "webkit",
+          size: customSize5,
+        },
+        {
+          url: url5,
+          browser: "webkit",
+          size: customSize6,
+        },
+      ]);
+    });
   });
 });
