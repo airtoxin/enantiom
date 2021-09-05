@@ -1,6 +1,8 @@
-# enantiom
+<img alt="enantiom logo" src="https://raw.githubusercontent.com/airtoxin/enantiom/master/docs/enantiom_logo.svg" height="200px" />
 
 All-in-one web page screenshot testing tool.
+
+![console](./docs/console.png)
 
 ## Config
 
