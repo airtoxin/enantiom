@@ -48,6 +48,9 @@
     "utility-types": "^3.10.0"
   },
   "files": [
-    "src/**/*.{js,jsx}"
+    "src",
+    "next.config.js",
+    "next-env.d.ts",
+    "tsconfig.json"
   ]
 }
