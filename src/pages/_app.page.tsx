@@ -1,7 +1,7 @@
 import "antd/dist/antd.css";
-import { AppComponent } from "next/dist/shared/lib/router/router";
+import { AppProps } from "next/app";
 
-const MyApp: AppComponent = ({ Component, pageProps }) => {
+const MyApp = ({ Component, pageProps }: AppProps) => {
   return <Component {...pageProps} />;
 };
 
