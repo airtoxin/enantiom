@@ -3,7 +3,6 @@ import { Layout, Menu } from "antd";
 import Link from "next/link";
 import { State } from "../State";
 import { formatTimestamp } from "../utils";
-import Image from "next/image";
 import {
   CheckCircleTwoTone,
   ExclamationCircleTwoTone,
@@ -33,7 +32,7 @@ export const AppLayout: FunctionComponent<{
               paddingTop: 8,
             }}
           >
-            <Image
+            <img
               src="/images/enantiom_logo_white.svg"
               alt="enantiom logo"
               width={260}
