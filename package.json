@@ -2,7 +2,7 @@
   "name": "enantiom",
   "version": "1.0.0",
   "bin": {
-    "enantiom": "js/index.js"
+    "enantiom": "src/index.js"
   },
   "scripts": {
     "dev": "ts-node src",
@@ -46,5 +46,11 @@
     "ts-node": "^10.2.1",
     "typescript": "^4.4.2",
     "utility-types": "^3.10.0"
-  }
+  },
+  "files": [
+    "src",
+    "next.config.js",
+    "next-env.d.ts",
+    "tsconfig.json"
+  ]
 }
