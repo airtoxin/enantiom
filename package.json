@@ -52,6 +52,7 @@
     "src",
     "next.config.js",
     "next-env.d.ts",
-    "tsconfig.json"
+    "tsconfig.json",
+    "public/images"
   ]
 }
