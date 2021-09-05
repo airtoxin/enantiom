@@ -18,7 +18,6 @@
     "target": "ES5",
     "jsx": "preserve",
     "allowJs": false,
-    "outDir": "js",
     "noEmit": false
   },
   "include": ["./src"],
