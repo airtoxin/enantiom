@@ -92,18 +92,27 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
               >
                 <Row>
                   <Col span={8}>
-                    <Image src={screenshot.filepath.slice(6)} />
+                    <Image
+                      alt={`Current screenshot of ${result.timestamp}`}
+                      src={screenshot.filepath.slice(6)}
+                    />
                   </Col>
                   <Col span={8}>
                     {screenshot.diff ? (
-                      <Image src={screenshot.diff.diffFilepath.slice(6)} />
+                      <Image
+                        alt={`Screenshot diff of ${result.timestamp}`}
+                        src={screenshot.diff.diffFilepath.slice(6)}
+                      />
                     ) : (
                       <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                     )}
                   </Col>
                   <Col span={8}>
                     {screenshot.prevFilepath ? (
-                      <Image src={screenshot.prevFilepath.slice(6)} />
+                      <Image
+                        alt={`Previous screenshot of ${result.timestamp}`}
+                        src={screenshot.prevFilepath.slice(6)}
+                      />
                     ) : (
                       <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                     )}
