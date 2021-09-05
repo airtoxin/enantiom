@@ -1,0 +1,7 @@
+{
+  "artifact_path": "./dist",
+  "pre_script_path": "./example/scrollToBottom.js",
+  "screenshots": [
+    "https://github.com/airtoxin/enantiom"
+  ]
+}

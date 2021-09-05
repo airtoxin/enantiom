@@ -34,7 +34,7 @@ export class ScreenshotService {
             screenshotConfig.preScriptPath
           ));
           if (typeof preScript === "function") {
-            preScript(page, browser, context);
+            await preScript(page, browser, context);
           }
         }
 

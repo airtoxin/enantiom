@@ -1,23 +1,11 @@
 {
   "artifact_path": "./dist",
-  "browsers": [
-    "chromium",
-    { "browser": "firefox", "sizes": { "width": 500, "height": 500 } }
-  ],
   "sizes": [
     { "width": 800, "height": 600 },
-    { "width": 375, "height": 667 }
+    { "width": 1280, "height": 1024 }
   ],
-  "pre_script_path": "./example/logger.js",
   "screenshots": [
     "https://example.com",
-    {
-      "url": "https://time.is/ja/",
-      "browsers": ["chromium", "webkit"],
-      "sizes": [
-        { "width": 300, "height": 300 },
-        { "width": 400, "height": 400 }
-      ]
-    }
+    "https://time.is"
   ]
 }
