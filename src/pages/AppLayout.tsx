@@ -3,6 +3,7 @@ import { Layout, Menu } from "antd";
 import Link from "next/link";
 import { State } from "../State";
 import { formatTimestamp } from "../utils";
+import Image from "next/image";
 import {
   CheckCircleTwoTone,
   ExclamationCircleTwoTone,
@@ -24,9 +25,21 @@ export const AppLayout: FunctionComponent<{
         }}
       >
         <Menu theme="dark" mode="horizontal">
-          <Menu.Item key="1">nav 1</Menu.Item>
-          <Menu.Item key="2">nav 2</Menu.Item>
-          <Menu.Item key="3">nav 3</Menu.Item>
+          <div
+            style={{
+              display: "flex",
+              width: 260,
+              justifyContent: "center",
+              paddingTop: 8,
+            }}
+          >
+            <Image
+              src="/images/enantiom_logo_white.svg"
+              alt="enantiom logo"
+              width={260}
+              height={56}
+            />
+          </div>
         </Menu>
       </Header>
 
