@@ -12,13 +12,19 @@
     "test:unit": "jest",
     "site:dev": "next dev",
     "site:build": "next build && next export",
-    "site:lint": "next lint"
+    "site:lint": "next lint",
+    "prepublish": "yarn build"
   },
   "repository": "git@github.com:airtoxin/enantiom.git",
   "author": "airtoxin <airtoxin@icloud.com>",
   "license": "MIT",
   "dependencies": {
     "@ant-design/icons": "^4.6.4",
+    "@types/fs-extra": "^9.0.12",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.7.4",
+    "@types/object-hash": "^2.1.1",
+    "@types/react": "^17.0.19",
     "antd": "^4.16.13",
     "date-fns": "^2.23.0",
     "fs-extra": "^10.0.0",
@@ -28,24 +34,19 @@
     "playwright": "^1.14.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "ts-command-line-args": "^2.1.0",
+    "typescript": "^4.4.2",
+    "utility-types": "^3.10.0",
     "zod": "^3.8.1"
   },
   "devDependencies": {
-    "@types/fs-extra": "^9.0.12",
-    "@types/jest": "^27.0.1",
-    "@types/node": "^16.7.4",
-    "@types/object-hash": "^2.1.1",
-    "@types/react": "^17.0.19",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
     "jest": "^27.1.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.3.2",
-    "ts-command-line-args": "^2.1.0",
     "ts-jest": "^27.0.5",
-    "ts-node": "^10.2.1",
-    "typescript": "^4.4.2",
-    "utility-types": "^3.10.0"
+    "ts-node": "^10.2.1"
   },
   "files": [
     "src",
