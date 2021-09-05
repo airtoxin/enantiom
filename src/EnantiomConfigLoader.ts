@@ -44,6 +44,7 @@ export class EnantiomConfigLoader {
         typeof screenshot === "string" ? null : screenshot.browsers;
       const screenshotSizeConfig =
         typeof screenshot === "string" ? null : screenshot.sizes;
+      const preScriptPath = this.config.pre_script_path;
 
       return [
         screenshotBrowserConfig ?? this.config.browsers ?? DEFAULT_BROWSER,
@@ -57,6 +58,7 @@ export class EnantiomConfigLoader {
                 url,
                 browser,
                 size,
+                preScriptPath,
               }));
           } else {
             return [
@@ -70,6 +72,7 @@ export class EnantiomConfigLoader {
                 url,
                 browser: browser.browser,
                 size,
+                preScriptPath,
               }));
           }
         });

@@ -6,7 +6,7 @@
   },
   "scripts": {
     "predev": "run-s clean",
-    "dev": "ts-node src",
+    "dev": "ts-node src/index.ts",
     "prebuild": "run-s clean",
     "build": "tsc",
     "format": "prettier --ignore-path .gitignore --write .",
