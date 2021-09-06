@@ -11,12 +11,20 @@ import { logger } from "./Logger";
 
 export type EnantiomCliArgument = {
   config: string;
+  verbose?: boolean[];
   help?: boolean;
 };
 
 const args = parse<EnantiomCliArgument>(
   {
     config: { type: String, alias: "c", description: "Path to config file" },
+    verbose: {
+      type: Boolean,
+      alias: "v",
+      multiple: true,
+      optional: true,
+      description: "Output verbose log (allow multiple)",
+    },
     help: {
       type: Boolean,
       optional: true,
@@ -37,8 +45,12 @@ const args = parse<EnantiomCliArgument>(
 const OUTPUT_DIRNAME = join("public", "assets");
 
 const main = async () => {
+  args.verbose?.forEach(() => {
+    logger.setVerbose();
+  });
+
   const projectPath = resolve(__dirname, "..");
-  logger.debug(`enantiom projectPath: ${projectPath}`);
+  logger.info(`enantiom projectPath: ${projectPath}`);
 
   const configService = new EnantiomConfigLoader(
     projectPath,
@@ -47,11 +59,11 @@ const main = async () => {
   const rawConfig = await configService.loadRaw();
 
   // sync previous output
-  logger.trace(
+  logger.debug(
     `Create temporal output directory: ${resolve(projectPath, OUTPUT_DIRNAME)}`
   );
   await ensureDir(resolve(projectPath, OUTPUT_DIRNAME));
-  logger.trace(
+  logger.debug(
     `Syncing previous state from ${resolve(
       process.cwd(),
       rawConfig.artifact_path,
@@ -62,7 +74,7 @@ const main = async () => {
     resolve(process.cwd(), rawConfig.artifact_path, "assets"),
     resolve(projectPath, OUTPUT_DIRNAME)
   );
-  logger.trace(`Sync complete.`);
+  logger.debug(`Sync complete.`);
 
   const stateFileService = new StateFileService(
     resolve(projectPath, OUTPUT_DIRNAME, "state.json")
@@ -80,7 +92,7 @@ const main = async () => {
 
   try {
     await spawn(next, ["build", "--no-lint"], {
-      silent: logger.isLogged("debug"),
+      silent: !logger.isLogged("debug"),
     });
   } catch (e) {
     logger.warn(`Building next project was failed.`);

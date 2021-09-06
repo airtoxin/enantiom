@@ -9,7 +9,21 @@ const LogLevelMap = {
 type LogLevel = keyof typeof LogLevelMap;
 
 class Logger {
-  constructor(public level: LogLevel = "info") {}
+  constructor(public level: LogLevel = "warn") {}
+
+  public setVerbose() {
+    if (this.level === "error") {
+      this.level = "warn";
+    } else if (this.level === "warn") {
+      this.level = "info";
+    } else if (this.level === "info") {
+      this.level = "debug";
+    } else if (this.level === "debug") {
+      this.level = "trace";
+    } else if (this.level === "trace") {
+      logger.info(`Cannot up verbosity anymore.`);
+    }
+  }
 
   public isLogged(level: LogLevel): boolean {
     return LogLevelMap[this.level] <= LogLevelMap[level];

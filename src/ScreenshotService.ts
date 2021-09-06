@@ -32,9 +32,7 @@ export class ScreenshotService {
         limit(() =>
           pRetry(
             async () => {
-              logger.trace(
-                `Taking screenshot of ${screenshotConfig.url} with [${screenshotConfig.size.width}x${screenshotConfig.size.height}] sized ${screenshotConfig.browser}`
-              );
+              logger.debug(`Taking screenshot with config`, screenshotConfig);
 
               const browser = await playwright[
                 screenshotConfig.browser
@@ -44,7 +42,7 @@ export class ScreenshotService {
               await page.setViewportSize(screenshotConfig.size);
               await page.goto(screenshotConfig.url);
               if (screenshotConfig.preScriptPath) {
-                logger.info(
+                logger.debug(
                   `Execute preScript ${resolve(
                     process.cwd(),
                     screenshotConfig.preScriptPath
@@ -64,7 +62,7 @@ export class ScreenshotService {
               }
 
               const hash = objectHash(screenshotConfig);
-              logger.trace(`result hash: ${hash}`);
+              logger.debug(`result hash: ${hash}`);
               const filename = `${hash}.png`;
               const dirname = join(
                 this.config.projectPath,
@@ -79,12 +77,12 @@ export class ScreenshotService {
                 filename
               );
 
-              logger.trace(`Saving screenshot to ${absoluteFilepath}`);
+              logger.info(`Saving screenshot to ${absoluteFilepath}`);
               await page.screenshot({
                 path: absoluteFilepath,
               });
               await browser.close();
-              logger.trace(`Browser closed successfully.`);
+              logger.debug(`Browser closed successfully.`);
 
               return {
                 hash,
@@ -117,7 +115,7 @@ export class ScreenshotService {
           this.config.prevTimestamp,
           `${result.hash}.png`
         );
-        logger.trace(`Previous file path: ${prevFilepath}`);
+        logger.debug(`Previous file path: ${prevFilepath}`);
         // Ensure existence of prevFile
         try {
           await access(join(this.config.projectPath, prevFilepath));
@@ -143,7 +141,7 @@ export class ScreenshotService {
           this.config.currentTimestamp,
           `${diffFileHash}.png`
         );
-        logger.trace(`Diff file path: ${diffFilepath}`);
+        logger.debug(`Diff file path: ${diffFilepath}`);
 
         await ensureDir(
           join(
@@ -160,7 +158,10 @@ export class ScreenshotService {
             outputDiffMask: true,
           }
         );
-        logger.debug(`Image diff result: ${diff}`);
+        logger.info(
+          `Image diff result ${prevFilepath} vs ${currentFilepath}`,
+          diff
+        );
 
         return diff.match
           ? {

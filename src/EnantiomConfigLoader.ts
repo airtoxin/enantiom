@@ -22,7 +22,7 @@ export class EnantiomConfigLoader {
   }
 
   public async loadRaw(): Promise<EnantiomConfig> {
-    logger.trace(`Load raw config file ${this.configPath}`);
+    logger.debug(`Load raw config file ${this.configPath}`);
     const raw = await readFile(this.configPath, {
       encoding: "utf-8",
     });
@@ -31,7 +31,7 @@ export class EnantiomConfigLoader {
   }
 
   public async load(state: State): Promise<EnantiomInternalConfig> {
-    logger.trace(
+    logger.debug(
       `Load config file as EnantiomInternalConfig ${this.configPath}`
     );
     const raw = await readFile(this.configPath, {
@@ -51,9 +51,10 @@ export class EnantiomConfigLoader {
   }
 
   private createScreenshotConfigs(): ScreenshotConfig[] {
-    logger.trace(`Expand screenshot configurations to ScreenshotConfig[]`);
+    logger.debug(`Expand screenshot configurations to ScreenshotConfig[]`);
     return this.config.screenshots.flatMap((screenshot, i) => {
-      logger.trace(`Processing config.screenshots[${i}]`);
+      logger.debug(`Processing config.screenshots[${i}]`);
+      logger.trace(screenshot);
 
       const url = typeof screenshot === "string" ? screenshot : screenshot.url;
       const screenshotBrowserConfig =
