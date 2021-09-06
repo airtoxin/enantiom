@@ -90,3 +90,7 @@ $ yarn site:dev
 - Minimum diff threshold
 - More script hooks
 - Reuse browser object option
+- Verbose option in CLI
+- Show configuration of screenshot in result report
+- No result report (json output only) mode
+- Friendly CLI help
