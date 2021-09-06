@@ -6,6 +6,8 @@ import { EnantiomInternalConfig } from "./EnantiomInternalConfig";
 
 const DEFAULT_BROWSER = "chromium";
 const DEFAULT_SIZE = { width: 800, height: 600 };
+const DEFAULT_CONCURRENCY = 1;
+const DEFAULT_RETRY = 0;
 
 export class EnantiomConfigLoader {
   private config!: z.infer<typeof EnantiomConfig>;
@@ -34,6 +36,8 @@ export class EnantiomConfigLoader {
       currentTimestamp: `${Date.now()}`,
       screenshotConfigs: this.createScreenshotConfigs(),
       prevTimestamp: state.results[0]?.timestamp,
+      concurrency: this.config.concurrency ?? DEFAULT_CONCURRENCY,
+      retry: this.config.retry ?? DEFAULT_RETRY,
     };
   }
 
