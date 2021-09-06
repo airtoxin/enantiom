@@ -48,19 +48,20 @@ const main = async () => {
   await stateFileService.appendSave(result);
 
   const next = resolve(config.projectPath, "node_modules/.bin/next");
-  await spawn(next, ["build"]);
+  await spawn(next, ["build", "--no-lint"], { silent: true });
   await spawn(next, [
     "export",
+    "-s",
     "-o",
     resolve(process.cwd(), config.artifactPath),
   ]);
 };
 
-const spawn = (cmd: string, args: string[]) =>
+const spawn = (cmd: string, args: string[], { silent = false } = {}) =>
   new Promise<void>((resolvePromise, reject) => {
     const projectPath = resolve(__dirname, "..");
     const p = cspawn(cmd, args, { cwd: projectPath });
-    p.stdout.pipe(process.stdout);
+    if (!silent) p.stdout.pipe(process.stdout);
     p.stderr.pipe(process.stderr);
     p.on("close", (code) => {
       return code ? reject() : resolvePromise();
