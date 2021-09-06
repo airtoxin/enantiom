@@ -165,6 +165,21 @@ Same interface of top level [browsers](#browsers) field.
 
 ## BrowserConfigObject
 
+```json5
+{
+  "browser": "firefox",
+  "sizes": [
+    { "width": 500, "height": 500 },
+    { "width": 1200, "height": 800 }
+  ]
+}
+```
+
+Above BrowserConfigObject takes those screenshots
+
+- URL in 500x500 sized firefox
+- URL in 1200x800 sized firefox
+
 ### BrowserConfigObject.browser
 
 **required** `BrowserType`
