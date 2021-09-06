@@ -3,6 +3,7 @@ import { readFile } from "fs/promises";
 import { EnantiomConfig } from "./EnantiomConfig";
 import { ScreenshotConfig, State } from "./State";
 import { EnantiomInternalConfig } from "./EnantiomInternalConfig";
+import { logger } from "./Logger";
 
 const DEFAULT_BROWSER = "chromium";
 const DEFAULT_SIZE = { width: 800, height: 600 };
@@ -14,9 +15,14 @@ export class EnantiomConfigLoader {
   constructor(
     private readonly projectPath: string,
     private readonly configPath: string
-  ) {}
+  ) {
+    logger.trace(
+      `Initialize EnantiomConfigLoader with projectPath:${projectPath} configPath:${configPath}`
+    );
+  }
 
   public async loadRaw(): Promise<EnantiomConfig> {
+    logger.trace(`Load raw config file ${this.configPath}`);
     const raw = await readFile(this.configPath, {
       encoding: "utf-8",
     });
@@ -25,6 +31,9 @@ export class EnantiomConfigLoader {
   }
 
   public async load(state: State): Promise<EnantiomInternalConfig> {
+    logger.trace(
+      `Load config file as EnantiomInternalConfig ${this.configPath}`
+    );
     const raw = await readFile(this.configPath, {
       encoding: "utf-8",
     });
@@ -42,7 +51,10 @@ export class EnantiomConfigLoader {
   }
 
   private createScreenshotConfigs(): ScreenshotConfig[] {
-    return this.config.screenshots.flatMap((screenshot) => {
+    logger.trace(`Expand screenshot configurations to ScreenshotConfig[]`);
+    return this.config.screenshots.flatMap((screenshot, i) => {
+      logger.trace(`Processing config.screenshots[${i}]`);
+
       const url = typeof screenshot === "string" ? screenshot : screenshot.url;
       const screenshotBrowserConfig =
         typeof screenshot === "string" ? null : screenshot.browsers;

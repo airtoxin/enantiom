@@ -7,9 +7,12 @@ import { compare } from "odiff-bin";
 import { EnantiomInternalConfig } from "./EnantiomInternalConfig";
 import pLimit from "p-limit";
 import pRetry from "p-retry";
+import { logger } from "./Logger";
 
 export class ScreenshotService {
-  constructor(private config: EnantiomInternalConfig) {}
+  constructor(private config: EnantiomInternalConfig) {
+    logger.trace(`Initialize ScreenshotService.`);
+  }
 
   public async takeScreenshotAndDiff(outDirPath: string): Promise<Result> {
     const results = await this.takeScreenshot(outDirPath);
@@ -29,6 +32,10 @@ export class ScreenshotService {
         limit(() =>
           pRetry(
             async () => {
+              logger.trace(
+                `Taking screenshot of ${screenshotConfig.url} with [${screenshotConfig.size.width}x${screenshotConfig.size.height}] sized ${screenshotConfig.browser}`
+              );
+
               const browser = await playwright[
                 screenshotConfig.browser
               ].launch();
@@ -37,16 +44,27 @@ export class ScreenshotService {
               await page.setViewportSize(screenshotConfig.size);
               await page.goto(screenshotConfig.url);
               if (screenshotConfig.preScriptPath) {
+                logger.info(
+                  `Execute preScript ${resolve(
+                    process.cwd(),
+                    screenshotConfig.preScriptPath
+                  )}`
+                );
                 const preScript = require(resolve(
                   process.cwd(),
                   screenshotConfig.preScriptPath
                 ));
                 if (typeof preScript === "function") {
                   await preScript(page, browser, context);
+                } else {
+                  logger.warn(
+                    `Execute preScript was skipped, because preScript is not executable function ${preScript}`
+                  );
                 }
               }
 
               const hash = objectHash(screenshotConfig);
+              logger.trace(`result hash: ${hash}`);
               const filename = `${hash}.png`;
               const dirname = join(
                 this.config.projectPath,
@@ -61,10 +79,12 @@ export class ScreenshotService {
                 filename
               );
 
+              logger.trace(`Saving screenshot to ${absoluteFilepath}`);
               await page.screenshot({
                 path: absoluteFilepath,
               });
               await browser.close();
+              logger.trace(`Browser closed successfully.`);
 
               return {
                 hash,
@@ -85,17 +105,29 @@ export class ScreenshotService {
   ): Promise<ScreenshotResult[]> {
     return Promise.all(
       results.map(async (result) => {
-        if (this.config.prevTimestamp == null) return result;
+        if (this.config.prevTimestamp == null) {
+          logger.info(
+            `Calculate image diff step was skipped because previous result was not found`
+          );
+          return result;
+        }
 
         const prevFilepath = join(
           outDirPath,
           this.config.prevTimestamp,
           `${result.hash}.png`
         );
+        logger.trace(`Previous file path: ${prevFilepath}`);
         // Ensure existence of prevFile
         try {
           await access(join(this.config.projectPath, prevFilepath));
         } catch {
+          logger.warn(
+            `Failed to load previous file: ${join(
+              this.config.projectPath,
+              prevFilepath
+            )}`
+          );
           return result;
         }
 
@@ -111,6 +143,7 @@ export class ScreenshotService {
           this.config.currentTimestamp,
           `${diffFileHash}.png`
         );
+        logger.trace(`Diff file path: ${diffFilepath}`);
 
         await ensureDir(
           join(
@@ -127,6 +160,7 @@ export class ScreenshotService {
             outputDiffMask: true,
           }
         );
+        logger.debug(`Image diff result: ${diff}`);
 
         return diff.match
           ? {
