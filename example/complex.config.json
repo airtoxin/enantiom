@@ -1,0 +1,46 @@
+{
+  "artifact_path": "./dist",
+  "sizes": [
+    { "width": 800, "height": 600 },
+    { "width": 1280, "height": 1024 }
+  ],
+  "browsers": [
+    "chromium",
+    {
+      "browser": "firefox"
+    },
+    {
+      "browser": "webkit",
+      "sizes": [
+        { "width": 500, "height": 500 },
+        { "width": 1440, "height": 900 }
+      ]
+    }
+  ],
+  "screenshots": [
+    "https://example.com",
+    {
+      "url": "https://time.is",
+      "sizes": [
+        { "width": 640, "height": 960 },
+        { "width": 750, "height": 1334 }
+      ],
+      "browsers": [
+        "chromium",
+        {
+          "browser": "firefox"
+        },
+        {
+          "browser": "webkit",
+          "sizes": [
+            { "width": 1125, "height": 2436 },
+            { "width": 1242, "height": 2688 }
+          ]
+        }
+      ]
+    }
+  ],
+  "pre_script_path": "./example/scrollToBottom.js",
+  "concurrency": 3,
+  "retry": 3
+}
