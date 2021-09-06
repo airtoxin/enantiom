@@ -10,11 +10,28 @@ import { copy, ensureDir } from "fs-extra";
 
 export type EnantiomCliArgument = {
   config: string;
+  help?: boolean;
 };
 
-const args = parse<EnantiomCliArgument>({
-  config: { type: String, alias: "c" },
-});
+const args = parse<EnantiomCliArgument>(
+  {
+    config: { type: String, alias: "c", description: "Path to config file" },
+    help: {
+      type: Boolean,
+      optional: true,
+      alias: "h",
+      description: "Prints this usage guide",
+    },
+  },
+  {
+    helpArg: "help",
+    headerContentSections: [
+      {
+        header: "enantiom CLI",
+      },
+    ],
+  }
+);
 
 const OUTPUT_DIRNAME = join("public", "assets");
 
