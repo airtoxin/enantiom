@@ -6,7 +6,7 @@ import { EnantiomInternalConfig } from "./EnantiomInternalConfig";
 
 const DEFAULT_BROWSER = "chromium";
 const DEFAULT_SIZE = { width: 800, height: 600 };
-const DEFAULT_CONCURRENCY = 3;
+const DEFAULT_CONCURRENCY = 1;
 const DEFAULT_RETRY = 0;
 
 export class EnantiomConfigLoader {

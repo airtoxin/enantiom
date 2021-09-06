@@ -5,6 +5,8 @@ import objectHash from "object-hash";
 import { access, ensureDir } from "fs-extra";
 import { compare } from "odiff-bin";
 import { EnantiomInternalConfig } from "./EnantiomInternalConfig";
+import pLimit from "p-limit";
+import pRetry from "p-retry";
 
 export class ScreenshotService {
   constructor(private config: EnantiomInternalConfig) {}
@@ -21,49 +23,59 @@ export class ScreenshotService {
   private async takeScreenshot(
     outDirPath: string
   ): Promise<ScreenshotResult[]> {
+    const limit = pLimit(this.config.concurrency);
     return Promise.all(
-      this.config.screenshotConfigs.map(async (screenshotConfig) => {
-        const browser = await playwright[screenshotConfig.browser].launch();
-        const context = await browser.newContext();
-        const page = await context.newPage();
-        await page.setViewportSize(screenshotConfig.size);
-        await page.goto(screenshotConfig.url);
-        if (screenshotConfig.preScriptPath) {
-          const preScript = require(resolve(
-            process.cwd(),
-            screenshotConfig.preScriptPath
-          ));
-          if (typeof preScript === "function") {
-            await preScript(page, browser, context);
-          }
-        }
+      this.config.screenshotConfigs.map((screenshotConfig) =>
+        limit(() =>
+          pRetry(
+            async () => {
+              const browser = await playwright[
+                screenshotConfig.browser
+              ].launch();
+              const context = await browser.newContext();
+              const page = await context.newPage();
+              await page.setViewportSize(screenshotConfig.size);
+              await page.goto(screenshotConfig.url);
+              if (screenshotConfig.preScriptPath) {
+                const preScript = require(resolve(
+                  process.cwd(),
+                  screenshotConfig.preScriptPath
+                ));
+                if (typeof preScript === "function") {
+                  await preScript(page, browser, context);
+                }
+              }
 
-        const hash = objectHash(screenshotConfig);
-        const filename = `${hash}.png`;
-        const dirname = join(
-          this.config.projectPath,
-          outDirPath,
-          this.config.currentTimestamp
-        );
-        await ensureDir(dirname);
-        const absoluteFilepath = join(dirname, filename);
-        const filepath = join(
-          outDirPath,
-          this.config.currentTimestamp,
-          filename
-        );
+              const hash = objectHash(screenshotConfig);
+              const filename = `${hash}.png`;
+              const dirname = join(
+                this.config.projectPath,
+                outDirPath,
+                this.config.currentTimestamp
+              );
+              await ensureDir(dirname);
+              const absoluteFilepath = join(dirname, filename);
+              const filepath = join(
+                outDirPath,
+                this.config.currentTimestamp,
+                filename
+              );
 
-        await page.screenshot({
-          path: absoluteFilepath,
-        });
-        await browser.close();
+              await page.screenshot({
+                path: absoluteFilepath,
+              });
+              await browser.close();
 
-        return {
-          hash,
-          config: screenshotConfig,
-          filepath,
-        };
-      })
+              return {
+                hash,
+                config: screenshotConfig,
+                filepath,
+              };
+            },
+            { retries: this.config.retry }
+          )
+        )
+      )
     );
   }
 
