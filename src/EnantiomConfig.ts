@@ -12,6 +12,8 @@ export const EnantiomConfig = z.lazy(() =>
     sizes: arrayOrValue(BrowserSize).optional(),
     screenshots: z.array(z.union([z.string(), ScreenshotConfigObject])),
     pre_script_path: z.string().optional(),
+    concurrency: z.number().optional(),
+    retry: z.number().optional(),
   })
 );
 

@@ -8,4 +8,6 @@ export const EnantiomInternalConfig = z.object({
   currentTimestamp: z.string(),
   prevTimestamp: z.string().optional(),
   screenshotConfigs: z.array(ScreenshotConfig),
+  concurrency: z.number(),
+  retry: z.number(),
 });
