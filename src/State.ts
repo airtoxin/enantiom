@@ -27,6 +27,7 @@ export const ScreenshotConfig = z.lazy(() =>
       height: z.number(),
     }),
     preScriptPath: z.string().optional(),
+    minimumDiffThreshold: z.number(),
   })
 );
 

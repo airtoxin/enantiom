@@ -9,6 +9,7 @@ const DEFAULT_BROWSER = "chromium";
 const DEFAULT_SIZE = { width: 800, height: 600 };
 const DEFAULT_CONCURRENCY = 1;
 const DEFAULT_RETRY = 0;
+const DEFAULT_MINIMUM_DIFF_THRESHOLD = 0;
 
 export class EnantiomConfigLoader {
   private config!: z.infer<typeof EnantiomConfig>;
@@ -62,6 +63,10 @@ export class EnantiomConfigLoader {
       const screenshotSizeConfig =
         typeof screenshot === "string" ? null : screenshot.sizes;
       const preScriptPath = this.config.pre_script_path;
+      const minimumDiffThreshold =
+        typeof screenshot === "string"
+          ? this.config.minimum_diff_threshold ?? DEFAULT_MINIMUM_DIFF_THRESHOLD
+          : screenshot.minimum_diff_threshold ?? DEFAULT_MINIMUM_DIFF_THRESHOLD;
 
       return [
         screenshotBrowserConfig ?? this.config.browsers ?? DEFAULT_BROWSER,
@@ -76,6 +81,7 @@ export class EnantiomConfigLoader {
                 browser,
                 size,
                 preScriptPath,
+                minimumDiffThreshold,
               }));
           } else {
             return [
@@ -90,6 +96,7 @@ export class EnantiomConfigLoader {
                 browser: browser.browser,
                 size,
                 preScriptPath,
+                minimumDiffThreshold,
               }));
           }
         });

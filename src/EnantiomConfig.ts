@@ -14,6 +14,7 @@ export const EnantiomConfig = z.lazy(() =>
     pre_script_path: z.string().optional(),
     concurrency: z.number().optional(),
     retry: z.number().optional(),
+    minimum_diff_threshold: z.number().optional(),
   })
 );
 
@@ -46,5 +47,6 @@ export const ScreenshotConfigObject = z.lazy(() =>
       z.union([SupportedBrowser, BrowserConfigObject])
     ).optional(),
     sizes: arrayOrValue(BrowserSize).optional(),
+    minimum_diff_threshold: z.number().optional(),
   })
 );
