@@ -1,5 +1,9 @@
 # [<img alt="enantiom logo" src="https://raw.githubusercontent.com/airtoxin/enantiom/master/docs/enantiom_logo.svg" height="200px" />](https://github.com/airtoxin/enantiom)
 
+[![npm version](https://badge.fury.io/js/enantiom.svg)](https://badge.fury.io/js/enantiom)
+![GA test](https://github.com/github/docs/actions/workflows/test.yml/badge.svg?branch=master)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 All-in-one web page screenshot testing tool.
 
 ![console](./docs/console.png)
