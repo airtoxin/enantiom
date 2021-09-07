@@ -67,18 +67,23 @@ const main = async () => {
     force: true,
   });
   await ensureDir(resolve(projectPath, OUTPUT_DIRNAME));
-  logger.debug(
+  logger.info(
     `Syncing previous state from ${resolve(
       process.cwd(),
       rawConfig.artifact_path,
       "assets"
     )} to ${resolve(projectPath, OUTPUT_DIRNAME)}`
   );
-  await copy(
-    resolve(process.cwd(), rawConfig.artifact_path, "assets"),
-    resolve(projectPath, OUTPUT_DIRNAME)
-  );
-  logger.debug(`Sync complete.`);
+  try {
+    await copy(
+      resolve(process.cwd(), rawConfig.artifact_path, "assets"),
+      resolve(projectPath, OUTPUT_DIRNAME),
+      { overwrite: true }
+    );
+  } catch {
+    logger.info(`No previous state file`);
+  }
+  logger.info(`Sync complete.`);
 
   const stateFileService = new StateFileService(
     resolve(projectPath, OUTPUT_DIRNAME, "state.json")
