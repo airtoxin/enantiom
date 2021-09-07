@@ -7,6 +7,7 @@ import {
   CheckCircleTwoTone,
   ExclamationCircleTwoTone,
 } from "@ant-design/icons";
+import Head from "next/head";
 
 const { Header, Sider } = Layout;
 
@@ -16,6 +17,17 @@ export const AppLayout: FunctionComponent<{
 }> = ({ children, state, timestamp }) => {
   return (
     <Layout style={{ height: "100vh" }}>
+      <Head>
+        <title key="title">enantiom</title>
+        <meta property="og:title" content="enantiom" key="og:title" />
+        <link
+          key="favicon"
+          rel="icon"
+          href="images/enantiom_object.svg"
+          type="image/svg+xml"
+        />
+      </Head>
+
       <Header
         style={{
           float: "left",

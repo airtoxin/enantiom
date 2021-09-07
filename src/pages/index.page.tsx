@@ -5,12 +5,18 @@ import { resolve } from "path";
 import { promises as fs } from "fs";
 import { AppLayout } from "./AppLayout";
 import { State } from "../State";
+import Head from "next/head";
 
 const { Content } = Layout;
 
 const HomePage: VoidFunctionComponent<{ state: State }> = ({ state }) => {
   return (
     <AppLayout state={state}>
+      <Head>
+        <title key="title">enantiom</title>
+        <meta property="og:title" content="enantiom" key="og:title" />
+      </Head>
+
       <Content
         style={{
           padding: 24,

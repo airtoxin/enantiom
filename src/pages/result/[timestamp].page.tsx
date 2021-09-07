@@ -23,6 +23,7 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import { formatTimestamp, switcher } from "../../utils";
+import Head from "next/head";
 
 const { Link } = Typography;
 const { Content } = Layout;
@@ -46,6 +47,17 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
   );
   return (
     <AppLayout state={state} timestamp={result.timestamp}>
+      <Head>
+        <title key="title">
+          {formatTimestamp(result.timestamp)} | enantiom
+        </title>
+        <meta
+          property="og:title"
+          content={`${formatTimestamp(result.timestamp)} | enantiom`}
+          key="og:title"
+        />
+      </Head>
+
       <Row justify="space-between" style={{ padding: 16 }}>
         <Col>
           {links.newer && (
