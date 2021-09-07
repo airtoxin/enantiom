@@ -150,13 +150,12 @@ export class ScreenshotService {
             this.config.currentTimestamp
           )
         );
+        logger.info(`Use diff options`, result.config.diffOptions);
         const diff = await compare(
           join(this.config.projectPath, prevFilepath),
           join(this.config.projectPath, currentFilepath),
           join(this.config.projectPath, diffFilepath),
-          {
-            outputDiffMask: true,
-          }
+          result.config.diffOptions
         );
         logger.info(
           `Image diff result ${prevFilepath} vs ${currentFilepath}`,
