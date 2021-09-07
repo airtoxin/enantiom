@@ -111,84 +111,82 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
           minHeight: 280,
         }}
       >
-        <Image.PreviewGroup>
-          <Collapse defaultActiveKey={activeScreenshots}>
-            {result.screenshots.map((screenshot) => (
-              <Collapse.Panel
-                key={`${result.timestamp}_${screenshot.hash}`}
-                header={
-                  <Space>
-                    <ResultSummaryIcon screenshot={screenshot} />
-                    <Typography.Text strong>
-                      {screenshot.config.url}
-                    </Typography.Text>
-                    <Tag color="magenta">{screenshot.config.browser}</Tag>
-                    <Tag color="cyan">
-                      {screenshot.config.size.width}x
-                      {screenshot.config.size.height}
-                    </Tag>
-                  </Space>
-                }
-              >
-                <Row>
-                  <Col span={8}>
+        <Collapse defaultActiveKey={activeScreenshots}>
+          {result.screenshots.map((screenshot) => (
+            <Collapse.Panel
+              key={`${result.timestamp}_${screenshot.hash}`}
+              header={
+                <Space>
+                  <ResultSummaryIcon screenshot={screenshot} />
+                  <Typography.Text strong>
+                    {screenshot.config.url}
+                  </Typography.Text>
+                  <Tag color="magenta">{screenshot.config.browser}</Tag>
+                  <Tag color="cyan">
+                    {screenshot.config.size.width}x
+                    {screenshot.config.size.height}
+                  </Tag>
+                </Space>
+              }
+            >
+              <Row>
+                <Col span={8}>
+                  <Image
+                    alt={`Current screenshot of ${result.timestamp}`}
+                    src={screenshot.filepath.slice(6)}
+                    preview={false}
+                    style={{ cursor: "pointer" }}
+                    onClick={() =>
+                      dispatch({
+                        type: "open",
+                        images: getImages(screenshot),
+                        index: 0,
+                      })
+                    }
+                  />
+                </Col>
+                <Col span={8}>
+                  {screenshot.diff ? (
                     <Image
-                      alt={`Current screenshot of ${result.timestamp}`}
-                      src={screenshot.filepath.slice(6)}
+                      alt={`Screenshot diff of ${result.timestamp}`}
+                      src={screenshot.diff.diffFilepath.slice(6)}
                       preview={false}
                       style={{ cursor: "pointer" }}
                       onClick={() =>
                         dispatch({
                           type: "open",
                           images: getImages(screenshot),
-                          index: 0,
+                          index: 1,
                         })
                       }
                     />
-                  </Col>
-                  <Col span={8}>
-                    {screenshot.diff ? (
-                      <Image
-                        alt={`Screenshot diff of ${result.timestamp}`}
-                        src={screenshot.diff.diffFilepath.slice(6)}
-                        preview={false}
-                        style={{ cursor: "pointer" }}
-                        onClick={() =>
-                          dispatch({
-                            type: "open",
-                            images: getImages(screenshot),
-                            index: 1,
-                          })
-                        }
-                      />
-                    ) : (
-                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                    )}
-                  </Col>
-                  <Col span={8}>
-                    {screenshot.prevFilepath ? (
-                      <Image
-                        alt={`Previous screenshot of ${result.timestamp}`}
-                        src={screenshot.prevFilepath.slice(6)}
-                        preview={false}
-                        style={{ cursor: "pointer" }}
-                        onClick={() =>
-                          dispatch({
-                            type: "open",
-                            images: getImages(screenshot),
-                            index: getImages(screenshot).length - 1,
-                          })
-                        }
-                      />
-                    ) : (
-                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                    )}
-                  </Col>
-                </Row>
-              </Collapse.Panel>
-            ))}
-          </Collapse>
-        </Image.PreviewGroup>
+                  ) : (
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                  )}
+                </Col>
+                <Col span={8}>
+                  {screenshot.prevFilepath ? (
+                    <Image
+                      alt={`Previous screenshot of ${result.timestamp}`}
+                      src={screenshot.prevFilepath.slice(6)}
+                      preview={false}
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        dispatch({
+                          type: "open",
+                          images: getImages(screenshot),
+                          index: getImages(screenshot).length - 1,
+                        })
+                      }
+                    />
+                  ) : (
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                  )}
+                </Col>
+              </Row>
+            </Collapse.Panel>
+          ))}
+        </Collapse>
       </Content>
     </AppLayout>
   );
