@@ -29,14 +29,14 @@ export const AppLayout: FunctionComponent<{
               display: "flex",
               width: 260,
               justifyContent: "center",
-              paddingTop: 8,
             }}
           >
             <img
               src="/images/enantiom_logo_white.svg"
               alt="enantiom logo"
               width={260}
-              height={56}
+              height={64}
+              style={{ padding: 4 }}
             />
           </div>
         </Menu>
@@ -45,7 +45,7 @@ export const AppLayout: FunctionComponent<{
       <Layout>
         <Sider theme={"dark"} width={260} style={{ overflowY: "scroll" }}>
           <Menu theme={"dark"} selectedKeys={timestamp ? [timestamp] : []}>
-            {state.results.map((result) => (
+            {state.results.map((result, i) => (
               <Menu.Item
                 key={result.timestamp}
                 icon={
@@ -55,6 +55,7 @@ export const AppLayout: FunctionComponent<{
                     <CheckCircleTwoTone twoToneColor="#52c41a" />
                   )
                 }
+                style={i === 0 ? { marginTop: 0 } : {}}
               >
                 <Link href={`/result/${result.timestamp}`}>
                   {formatTimestamp(result.timestamp)}
