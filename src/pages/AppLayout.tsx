@@ -43,13 +43,17 @@ export const AppLayout: FunctionComponent<{
               justifyContent: "center",
             }}
           >
-            <img
-              src="/images/enantiom_logo_white.svg"
-              alt="enantiom logo"
-              width={260}
-              height={64}
-              style={{ padding: 4 }}
-            />
+            <Link href="/">
+              <a>
+                <img
+                  src="/images/enantiom_logo_white.svg"
+                  alt="enantiom logo"
+                  width={260}
+                  height={64}
+                  style={{ padding: 4 }}
+                />
+              </a>
+            </Link>
           </div>
         </Menu>
       </Header>
