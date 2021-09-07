@@ -114,6 +114,15 @@ Concurrency of screenshot taking.
 
 Num of retry count if error occurred in screenshot taking.
 
+### diff_options
+
+**optional** `ODiffOptions`  
+**default value: `{ "outputDiffMask": true }`**
+
+Options of calculating diff image.  
+It pass-through to [odiff](https://github.com/dmtrKovalenko/odiff) library that internally uses.  
+[ODiffOptions](https://github.com/dmtrKovalenko/odiff#nodejs-1)
+
 ## ScreenshotConfigObject
 
 ```json5
@@ -162,6 +171,14 @@ Same interface of top level [sizes](#sizes) field.
 
 Specifies the browser type to be used for taking screenshot.  
 Same interface of top level [browsers](#browsers) field.
+
+### ScreenshotConfigObject.diff_options
+
+**optional** `ODiffOptions`  
+**default value: top level `"diff_options"` field value**
+
+Options of calculating diff image.  
+Same interface of top level [diff_options](#diff_options) field.
 
 ## BrowserConfigObject
 
