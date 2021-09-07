@@ -87,9 +87,7 @@ $ yarn site:dev
 
 - Debug mode
 - Support AWS S3 url in artifact_path
-- Minimum diff threshold
 - More script hooks
 - Reuse browser object option
-- Verbose option in CLI
 - Show configuration of screenshot in result report
 - No result report (json output only) mode

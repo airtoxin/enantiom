@@ -1,0 +1,10 @@
+{
+  "artifact_path": "./dist",
+  "screenshots": [
+    "https://time.is"
+  ],
+  "diff_options": {
+    "outputDiffMask": true,
+    "threshold": 90
+  }
+}

@@ -9,6 +9,9 @@ const DEFAULT_BROWSER = "chromium";
 const DEFAULT_SIZE = { width: 800, height: 600 };
 const DEFAULT_CONCURRENCY = 1;
 const DEFAULT_RETRY = 0;
+const DEFAULT_DIFF_OPTIONS = {
+  outputDiffMask: true,
+};
 
 export class EnantiomConfigLoader {
   private config!: z.infer<typeof EnantiomConfig>;
@@ -62,6 +65,10 @@ export class EnantiomConfigLoader {
       const screenshotSizeConfig =
         typeof screenshot === "string" ? null : screenshot.sizes;
       const preScriptPath = this.config.pre_script_path;
+      const diffOptions =
+        typeof screenshot === "string"
+          ? this.config.diff_options ?? DEFAULT_DIFF_OPTIONS
+          : screenshot.diff_options ?? DEFAULT_DIFF_OPTIONS;
 
       return [
         screenshotBrowserConfig ?? this.config.browsers ?? DEFAULT_BROWSER,
@@ -76,6 +83,7 @@ export class EnantiomConfigLoader {
                 browser,
                 size,
                 preScriptPath,
+                diffOptions,
               }));
           } else {
             return [
@@ -90,6 +98,7 @@ export class EnantiomConfigLoader {
                 browser: browser.browser,
                 size,
                 preScriptPath,
+                diffOptions,
               }));
           }
         });
