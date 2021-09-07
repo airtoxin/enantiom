@@ -6,7 +6,7 @@ import { spawn as cspawn } from "child_process";
 import { EnantiomConfigLoader } from "./EnantiomConfigLoader";
 import { ScreenshotService } from "./ScreenshotService";
 import { StateFileService } from "./StateFileService";
-import { copy, ensureDir } from "fs-extra";
+import { copy, ensureDir, rm } from "fs-extra";
 import { logger } from "./Logger";
 
 export type EnantiomCliArgument = {
@@ -62,6 +62,10 @@ const main = async () => {
   logger.debug(
     `Create temporal output directory: ${resolve(projectPath, OUTPUT_DIRNAME)}`
   );
+  await rm(resolve(projectPath, OUTPUT_DIRNAME), {
+    recursive: true,
+    force: true,
+  });
   await ensureDir(resolve(projectPath, OUTPUT_DIRNAME));
   logger.debug(
     `Syncing previous state from ${resolve(
