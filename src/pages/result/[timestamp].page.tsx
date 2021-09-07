@@ -208,12 +208,15 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                     {screenshot.config.size.height}
                   </Tag>
                 </Descriptions.Item>
-                <Descriptions.Item label="diffOptions">
+                <Descriptions.Item label="Hash">
+                  {screenshot.hash}
+                </Descriptions.Item>
+                <Descriptions.Item label="Diff options">
                   <pre>
                     {JSON.stringify(screenshot.config.diffOptions, null, 2)}
                   </pre>
                 </Descriptions.Item>
-                <Descriptions.Item label="PreScriptPath">
+                <Descriptions.Item label="Pre script path">
                   {screenshot.config.preScriptPath}
                 </Descriptions.Item>
               </Descriptions>
