@@ -9,7 +9,7 @@ import {
 } from "@ant-design/icons";
 import Head from "next/head";
 
-const { Header, Sider } = Layout;
+const { Header, Sider, Content } = Layout;
 
 export const AppLayout: FunctionComponent<{
   state: State;
@@ -80,8 +80,10 @@ export const AppLayout: FunctionComponent<{
             ))}
           </Menu>
         </Sider>
-        <Layout style={{ padding: "0 24px 24px", overflowY: "scroll" }}>
-          {children}
+        <Layout>
+          <Content style={{ padding: 24, overflowY: "scroll" }}>
+            {children}
+          </Content>
         </Layout>
       </Layout>
     </Layout>

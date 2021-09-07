@@ -12,9 +12,10 @@ import { AppLayout } from "../AppLayout";
 import {
   Col,
   Collapse,
+  Descriptions,
+  Divider,
   Empty,
   Image,
-  Layout,
   Row,
   Space,
   Tag,
@@ -33,7 +34,6 @@ import Head from "next/head";
 import Lightbox from "react-image-lightbox";
 
 const { Link } = Typography;
-const { Content } = Layout;
 
 type Props = {
   state: State;
@@ -86,7 +86,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
         />
       )}
 
-      <Row justify="space-between" style={{ padding: 16 }}>
+      <Row justify="space-between" style={{ paddingBottom: 24 }}>
         <Col>
           {links.newer && (
             <Link href={`/result/${links.newer}`}>
@@ -104,15 +104,17 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
           )}
         </Col>
       </Row>
-      <Content
-        style={{
-          padding: 24,
-          margin: 0,
-          minHeight: 280,
-        }}
-      >
-        <Collapse defaultActiveKey={activeScreenshots}>
-          {result.screenshots.map((screenshot) => (
+
+      {result.screenshots.map((screenshot) => (
+        <Space
+          key={`${result.timestamp}_${screenshot.hash}`}
+          direction="vertical"
+          style={{ width: "100%" }}
+        >
+          <Collapse
+            defaultActiveKey={activeScreenshots}
+            style={{ width: "100%" }}
+          >
             <Collapse.Panel
               key={`${result.timestamp}_${screenshot.hash}`}
               header={
@@ -184,10 +186,41 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                   )}
                 </Col>
               </Row>
+              <Divider />
+              <Descriptions size="small">
+                <Descriptions.Item label="URL">
+                  <Link>
+                    <a
+                      href={screenshot.config.url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {screenshot.config.url}
+                    </a>
+                  </Link>
+                </Descriptions.Item>
+                <Descriptions.Item label="Browser">
+                  <Tag color="magenta">{screenshot.config.browser}</Tag>
+                </Descriptions.Item>
+                <Descriptions.Item label="Size">
+                  <Tag color="cyan">
+                    {screenshot.config.size.width}x
+                    {screenshot.config.size.height}
+                  </Tag>
+                </Descriptions.Item>
+                <Descriptions.Item label="diffOptions">
+                  <pre>
+                    {JSON.stringify(screenshot.config.diffOptions, null, 2)}
+                  </pre>
+                </Descriptions.Item>
+                <Descriptions.Item label="PreScriptPath">
+                  {screenshot.config.preScriptPath}
+                </Descriptions.Item>
+              </Descriptions>
             </Collapse.Panel>
-          ))}
-        </Collapse>
-      </Content>
+          </Collapse>
+        </Space>
+      ))}
     </AppLayout>
   );
 };

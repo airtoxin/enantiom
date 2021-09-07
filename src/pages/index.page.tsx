@@ -1,13 +1,11 @@
 import { useMemo, VoidFunctionComponent } from "react";
 import { GetStaticProps } from "next";
-import { Layout, Statistic, Card, Row, Col } from "antd";
+import { Statistic, Card, Row, Col } from "antd";
 import { resolve } from "path";
 import { promises as fs } from "fs";
 import { AppLayout } from "./AppLayout";
 import { State } from "../State";
 import Head from "next/head";
-
-const { Content } = Layout;
 
 const HomePage: VoidFunctionComponent<{ state: State }> = ({ state }) => {
   const counts = useMemo(() => {
@@ -26,39 +24,31 @@ const HomePage: VoidFunctionComponent<{ state: State }> = ({ state }) => {
         <meta property="og:title" content="enantiom" key="og:title" />
       </Head>
 
-      <Content
-        style={{
-          padding: 24,
-          margin: 0,
-          minHeight: 280,
-        }}
-      >
-        <Row gutter={16}>
-          <Col span={8}>
-            <Card>
-              <Statistic title="Total results" value={counts.total} />
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card>
-              <Statistic
-                title="Success results"
-                value={counts.success}
-                valueStyle={{ color: "#3f8600" }}
-              />
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card>
-              <Statistic
-                title="Failure results"
-                value={counts.failure}
-                valueStyle={{ color: "#cf1322" }}
-              />
-            </Card>
-          </Col>
-        </Row>
-      </Content>
+      <Row gutter={16}>
+        <Col span={8}>
+          <Card>
+            <Statistic title="Total results" value={counts.total} />
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card>
+            <Statistic
+              title="Success results"
+              value={counts.success}
+              valueStyle={{ color: "#3f8600" }}
+            />
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card>
+            <Statistic
+              title="Failure results"
+              value={counts.failure}
+              valueStyle={{ color: "#cf1322" }}
+            />
+          </Card>
+        </Col>
+      </Row>
     </AppLayout>
   );
 };
