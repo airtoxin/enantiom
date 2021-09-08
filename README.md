@@ -76,8 +76,7 @@ Setup: just run `yarn`
 ```shell
 $ yarn build
 $ yarn link
-$ enantiom --config example/enantiom.config.json
-$ npx serve dist
+$ enantiom --config example/enantiom.config.json --no-html
 ```
 
 ### React console development
@@ -93,4 +92,3 @@ $ yarn site:dev
 - Support AWS S3 url in artifact_path
 - More script hooks
 - Reuse browser object option
-- No result report (json output only) mode

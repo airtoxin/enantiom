@@ -14,18 +14,16 @@ export class ScreenshotService {
     logger.trace(`Initialize ScreenshotService.`);
   }
 
-  public async takeScreenshotAndDiff(outDirPath: string): Promise<Result> {
-    const results = await this.takeScreenshot(outDirPath);
-    const screenshots = await this.saveDiff(outDirPath, results);
+  public async takeScreenshotAndDiff(): Promise<Result> {
+    const results = await this.takeScreenshot();
+    const screenshots = await this.saveDiff(results);
     return {
       timestamp: this.config.currentTimestamp,
       screenshots,
     };
   }
 
-  private async takeScreenshot(
-    outDirPath: string
-  ): Promise<ScreenshotResult[]> {
+  private async takeScreenshot(): Promise<ScreenshotResult[]> {
     const limit = pLimit(this.config.concurrency);
     return Promise.all(
       this.config.screenshotConfigs.map((screenshotConfig) =>
@@ -66,13 +64,14 @@ export class ScreenshotService {
               const filename = `${hash}.png`;
               const dirname = join(
                 this.config.projectPath,
-                outDirPath,
+                "public",
+                "assets",
                 this.config.currentTimestamp
               );
               await ensureDir(dirname);
               const absoluteFilepath = join(dirname, filename);
               const filepath = join(
-                outDirPath,
+                "assets",
                 this.config.currentTimestamp,
                 filename
               );
@@ -98,7 +97,6 @@ export class ScreenshotService {
   }
 
   private async saveDiff(
-    outDirPath: string,
     results: ScreenshotResult[]
   ): Promise<ScreenshotResult[]> {
     return Promise.all(
@@ -111,14 +109,14 @@ export class ScreenshotService {
         }
 
         const prevFilepath = join(
-          outDirPath,
+          "assets",
           this.config.prevTimestamp,
           `${result.hash}.png`
         );
         logger.debug(`Previous file path: ${prevFilepath}`);
         // Ensure existence of prevFile
         try {
-          await access(join(this.config.projectPath, prevFilepath));
+          await access(join(this.config.projectPath, "public", prevFilepath));
         } catch {
           logger.warn(
             `Failed to load previous file: ${join(
@@ -137,7 +135,7 @@ export class ScreenshotService {
           config: result.config,
         });
         const diffFilepath = join(
-          outDirPath,
+          "assets",
           this.config.currentTimestamp,
           `${diffFileHash}.png`
         );
@@ -146,15 +144,16 @@ export class ScreenshotService {
         await ensureDir(
           join(
             this.config.projectPath,
-            outDirPath,
+            "public",
+            "assets",
             this.config.currentTimestamp
           )
         );
         logger.info(`Use diff options`, result.config.diffOptions);
         const diff = await compare(
-          join(this.config.projectPath, prevFilepath),
-          join(this.config.projectPath, currentFilepath),
-          join(this.config.projectPath, diffFilepath),
+          join(this.config.projectPath, "public", prevFilepath),
+          join(this.config.projectPath, "public", currentFilepath),
+          join(this.config.projectPath, "public", diffFilepath),
           result.config.diffOptions
         );
         logger.info(

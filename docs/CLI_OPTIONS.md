@@ -13,6 +13,11 @@ Allow both of path: absolute or relative from current directory.
 Output more verbose log.  
 If set multiple times, output more verbose logs.
 
+### --no-html (optional)
+
+Disable HTML report and output JSON only.  
+JSON report will be placed to `artifact_path/assets/state.json` 
+
 ### --help (optional)
 
 **short option (-h)**  

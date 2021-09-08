@@ -56,10 +56,12 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
   const getImages = useCallback(
     (screenshot: ScreenshotResult) =>
       [
-        screenshot.filepath.slice(6),
-        screenshot.diff?.diffFilepath.slice(6) ?? [],
-        screenshot.prevFilepath?.slice(6) ?? [],
-      ].flat(),
+        screenshot.filepath,
+        screenshot.diff?.diffFilepath ?? [],
+        screenshot.prevFilepath ?? [],
+      ]
+        .flat()
+        .map((p) => `/${p}`),
     []
   );
   return (
@@ -135,7 +137,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                 <Col span={8}>
                   <Image
                     alt={`Current screenshot of ${result.timestamp}`}
-                    src={screenshot.filepath.slice(6)}
+                    src={`/${screenshot.filepath}`}
                     preview={false}
                     style={{ cursor: "pointer" }}
                     onClick={() =>
@@ -151,7 +153,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                   {screenshot.diff ? (
                     <Image
                       alt={`Screenshot diff of ${result.timestamp}`}
-                      src={screenshot.diff.diffFilepath.slice(6)}
+                      src={`/${screenshot.diff.diffFilepath}`}
                       preview={false}
                       style={{ cursor: "pointer" }}
                       onClick={() =>
@@ -170,7 +172,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                   {screenshot.prevFilepath ? (
                     <Image
                       alt={`Previous screenshot of ${result.timestamp}`}
-                      src={screenshot.prevFilepath.slice(6)}
+                      src={`/${screenshot.prevFilepath}`}
                       preview={false}
                       style={{ cursor: "pointer" }}
                       onClick={() =>
@@ -189,14 +191,12 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
               <Divider />
               <Descriptions size="small">
                 <Descriptions.Item label="URL">
-                  <Link>
-                    <a
-                      href={screenshot.config.url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {screenshot.config.url}
-                    </a>
+                  <Link
+                    href={screenshot.config.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {screenshot.config.url}
                   </Link>
                 </Descriptions.Item>
                 <Descriptions.Item label="Browser">
