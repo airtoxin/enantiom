@@ -23,39 +23,27 @@ export const AppLayout: FunctionComponent<{
         <link
           key="favicon"
           rel="icon"
-          href="images/enantiom_object.svg"
+          href="/images/enantiom_object.svg"
           type="image/svg+xml"
         />
       </Head>
 
       <Header
         style={{
-          float: "left",
           padding: 0,
-          background: "rgba(255, 255, 255, 0.3)",
         }}
       >
-        <Menu theme="dark" mode="horizontal">
-          <div
-            style={{
-              display: "flex",
-              width: 260,
-              justifyContent: "center",
-            }}
-          >
-            <Link href="/">
-              <a>
-                <img
-                  src="/images/enantiom_logo_white.svg"
-                  alt="enantiom logo"
-                  width={260}
-                  height={64}
-                  style={{ padding: 4 }}
-                />
-              </a>
-            </Link>
-          </div>
-        </Menu>
+        <Link href="/">
+          <a>
+            <img
+              src="/images/enantiom_logo_white.svg"
+              alt="enantiom logo"
+              width={260}
+              height={64}
+              style={{ padding: 4 }}
+            />
+          </a>
+        </Link>
       </Header>
 
       <Layout>
