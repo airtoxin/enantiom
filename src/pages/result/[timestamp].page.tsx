@@ -59,7 +59,9 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
         screenshot.filepath,
         screenshot.diff?.diffFilepath ?? [],
         screenshot.prevFilepath ?? [],
-      ].flat(),
+      ]
+        .flat()
+        .map((p) => `/${p}`),
     []
   );
   return (

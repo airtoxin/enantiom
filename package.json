@@ -7,6 +7,7 @@
   "scripts": {
     "predev": "run-s clean",
     "dev": "ts-node src/index.ts --config example/enantiom.config.json -vv",
+    "preview": "serve dist",
     "prebuild": "run-s clean",
     "build": "tsc",
     "format": "prettier --ignore-path .gitignore --write .",
@@ -55,6 +56,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
+    "serve": "^12.0.0",
     "ts-jest": "^27.0.5",
     "ts-node": "^10.2.1"
   },
