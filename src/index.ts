@@ -98,34 +98,44 @@ const main = async () => {
   const config = await configService.load(state);
 
   const screenshotService = new ScreenshotService(config);
-  const result = await screenshotService.takeScreenshotAndDiff(OUTPUT_DIRNAME);
+  const result = await screenshotService.takeScreenshotAndDiff("assets");
 
   await stateFileService.appendSave(result);
 
-  const next = resolve(config.projectPath, "node_modules/.bin/next");
-  logger.debug(`next cli path: ${next}`);
-
-  try {
-    await spawn(next, ["build", "--no-lint"], {
-      silent: !logger.isLogged("debug"),
-    });
-  } catch (e) {
-    logger.warn(`Building next project was failed.`);
-    logger.error(e);
-  }
-  try {
-    await spawn(
-      next,
-      [
-        "export",
-        logger.isLogged("debug") ? [] : ["-s"],
-        "-o",
-        resolve(process.cwd(), config.artifactPath),
-      ].flat()
+  if (args["no-html"]) {
+    logger.info(`Output JSON report.`);
+    await copy(
+      resolve(projectPath, OUTPUT_DIRNAME),
+      resolve(process.cwd(), rawConfig.artifact_path, "assets"),
+      { overwrite: true }
     );
-  } catch (e) {
-    logger.warn(`Exporting next project was failed.`);
-    logger.error(e);
+  } else {
+    logger.info(`Output HTML report.`);
+    const next = resolve(config.projectPath, "node_modules/.bin/next");
+    logger.debug(`next cli path: ${next}`);
+
+    try {
+      await spawn(next, ["build", "--no-lint"], {
+        silent: !logger.isLogged("debug"),
+      });
+    } catch (e) {
+      logger.warn(`Building next project was failed.`);
+      logger.error(e);
+    }
+    try {
+      await spawn(
+        next,
+        [
+          "export",
+          logger.isLogged("debug") ? [] : ["-s"],
+          "-o",
+          resolve(process.cwd(), config.artifactPath),
+        ].flat()
+      );
+    } catch (e) {
+      logger.warn(`Exporting next project was failed.`);
+      logger.error(e);
+    }
   }
 };
 
