@@ -6,7 +6,7 @@
   },
   "scripts": {
     "predev": "run-s clean",
-    "dev": "ts-node src/index.ts",
+    "dev": "ts-node src/index.ts --config example/enantiom.config.json -vv",
     "prebuild": "run-s clean",
     "build": "tsc",
     "format": "prettier --ignore-path .gitignore --write .",
