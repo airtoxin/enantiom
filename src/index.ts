@@ -13,6 +13,7 @@ export type EnantiomCliArgument = {
   config: string;
   verbose?: boolean[];
   help?: boolean;
+  "no-html"?: boolean;
 };
 
 const args = parse<EnantiomCliArgument>(
@@ -24,6 +25,11 @@ const args = parse<EnantiomCliArgument>(
       multiple: true,
       optional: true,
       description: "Output verbose log (allow multiple)",
+    },
+    "no-html": {
+      type: Boolean,
+      optional: true,
+      description: "Disable HTML report and output JSON only",
     },
     help: {
       type: Boolean,
