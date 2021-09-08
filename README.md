@@ -93,5 +93,4 @@ $ yarn site:dev
 - Support AWS S3 url in artifact_path
 - More script hooks
 - Reuse browser object option
-- Show configuration of screenshot in result report
 - No result report (json output only) mode
