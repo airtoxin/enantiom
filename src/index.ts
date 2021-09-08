@@ -98,7 +98,7 @@ const main = async () => {
   const config = await configService.load(state);
 
   const screenshotService = new ScreenshotService(config);
-  const result = await screenshotService.takeScreenshotAndDiff("assets");
+  const result = await screenshotService.takeScreenshotAndDiff();
 
   await stateFileService.appendSave(result);
 
