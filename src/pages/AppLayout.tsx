@@ -7,8 +7,9 @@ import {
   CheckCircleTwoTone,
   ExclamationCircleTwoTone,
 } from "@ant-design/icons";
+import Head from "next/head";
 
-const { Header, Sider } = Layout;
+const { Header, Sider, Content } = Layout;
 
 export const AppLayout: FunctionComponent<{
   state: State;
@@ -16,6 +17,17 @@ export const AppLayout: FunctionComponent<{
 }> = ({ children, state, timestamp }) => {
   return (
     <Layout style={{ height: "100vh" }}>
+      <Head>
+        <title key="title">enantiom</title>
+        <meta property="og:title" content="enantiom" key="og:title" />
+        <link
+          key="favicon"
+          rel="icon"
+          href="images/enantiom_object.svg"
+          type="image/svg+xml"
+        />
+      </Head>
+
       <Header
         style={{
           float: "left",
@@ -29,15 +41,19 @@ export const AppLayout: FunctionComponent<{
               display: "flex",
               width: 260,
               justifyContent: "center",
-              paddingTop: 8,
             }}
           >
-            <img
-              src="/images/enantiom_logo_white.svg"
-              alt="enantiom logo"
-              width={260}
-              height={56}
-            />
+            <Link href="/">
+              <a>
+                <img
+                  src="/images/enantiom_logo_white.svg"
+                  alt="enantiom logo"
+                  width={260}
+                  height={64}
+                  style={{ padding: 4 }}
+                />
+              </a>
+            </Link>
           </div>
         </Menu>
       </Header>
@@ -45,7 +61,7 @@ export const AppLayout: FunctionComponent<{
       <Layout>
         <Sider theme={"dark"} width={260} style={{ overflowY: "scroll" }}>
           <Menu theme={"dark"} selectedKeys={timestamp ? [timestamp] : []}>
-            {state.results.map((result) => (
+            {state.results.map((result, i) => (
               <Menu.Item
                 key={result.timestamp}
                 icon={
@@ -55,6 +71,7 @@ export const AppLayout: FunctionComponent<{
                     <CheckCircleTwoTone twoToneColor="#52c41a" />
                   )
                 }
+                style={i === 0 ? { marginTop: 0 } : {}}
               >
                 <Link href={`/result/${result.timestamp}`}>
                   {formatTimestamp(result.timestamp)}
@@ -63,8 +80,10 @@ export const AppLayout: FunctionComponent<{
             ))}
           </Menu>
         </Sider>
-        <Layout style={{ padding: "0 24px 24px", overflowY: "scroll" }}>
-          {children}
+        <Layout>
+          <Content style={{ padding: 24, overflowY: "scroll" }}>
+            {children}
+          </Content>
         </Layout>
       </Layout>
     </Layout>
