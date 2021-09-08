@@ -189,14 +189,12 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
               <Divider />
               <Descriptions size="small">
                 <Descriptions.Item label="URL">
-                  <Link>
-                    <a
-                      href={screenshot.config.url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {screenshot.config.url}
-                    </a>
+                  <Link
+                    href={screenshot.config.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {screenshot.config.url}
                   </Link>
                 </Descriptions.Item>
                 <Descriptions.Item label="Browser">
