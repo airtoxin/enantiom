@@ -12,6 +12,7 @@ import { createWriteStream } from "fs";
 import recursiveReadDir from "recursive-readdir";
 import ReadableStream = NodeJS.ReadableStream;
 import { logger } from "./Logger";
+import mime from "mime-types";
 
 export class DirectorySyncer {
   private client = new S3Client({});
@@ -94,6 +95,7 @@ export class DirectorySyncer {
             Bucket: bucket,
             Key: join(path, filePath),
             Body: body,
+            ContentType: mime.lookup(filePath) || undefined,
           })
         );
       })

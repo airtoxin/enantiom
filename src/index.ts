@@ -9,6 +9,9 @@ import { StateFileService } from "./StateFileService";
 import { copy } from "fs-extra";
 import { logger } from "./Logger";
 import { DirectorySyncer } from "./DirectorySyncer";
+import t from "temp";
+
+const temp = t.track();
 
 export type EnantiomCliArgument = {
   config: string;
@@ -79,15 +82,17 @@ const main = async () => {
 
   await stateFileService.appendSave(result);
 
+  const tempOutDir = temp.mkdirSync("zzz");
   if (args["no-html"]) {
-    logger.info(`Output JSON report.`);
+    logger.info(`Generate JSON report.`);
     await copy(
       resolve(projectPath, OUTPUT_DIRNAME),
-      resolve(process.cwd(), rawConfig.artifact_path, "assets"),
+      tempOutDir,
+      // resolve(process.cwd(), rawConfig.artifact_path, "assets"),
       { overwrite: true }
     );
   } else {
-    logger.info(`Output HTML report.`);
+    logger.info(`Generate HTML report.`);
     const next = resolve(config.projectPath, "node_modules/.bin/next");
     logger.debug(`next cli path: ${next}`);
 
@@ -106,7 +111,8 @@ const main = async () => {
           "export",
           logger.isLogged("debug") ? [] : ["-s"],
           "-o",
-          resolve(process.cwd(), config.artifactPath),
+          tempOutDir,
+          // resolve(process.cwd(), config.artifactPath),
         ].flat()
       );
     } catch (e) {
@@ -114,6 +120,9 @@ const main = async () => {
       logger.error(e);
     }
   }
+
+  logger.info(`Sync report output to artifact path.`);
+  await syncer.sync(tempOutDir, config.artifactPath);
 };
 
 const spawn = (cmd: string, args: string[], { silent = false } = {}) =>
