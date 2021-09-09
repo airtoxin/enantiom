@@ -8,7 +8,7 @@ import { ScreenshotService } from "./ScreenshotService";
 import { StateFileService } from "./StateFileService";
 import { copy } from "fs-extra";
 import { logger } from "./Logger";
-import { S3Syncer } from "./S3Syncer";
+import { DirectorySyncer } from "./DirectorySyncer";
 
 export type EnantiomCliArgument = {
   config: string;
@@ -65,7 +65,7 @@ const main = async () => {
   );
   const rawConfig = await configService.loadRaw();
 
-  const syncer = new S3Syncer();
+  const syncer = new DirectorySyncer();
   await syncer.sync(
     resolve(process.cwd(), rawConfig.artifact_path),
     join(projectPath, "public", "assets")

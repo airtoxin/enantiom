@@ -13,7 +13,7 @@ import recursiveReadDir from "recursive-readdir";
 import ReadableStream = NodeJS.ReadableStream;
 import { logger } from "./Logger";
 
-export class S3Syncer {
+export class DirectorySyncer {
   private client = new S3Client({});
 
   public async sync(sourceDir: string, targetDir: string) {
