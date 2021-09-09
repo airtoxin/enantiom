@@ -89,6 +89,6 @@ $ yarn site:dev
 ## Feature TODOs
 
 - Debug mode
-- Support AWS S3 url in artifact_path
+- Non-top-level artifact_path
 - More script hooks
 - Reuse browser object option

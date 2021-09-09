@@ -28,7 +28,7 @@ const main = async () => {
   await remove(join(projectPath, "public", "assets"));
   await syncer.sync(
     // artifact_path maybe s3://... so using join(artifact_path) reduces
-    // protocol separator s3://... to s3:/... it breaks syncing logic
+    // slashes in protocol s3://... to s3:/... it breaks syncing logic
     [rawConfig.artifact_path, "assets"].join(sep),
     join(projectPath, "public", "assets")
   );
