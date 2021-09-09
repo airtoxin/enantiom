@@ -1,0 +1,11 @@
+{
+  "artifact_path": "",
+  "sizes": [
+    { "width": 800, "height": 600 },
+    { "width": 1280, "height": 1024 }
+  ],
+  "screenshots": [
+    "https://example.com",
+    "https://time.is"
+  ]
+}

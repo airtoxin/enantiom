@@ -6,8 +6,9 @@ import { spawn as cspawn } from "child_process";
 import { EnantiomConfigLoader } from "./EnantiomConfigLoader";
 import { ScreenshotService } from "./ScreenshotService";
 import { StateFileService } from "./StateFileService";
-import { copy, ensureDir, rm } from "fs-extra";
+import { copy } from "fs-extra";
 import { logger } from "./Logger";
+import { OutputSyncer } from "./OutputSyncer";
 
 export type EnantiomCliArgument = {
   config: string;
@@ -64,32 +65,8 @@ const main = async () => {
   );
   const rawConfig = await configService.loadRaw();
 
-  // sync previous output
-  logger.debug(
-    `Create temporal output directory: ${resolve(projectPath, OUTPUT_DIRNAME)}`
-  );
-  await rm(resolve(projectPath, OUTPUT_DIRNAME), {
-    recursive: true,
-    force: true,
-  });
-  await ensureDir(resolve(projectPath, OUTPUT_DIRNAME));
-  logger.info(
-    `Syncing previous state from ${resolve(
-      process.cwd(),
-      rawConfig.artifact_path,
-      "assets"
-    )} to ${resolve(projectPath, OUTPUT_DIRNAME)}`
-  );
-  try {
-    await copy(
-      resolve(process.cwd(), rawConfig.artifact_path, "assets"),
-      resolve(projectPath, OUTPUT_DIRNAME),
-      { overwrite: true }
-    );
-  } catch {
-    logger.info(`No previous state file`);
-  }
-  logger.info(`Sync complete.`);
+  const outputSyncer = new OutputSyncer(projectPath, rawConfig.artifact_path);
+  await outputSyncer.syncPreviousToTemporal();
 
   const stateFileService = new StateFileService(
     resolve(projectPath, OUTPUT_DIRNAME, "state.json")
