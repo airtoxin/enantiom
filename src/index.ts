@@ -8,7 +8,7 @@ import { ScreenshotService } from "./ScreenshotService";
 import { StateFileService } from "./StateFileService";
 import { copy } from "fs-extra";
 import { logger } from "./Logger";
-import { OutputSyncer } from "./OutputSyncer";
+import { S3Syncer } from "./S3Syncer";
 
 export type EnantiomCliArgument = {
   config: string;
@@ -65,8 +65,11 @@ const main = async () => {
   );
   const rawConfig = await configService.loadRaw();
 
-  const outputSyncer = new OutputSyncer(projectPath, rawConfig.artifact_path);
-  await outputSyncer.syncPreviousToTemporal();
+  const syncer = new S3Syncer();
+  await syncer.sync(
+    resolve(process.cwd(), rawConfig.artifact_path),
+    join(projectPath, "public", "assets")
+  );
 
   const stateFileService = new StateFileService(
     resolve(projectPath, OUTPUT_DIRNAME, "state.json")

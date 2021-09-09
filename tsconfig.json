@@ -5,7 +5,7 @@
     "forceConsistentCasingInFileNames": true,
     "downlevelIteration": true,
     "isolatedModules": true,
-    "lib": ["es2018"],
+    "lib": ["es2018", "dom"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -18,7 +18,7 @@
     "target": "es2018",
     "jsx": "preserve",
     "allowJs": false,
-    "noEmit": false
+    "noEmit": false,
   },
   "include": ["./src"],
   "exclude": ["node_modules"]

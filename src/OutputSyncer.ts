@@ -1,9 +1,10 @@
 import { logger } from "./Logger";
 import { resolve } from "path";
 import { copy, ensureDir, rm } from "fs-extra";
-import { ListBucketsCommand, S3Client } from "@aws-sdk/client-s3";
+import { S3Syncer } from "./S3Syncer";
 
 export class OutputSyncer {
+  private syncer = new S3Syncer();
   constructor(
     private readonly projectPath: string,
     private readonly artifactPath: string
@@ -28,10 +29,31 @@ export class OutputSyncer {
   }
 
   public async syncPreviousS3ToTemporal() {
-    const client = new S3Client({});
-    const command = new ListBucketsCommand({});
-    const buckets = await client.send(command);
-    console.log("@buckets", buckets);
+    await this.syncer.sync(
+      resolve(this.projectPath, "dist"),
+      "s3://surugaya-sentinel/a"
+    );
+    // const client = new S3Client({});
+    // const results = await client.send(
+    //   new ListObjectsCommand({
+    //     Bucket: "surugaya-sentinel",
+    //   })
+    // );
+    // console.log("@results", results);
+    // const command = new GetObjectCommand({
+    //   Bucket: "surugaya-sentinel",
+    //   Key: "enantiom-dev/assets/1631072400442/3f6616f40fb53bf62ab468a30a7309e6f23bf6b2.png",
+    // });
+    // const result = await client.send(command);
+    // await write(result.Body);
     process.exit(0);
   }
 }
+
+// const write = (stream: ReadableStream): Promise<void> =>
+//   new Promise((resolve, reject) => {
+//     stream
+//       .pipe(createWriteStream("sample"))
+//       .on("error", reject)
+//       .on("end", resolve);
+//   });
