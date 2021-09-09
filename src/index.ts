@@ -8,8 +8,7 @@ import { logger } from "./Logger";
 import { DirectorySyncer } from "./DirectorySyncer";
 import { args } from "./args";
 import { ReportGenerator } from "./ReportGenerator";
-
-const OUTPUT_DIRNAME = join("public", "assets");
+import { remove } from "fs-extra";
 
 const main = async () => {
   args.verbose?.forEach(() => {
@@ -26,15 +25,16 @@ const main = async () => {
   const rawConfig = await configService.loadRaw();
 
   const syncer = new DirectorySyncer();
+  await remove(join(projectPath, "public", "assets"));
   await syncer.sync(
-    // artifact_path maybe s3://... use join(artifact_path) reduces
+    // artifact_path maybe s3://... so using join(artifact_path) reduces
     // protocol separator s3://... to s3:/... it breaks syncing logic
     [rawConfig.artifact_path, "assets"].join(sep),
     join(projectPath, "public", "assets")
   );
 
   const stateFileService = new StateFileService(
-    resolve(projectPath, OUTPUT_DIRNAME, "state.json")
+    resolve(projectPath, "public", "assets", "state.json")
   );
   const state = await stateFileService.load();
   const config = await configService.load(state);
@@ -46,7 +46,7 @@ const main = async () => {
 
   const reportGenerator = new ReportGenerator(
     projectPath,
-    resolve(projectPath, OUTPUT_DIRNAME)
+    resolve(projectPath, "public", "assets")
   );
 
   const reportDirPath = args["no-html"]
