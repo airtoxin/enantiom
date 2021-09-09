@@ -1,56 +1,13 @@
 #!/usr/bin/env node
 
-import { parse } from "ts-command-line-args";
 import { join, resolve } from "path";
-import { spawn as cspawn } from "child_process";
 import { EnantiomConfigLoader } from "./EnantiomConfigLoader";
 import { ScreenshotService } from "./ScreenshotService";
 import { StateFileService } from "./StateFileService";
-import { copy } from "fs-extra";
 import { logger } from "./Logger";
 import { DirectorySyncer } from "./DirectorySyncer";
-import t from "temp";
-
-const temp = t.track();
-
-export type EnantiomCliArgument = {
-  config: string;
-  verbose?: boolean[];
-  help?: boolean;
-  "no-html"?: boolean;
-};
-
-const args = parse<EnantiomCliArgument>(
-  {
-    config: { type: String, alias: "c", description: "Path to config file" },
-    verbose: {
-      type: Boolean,
-      alias: "v",
-      multiple: true,
-      optional: true,
-      description: "Output verbose log (allow multiple)",
-    },
-    "no-html": {
-      type: Boolean,
-      optional: true,
-      description: "Disable HTML report and output JSON only",
-    },
-    help: {
-      type: Boolean,
-      optional: true,
-      alias: "h",
-      description: "Prints this usage guide",
-    },
-  },
-  {
-    helpArg: "help",
-    headerContentSections: [
-      {
-        header: "enantiom CLI",
-      },
-    ],
-  }
-);
+import { args } from "./args";
+import { ReportGenerator } from "./ReportGenerator";
 
 const OUTPUT_DIRNAME = join("public", "assets");
 
@@ -69,7 +26,10 @@ const main = async () => {
   const rawConfig = await configService.loadRaw();
 
   const syncer = new DirectorySyncer();
-  await syncer.sync(rawConfig.artifact_path, join(projectPath, "public"));
+  await syncer.sync(
+    join(rawConfig.artifact_path, "assets"),
+    join(projectPath, "public", "assets")
+  );
 
   const stateFileService = new StateFileService(
     resolve(projectPath, OUTPUT_DIRNAME, "state.json")
@@ -82,60 +42,17 @@ const main = async () => {
 
   await stateFileService.appendSave(result);
 
-  const tempOutDir = temp.mkdirSync("zzz");
-  if (args["no-html"]) {
-    logger.info(`Generate JSON report.`);
-    await copy(
-      resolve(projectPath, OUTPUT_DIRNAME),
-      tempOutDir,
-      // resolve(process.cwd(), rawConfig.artifact_path, "assets"),
-      { overwrite: true }
-    );
-  } else {
-    logger.info(`Generate HTML report.`);
-    const next = resolve(config.projectPath, "node_modules/.bin/next");
-    logger.debug(`next cli path: ${next}`);
+  const reportGenerator = new ReportGenerator(
+    projectPath,
+    resolve(projectPath, OUTPUT_DIRNAME)
+  );
 
-    try {
-      await spawn(next, ["build", "--no-lint"], {
-        silent: !logger.isLogged("debug"),
-      });
-    } catch (e) {
-      logger.warn(`Building next project was failed.`);
-      logger.error(e);
-    }
-    try {
-      await spawn(
-        next,
-        [
-          "export",
-          logger.isLogged("debug") ? [] : ["-s"],
-          "-o",
-          tempOutDir,
-          // resolve(process.cwd(), config.artifactPath),
-        ].flat()
-      );
-    } catch (e) {
-      logger.warn(`Exporting next project was failed.`);
-      logger.error(e);
-    }
-  }
+  const reportDirPath = args["no-html"]
+    ? await reportGenerator.generateJsonReport()
+    : await reportGenerator.generateHtmlReport();
 
   logger.info(`Sync report output to artifact path.`);
-  await syncer.sync(tempOutDir, config.artifactPath);
+  await syncer.sync(reportDirPath, config.artifactPath);
 };
-
-const spawn = (cmd: string, args: string[], { silent = false } = {}) =>
-  new Promise<void>((resolvePromise, reject) => {
-    const projectPath = resolve(__dirname, "..");
-    logger.trace(`Spawning child process:${cmd} with args:${args}`);
-    const p = cspawn(cmd, args, { cwd: projectPath });
-    if (!silent) p.stdout.pipe(process.stdout);
-    p.stderr.pipe(process.stderr);
-    p.on("close", (code) => {
-      logger.debug(`${cmd} process exit code: ${code}`);
-      return code ? reject() : resolvePromise();
-    });
-  });
 
 main().then(() => process.exit(0));
