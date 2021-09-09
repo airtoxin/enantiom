@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { join, resolve } from "path";
+import { join, resolve, sep } from "path";
 import { EnantiomConfigLoader } from "./EnantiomConfigLoader";
 import { ScreenshotService } from "./ScreenshotService";
 import { StateFileService } from "./StateFileService";
@@ -27,7 +27,9 @@ const main = async () => {
 
   const syncer = new DirectorySyncer();
   await syncer.sync(
-    join(rawConfig.artifact_path, "assets"),
+    // artifact_path maybe s3://... use join(artifact_path) reduces
+    // protocol separator s3://... to s3:/... it breaks syncing logic
+    [rawConfig.artifact_path, "assets"].join(sep),
     join(projectPath, "public", "assets")
   );
 
