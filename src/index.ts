@@ -66,10 +66,7 @@ const main = async () => {
   const rawConfig = await configService.loadRaw();
 
   const syncer = new DirectorySyncer();
-  await syncer.sync(
-    resolve(process.cwd(), rawConfig.artifact_path),
-    join(projectPath, "public", "assets")
-  );
+  await syncer.sync(rawConfig.artifact_path, join(projectPath, "public"));
 
   const stateFileService = new StateFileService(
     resolve(projectPath, OUTPUT_DIRNAME, "state.json")
