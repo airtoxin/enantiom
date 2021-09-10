@@ -6,3 +6,7 @@ export const switcher =
   (key: K): U => {
     return arms[key];
   };
+
+export const assertUnreachable = (x: never): never => {
+  throw new Error(`Expect unreachable code but ${x} has non never type.`);
+};

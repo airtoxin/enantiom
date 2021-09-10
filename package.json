@@ -6,7 +6,7 @@
   },
   "scripts": {
     "predev": "run-s clean",
-    "dev": "ts-node src/index.ts --config example/enantiom.config.json",
+    "dev": "ts-node src/index.ts --config example/script.config.json",
     "preview": "serve dist",
     "prebuild": "run-s clean",
     "build": "tsc",

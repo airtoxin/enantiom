@@ -14,7 +14,7 @@ export const EnantiomConfig = z.lazy(() =>
     concurrency: z.number().optional(),
     retry: z.number().optional(),
     diff_options: z.object({}).passthrough().optional(),
-    scripting: Scripting.optional(),
+    scripting: ScriptingConfigObject.optional(),
   })
 );
 
@@ -48,14 +48,14 @@ export const ScreenshotConfigObject = z.lazy(() =>
     ).optional(),
     sizes: arrayOrValue(BrowserSize).optional(),
     diff_options: z.object({}).passthrough().optional(),
-    scripting: Scripting.optional(),
+    scripting: ScriptingConfigObject.optional(),
   })
 );
 
-export type Scripting = z.infer<typeof Scripting>;
-export const Scripting = z.lazy(() =>
+export type ScriptingConfigObject = z.infer<typeof ScriptingConfigObject>;
+export const ScriptingConfigObject = z.lazy(() =>
   z.object({
-    context_script_path: arrayOrValue(z.string()).optional(),
+    context_scripts: arrayOrValue(z.string()).optional(),
     pre_scripts: arrayOrValue(z.string()).optional(),
     post_scripts: arrayOrValue(z.string()).optional(),
   })

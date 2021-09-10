@@ -61,16 +61,28 @@ export type EnantiomInternalScriptConfig = z.infer<
 >;
 export const EnantiomInternalScriptConfig = z.lazy(() =>
   z.object({
-    contextScriptPath: z.string().optional(),
+    contextScripts: z.array(ContextScriptType).optional(),
     preScripts: z.array(ScriptType).optional(),
     postScripts: z.array(ScriptType).optional(),
   })
 );
 
+export type ContextScriptType = z.infer<typeof ContextScriptType>;
+export const ContextScriptType = z.lazy(() =>
+  z.union([
+    z.object({ type: z.literal("function"), fn: z.function() }),
+    z.object({ type: z.literal("scriptFile"), path: z.string() }),
+  ])
+);
+
 export type ScriptType = z.infer<typeof ScriptType>;
 export const ScriptType = z.lazy(() =>
   z.union([
-    z.object({ type: z.literal("loadScript"), path: z.string() }),
+    z.object({
+      type: z.literal("function"),
+      fn: z.function().args(z.any(), z.any(), z.any()),
+    }),
+    z.object({ type: z.literal("scriptFile"), path: z.string() }),
     z.object({ type: z.literal("waitForTimeout"), timeout: z.number() }),
     z.object({ type: z.literal("waitForSelector"), selector: z.string() }),
     z.object({ type: z.literal("waitForUrl"), url: z.string() }),
@@ -79,12 +91,17 @@ export const ScriptType = z.lazy(() =>
     z.object({ type: z.literal("waitForNavigation"), url: z.string() }),
     z.object({
       type: z.literal("waitForLoadState"),
-      event: z.union([
-        z.literal("domcontentloaded"),
-        z.literal("load"),
-        z.literal("networkidle"),
-      ]),
+      event: LoadStateEvent,
     }),
     z.object({ type: z.literal("waitForEvent"), event: z.string() }),
+  ])
+);
+
+export type LoadStateEvent = z.infer<typeof LoadStateEvent>;
+export const LoadStateEvent = z.lazy(() =>
+  z.union([
+    z.literal("domcontentloaded"),
+    z.literal("load"),
+    z.literal("networkidle"),
   ])
 );
