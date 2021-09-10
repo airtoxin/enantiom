@@ -90,5 +90,4 @@ $ yarn site:dev
 
 - Debug mode
 - Non-top-level artifact_path
-- More script hooks
 - Reuse browser object option

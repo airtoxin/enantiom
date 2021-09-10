@@ -1,6 +1,11 @@
 {
   "artifact_path": "./dist",
-  "pre_script_path": "./example/scrollToBottom.js",
+  "scripting": {
+    "pre_scripts": [
+      "[file]=./example/scrollToBottom.js",
+      "[timeout]=5000"
+    ]
+  },
   "screenshots": [
     "https://github.com/airtoxin/enantiom"
   ]

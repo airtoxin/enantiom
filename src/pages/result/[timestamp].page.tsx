@@ -32,6 +32,7 @@ import {
 import { formatTimestamp, switcher } from "../../utils";
 import Head from "next/head";
 import Lightbox from "react-image-lightbox";
+import JsonTree from "react-json-tree";
 
 const { Link } = Typography;
 
@@ -212,12 +213,28 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                   {screenshot.hash}
                 </Descriptions.Item>
                 <Descriptions.Item label="Diff options">
-                  <pre>
-                    {JSON.stringify(screenshot.config.diffOptions, null, 2)}
-                  </pre>
+                  <JsonTree
+                    theme="threezerotwofour"
+                    data={screenshot.config.diffOptions}
+                  />
                 </Descriptions.Item>
-                <Descriptions.Item label="Pre script path">
-                  {screenshot.config.preScriptPath}
+                <Descriptions.Item label="context script">
+                  <JsonTree
+                    theme="threezerotwofour"
+                    data={screenshot.config.scripts?.contextScripts}
+                  />
+                </Descriptions.Item>
+                <Descriptions.Item label="pre script">
+                  <JsonTree
+                    theme="threezerotwofour"
+                    data={screenshot.config.scripts?.preScripts}
+                  />
+                </Descriptions.Item>
+                <Descriptions.Item label="post script">
+                  <JsonTree
+                    theme="threezerotwofour"
+                    data={screenshot.config.scripts?.postScripts}
+                  />
                 </Descriptions.Item>
               </Descriptions>
             </Collapse.Panel>

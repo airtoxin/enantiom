@@ -1,11 +1,11 @@
-## Enantiom Config JSON
+# Enantiom Config JSON
 
 The name of the configuration file can be anything you want.  
 JSON file can have those fields.
 
-## Top level fields
+# Top level fields
 
-### artifact_path
+## artifact_path
 
 **required** `String`
 
@@ -18,7 +18,7 @@ Allow both of path: absolute or relative from current directory (not from this j
 }
 ```
 
-### screenshots
+## screenshots
 
 **required** `Array<String | ScreenshotConfigObject>`
 
@@ -39,7 +39,7 @@ Or you can use more complex configurable [ScreenshotConfigObject](#ScreenshotCon
 }
 ```
 
-### sizes
+## sizes
 
 **optional** `WidthAndHeight | Array<WidthAndHeight>`  
 **default value: `{ width: 800, height: 600 }`**
@@ -56,7 +56,7 @@ If size is an array, screenshot of each URL will be taken for each of those size
 }
 ```
 
-### browsers
+## browsers
 
 **optional** `BrowserType | BrowserConfigObject | Array<BrowserType | BrowserConfigObject>`  
 **default value: `"chromium"`**
@@ -78,43 +78,37 @@ If the browser type is an array, screenshot of each URL will be taken for each o
 }
 ```
 
-### pre_script_path
+## scripting
 
-**optional** `String`
+**optional** `ScriptingConfigObject`
 
-Path to script js file.  
-Allow both of path: absolute or relative from current directory (not from this json file).  
-[example script](../example/scrollToBottom.js)
+See [more details](./SCRIPTING.md).
 
-Script file should export one default async function.  
-
-```typescript
-(
-  page: PlaywrightPage, 
-  browser: PlaywrightBrowser, 
-  context: PlaywrightBrowserContext
-) => Promise<void>
+```json5
+{
+  "scripting": {
+    "context_scripts": [],
+    "pre_scripts": [],
+    "post_scripts": []
+  }
+}
 ```
 
-[PlaywrightPage class](https://playwright.dev/docs/api/class-page)  
-[PlaywrightBrowser class](https://playwright.dev/docs/api/class-browser)  
-[PlaywrightBrowserContext class](https://playwright.dev/docs/api/class-browsercontext)
-
-### concurrency
+## concurrency
 
 **optional** `Number`  
 **default value: `1`**
 
 Concurrency of screenshot taking.
 
-### retry
+## retry
 
 **optional** `Number`  
 **default value: `0`**
 
 Num of retry count if error occurred in screenshot taking.
 
-### diff_options
+## diff_options
 
 **optional** `ODiffOptions`  
 **default value: `{ "outputDiffMask": true }`**
@@ -123,7 +117,7 @@ Options of calculating diff image.
 It pass-through to [odiff](https://github.com/dmtrKovalenko/odiff) library that internally uses.  
 [ODiffOptions](https://github.com/dmtrKovalenko/odiff#nodejs-1)
 
-## ScreenshotConfigObject
+# ScreenshotConfigObject
 
 ```json5
 {
@@ -148,14 +142,14 @@ Above settings takes those screenshots
 - example.com in 500x500 sized firefox
 - example.com in 1200x800 sized firefox
 
-### ScreenshotConfigObject.url
+## ScreenshotConfigObject.url
 
 **required** `String`
 
 The URL to take screenshots.  
 Only accepts simple string URL.
 
-### ScreenshotConfigObject.sizes
+## ScreenshotConfigObject.sizes
 
 **optional** `WidthAndHeight | Array<WidthAndHeight>`  
 **default value: top level `"sizes"` field value**
@@ -164,7 +158,7 @@ Specifies the browser screen size.
 Same interface of top level [sizes](#sizes) field.
 
 
-### ScreenshotConfigObject.browsers
+## ScreenshotConfigObject.browsers
 
 **optional** `BrowserType | BrowserConfigObject | Array<BrowserType | BrowserConfigObject>`  
 **default value: ScreenshotConfigObject.sizes field value**
@@ -172,7 +166,7 @@ Same interface of top level [sizes](#sizes) field.
 Specifies the browser type to be used for taking screenshot.  
 Same interface of top level [browsers](#browsers) field.
 
-### ScreenshotConfigObject.diff_options
+## ScreenshotConfigObject.diff_options
 
 **optional** `ODiffOptions`  
 **default value: top level `"diff_options"` field value**
@@ -180,7 +174,14 @@ Same interface of top level [browsers](#browsers) field.
 Options of calculating diff image.  
 Same interface of top level [diff_options](#diff_options) field.
 
-## BrowserConfigObject
+## ScreenshotConfigObject.scripting
+
+**optional** `ScriptingConfigObject`
+**default value: top level `"scripting"` field value**
+
+See [more details](./SCRIPTING.md).
+
+# BrowserConfigObject
 
 ```json5
 {
@@ -197,7 +198,7 @@ Above BrowserConfigObject takes those screenshots
 - URL in 500x500 sized firefox
 - URL in 1200x800 sized firefox
 
-### BrowserConfigObject.browser
+## BrowserConfigObject.browser
 
 **required** `BrowserType`
 
@@ -205,7 +206,7 @@ The browser type to take screenshot.
 Only accepts BrowserType string.  
 Valid browser types are `"chromium"`, `"firefox"` or `"webkit"`.
 
-### BrowserConfigObject.sizes
+## BrowserConfigObject.sizes
 
 **optional** `WidthAndHeight | Array<WidthAndHeight>`  
 **default value: parent (top level or ScreenshotConfigObject) `"sizes"` field value**
