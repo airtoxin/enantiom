@@ -26,7 +26,7 @@ export const ScreenshotConfig = z.lazy(() =>
       width: z.number(),
       height: z.number(),
     }),
-    preScriptPath: z.string().optional(),
+    scripts: EnantiomInternalScriptConfig.optional(),
     diffOptions: z.object({}).passthrough(),
   })
 );
@@ -54,4 +54,37 @@ export const ScreenshotResult = z.lazy(() =>
       })
       .optional(),
   })
+);
+
+export type EnantiomInternalScriptConfig = z.infer<
+  typeof EnantiomInternalScriptConfig
+>;
+export const EnantiomInternalScriptConfig = z.lazy(() =>
+  z.object({
+    contextScriptPath: z.string().optional(),
+    preScripts: z.array(ScriptType).optional(),
+    postScripts: z.array(ScriptType).optional(),
+  })
+);
+
+export type ScriptType = z.infer<typeof ScriptType>;
+export const ScriptType = z.lazy(() =>
+  z.union([
+    z.object({ type: z.literal("loadScript"), path: z.string() }),
+    z.object({ type: z.literal("waitForTimeout"), timeout: z.number() }),
+    z.object({ type: z.literal("waitForSelector"), selector: z.string() }),
+    z.object({ type: z.literal("waitForUrl"), url: z.string() }),
+    z.object({ type: z.literal("waitForRequest"), url: z.string() }),
+    z.object({ type: z.literal("waitForResponse"), url: z.string() }),
+    z.object({ type: z.literal("waitForNavigation"), url: z.string() }),
+    z.object({
+      type: z.literal("waitForLoadState"),
+      event: z.union([
+        z.literal("domcontentloaded"),
+        z.literal("load"),
+        z.literal("networkidle"),
+      ]),
+    }),
+    z.object({ type: z.literal("waitForEvent"), event: z.string() }),
+  ])
 );
