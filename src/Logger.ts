@@ -9,7 +9,7 @@ const LogLevelMap = {
 type LogLevel = keyof typeof LogLevelMap;
 
 class Logger {
-  constructor(public level: LogLevel = "warn") {}
+  constructor(public level: LogLevel = "info") {}
 
   public setVerbose() {
     if (this.level === "error") {
