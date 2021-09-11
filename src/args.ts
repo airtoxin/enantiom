@@ -5,6 +5,7 @@ export type EnantiomCliArgument = {
   verbose?: boolean[];
   help?: boolean;
   "no-html"?: boolean;
+  "fail-in-diff"?: boolean;
 };
 
 export const args = parse<EnantiomCliArgument>(
@@ -21,6 +22,11 @@ export const args = parse<EnantiomCliArgument>(
       type: Boolean,
       optional: true,
       description: "Disable HTML report and output JSON only",
+    },
+    "fail-in-diff": {
+      type: Boolean,
+      optional: true,
+      description: "CLI fails when diff exists",
     },
     help: {
       type: Boolean,
