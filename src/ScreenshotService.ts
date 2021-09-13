@@ -48,6 +48,7 @@ export class ScreenshotService {
                 await executeScript(contextScript, page, browser, context);
               }
 
+              logger.debug(`loading page ${screenshotConfig.url}`);
               await page.goto(screenshotConfig.url);
 
               for (const preScript of screenshotConfig.scripts?.preScripts ??
