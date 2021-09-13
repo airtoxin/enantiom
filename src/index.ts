@@ -56,7 +56,9 @@ const main = async (): Promise<number> => {
   logger.info(`Sync report output to artifact path.`);
   await syncer.sync(reportDirPath, config.artifactPath);
 
-  return result.screenshots.some((s) => s.diff != null) ? 1 : 0;
+  return args["fail-in-diff"] && result.screenshots.some((s) => s.diff != null)
+    ? 1
+    : 0;
 };
 
 main().then((code) => process.exit(code));
