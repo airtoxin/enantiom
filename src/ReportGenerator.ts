@@ -3,10 +3,11 @@ import { copy } from "fs-extra";
 import t from "temp";
 import { resolve } from "path";
 import { spawn as cspawn } from "child_process";
+import { EnantiomInternalConfig } from "./EnantiomInternalConfig";
 
 export class ReportGenerator {
   constructor(
-    private readonly projectPath: string,
+    private readonly config: EnantiomInternalConfig,
     private readonly outputDirPath: string
   ) {}
 
@@ -31,13 +32,13 @@ export class ReportGenerator {
 
     logger.info(`Generate HTML report.`);
 
-    const next = resolve(this.projectPath, "node_modules/.bin/next");
+    const next = resolve(this.config.projectPath, "node_modules/.bin/next");
     logger.debug(`next cli path: ${next}`);
 
-    await spawn(next, ["build", "--no-lint"], {
+    await this.spawn(next, ["build", "--no-lint"], {
       silent: !logger.isLogged("debug"),
     });
-    await spawn(
+    await this.spawn(
       next,
       [
         "export",
@@ -51,17 +52,21 @@ export class ReportGenerator {
     logger.info(`Generate HTML report success.`);
     return reportDirPath;
   }
-}
 
-const spawn = (cmd: string, args: string[], { silent = false } = {}) =>
-  new Promise<void>((resolvePromise, reject) => {
-    const projectPath = resolve(__dirname, "..");
-    logger.trace(`Spawning child process:${cmd} with args:${args}`);
-    const p = cspawn(cmd, args, { cwd: projectPath });
-    if (!silent) p.stdout.pipe(process.stdout);
-    p.stderr.pipe(process.stderr);
-    p.on("close", (code) => {
-      logger.debug(`${cmd} process exit code: ${code}`);
-      return code ? reject() : resolvePromise();
+  spawn(cmd: string, args: string[], { silent = false } = {}) {
+    return new Promise<void>((resolvePromise, reject) => {
+      const projectPath = resolve(__dirname, "..");
+      logger.trace(`Spawning child process:${cmd} with args:${args}`);
+      const p = cspawn(cmd, args, {
+        cwd: projectPath,
+        env: { ...process.env, NEXT_PUBLIC_BASE_PATH: this.config.basePath },
+      });
+      if (!silent) p.stdout.pipe(process.stdout);
+      p.stderr.pipe(process.stderr);
+      p.on("close", (code) => {
+        logger.debug(`${cmd} process exit code: ${code}`);
+        return code ? reject() : resolvePromise();
+      });
     });
-  });
+  }
+}

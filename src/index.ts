@@ -45,7 +45,7 @@ const main = async (): Promise<number> => {
   await stateFileService.appendSave(result);
 
   const reportGenerator = new ReportGenerator(
-    projectPath,
+    config,
     resolve(projectPath, "public", "assets")
   );
 
