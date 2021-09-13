@@ -6,6 +6,7 @@ export const EnantiomInternalConfig = z.lazy(() =>
   z.object({
     projectPath: z.string(),
     artifactPath: z.string(),
+    basePath: z.string(),
     currentTimestamp: z.string(),
     prevTimestamp: z.string().optional(),
     screenshotConfigs: z.array(ScreenshotConfig),

@@ -6,6 +6,7 @@ export type EnantiomConfig = z.infer<typeof EnantiomConfig>;
 export const EnantiomConfig = z.lazy(() =>
   z.object({
     artifact_path: z.string(),
+    base_path: z.string().optional(),
     browsers: arrayOrValue(
       z.union([SupportedBrowser, BrowserConfigObject])
     ).optional(),
