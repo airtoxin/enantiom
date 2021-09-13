@@ -61,18 +61,10 @@ export type EnantiomInternalScriptConfig = z.infer<
 >;
 export const EnantiomInternalScriptConfig = z.lazy(() =>
   z.object({
-    contextScripts: z.array(ContextScriptType).optional(),
+    contextScripts: z.array(ScriptType).optional(),
     preScripts: z.array(ScriptType).optional(),
     postScripts: z.array(ScriptType).optional(),
   })
-);
-
-export type ContextScriptType = z.infer<typeof ContextScriptType>;
-export const ContextScriptType = z.lazy(() =>
-  z.union([
-    z.object({ type: z.literal("function"), fn: z.function() }),
-    z.object({ type: z.literal("scriptFile"), path: z.string() }),
-  ])
 );
 
 export type ScriptType = z.infer<typeof ScriptType>;
