@@ -73,7 +73,7 @@ export class EnantiomConfigLoader {
       const diffOptions =
         typeof screenshot === "string"
           ? this.config.diff_options ?? DEFAULT_DIFF_OPTIONS
-          : screenshot.diff_options ?? DEFAULT_DIFF_OPTIONS;
+          : screenshot.diff_options ?? this.config.diff_options ?? DEFAULT_DIFF_OPTIONS;
       const scripts = this.createScriptsConfig(screenshot);
 
       return [
