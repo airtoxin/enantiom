@@ -18,6 +18,10 @@ If set multiple times, output more verbose logs.
 Disable HTML report and output JSON only.  
 JSON report will be placed to `artifact_path/assets/state.json` 
 
+## --fail-in-diff (optional)
+
+CLI fails when diff exists.
+
 ## --help (optional)
 
 **short option (-h)**  

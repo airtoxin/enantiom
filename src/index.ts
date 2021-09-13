@@ -10,7 +10,7 @@ import { args } from "./args";
 import { ReportGenerator } from "./ReportGenerator";
 import { remove } from "fs-extra";
 
-const main = async () => {
+const main = async (): Promise<number> => {
   args.verbose?.forEach(() => {
     logger.setVerbose();
   });
@@ -55,6 +55,10 @@ const main = async () => {
 
   logger.info(`Sync report output to artifact path.`);
   await syncer.sync(reportDirPath, config.artifactPath);
+
+  return args["fail-in-diff"] && result.screenshots.some((s) => s.diff != null)
+    ? 1
+    : 0;
 };
 
-main().then(() => process.exit(0));
+main().then((code) => process.exit(code));
