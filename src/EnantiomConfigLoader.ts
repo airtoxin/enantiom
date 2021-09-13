@@ -2,7 +2,6 @@ import { z } from "zod";
 import { readFile } from "fs/promises";
 import { EnantiomConfig, ScreenshotConfigObject } from "./EnantiomConfig";
 import {
-  ContextScriptType,
   EnantiomInternalScriptConfig,
   LoadStateEvent,
   ScreenshotConfig,
@@ -145,13 +144,13 @@ export class EnantiomConfigLoader {
       const preScripts =
         screenshotConfig.scripting.pre_scripts == null &&
         this.config.scripting != null
-          ? this.createContextScripts(this.config.scripting.pre_scripts)
-          : this.createContextScripts(screenshotConfig.scripting.pre_scripts);
+          ? this.createPreScripts(this.config.scripting.pre_scripts)
+          : this.createPreScripts(screenshotConfig.scripting.pre_scripts);
       const postScripts =
         screenshotConfig.scripting.post_scripts == null &&
         this.config.scripting != null
-          ? this.createContextScripts(this.config.scripting.post_scripts)
-          : this.createContextScripts(screenshotConfig.scripting.post_scripts);
+          ? this.createPostScripts(this.config.scripting.post_scripts)
+          : this.createPostScripts(screenshotConfig.scripting.post_scripts);
 
       return {
         contextScripts,
@@ -163,7 +162,7 @@ export class EnantiomConfigLoader {
 
   private createContextScripts(
     contextScriptsConfig?: string | string[]
-  ): ContextScriptType[] | undefined {
+  ): ScriptType[] | undefined {
     if (contextScriptsConfig == null) {
       if (
         this.config.scripting == null ||
@@ -172,11 +171,11 @@ export class EnantiomConfigLoader {
         return undefined;
       return [this.config.scripting.context_scripts]
         .flat()
-        .map((path) => ({ type: "scriptFile", path }));
+        .map(this.parseScriptTypeString);
     } else {
       return [contextScriptsConfig]
         .flat()
-        .map((path) => ({ type: "scriptFile", path }));
+        .map(this.parseScriptTypeString);
     }
   }
 

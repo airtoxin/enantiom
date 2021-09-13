@@ -1,7 +1,6 @@
 import playwright, { Browser, BrowserContext, Page } from "playwright";
 import { join, resolve } from "path";
 import {
-  ContextScriptType,
   Result,
   ScreenshotResult,
   ScriptType,
@@ -183,7 +182,7 @@ export class ScreenshotService {
 }
 
 const executeScript = async (
-  scriptConfig: ContextScriptType | ScriptType,
+  scriptConfig: ScriptType,
   page: Page,
   browser: Browser,
   context: BrowserContext
