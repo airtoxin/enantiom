@@ -250,7 +250,7 @@ export class EnantiomConfigLoader {
     } else if (str.startsWith("[click]=")) {
       return { type: "click", selector: str.slice("[click]=".length) };
     } else if (str.startsWith("[dblclick]=")) {
-      return { type: "dblclick", selector: str.slice("[click]=".length) };
+      return { type: "dblclick", selector: str.slice("[dblclick]=".length) };
     }
 
     throw new Error(`Unsupported script string: ${str}.`);

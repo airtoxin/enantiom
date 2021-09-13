@@ -242,5 +242,9 @@ const executeScript = async (
       logger.debug(`Click ${scriptConfig.selector} element.`);
       return page.click(scriptConfig.selector);
     }
+    case "dblclick": {
+      logger.debug(`Double-Click ${scriptConfig.selector} element.`);
+      return page.dblclick(scriptConfig.selector);
+    }
   }
 };
