@@ -10,13 +10,43 @@ JSON file can have those fields.
 **required** `String`
 
 Path to result report output directory.  
-Allow both of path: absolute or relative from current directory (not from this json file).
+Allow both of path: absolute or relative from current directory (not from this json file).  
 
-```json
+```json5
 {
   "artifact_path": "./dist"
 }
 ```
+
+or, you can also specify the S3 bucket directly.  
+In this case, you need to have the appropriate AWS credential information set as an environment variable such as `AWS_ACCESS_KEY_ID` etc.  
+The artifacts will be uploaded directly to the S3 bucket, and the metadata with the past execution history will also be automatically synchronized from the relevant S3 bucket.
+
+```json5
+{
+  "artifact_path": "s3://example_bucket/report"
+}
+```
+
+## base_path
+
+**optional** `String`
+**default value `"/"`**
+
+Specifies the path to be appended as a prefix to all paths in the report HTML.  
+This will match the path from the root directory of the serve to the output directory of the report when statically serving the final output report HTML.
+
+```json5
+{
+  "artifact_path": "./dist",
+  "base_path": "/enantiom/report"
+}
+```
+
+In the above example, the HTML report will be output to the `dist` directory created in the directory where you ran the CLI.  
+The report contains images and links to other report files, All of these start path from `/enantiom/report/...`.  
+If you are serving this report statically, for example in the `/www` directory, and you want to include its report there.  
+You will need to serve the artifacts in the `dist` directory as the `report` directory in `/www/enantiom/report`.
 
 ## screenshots
 
