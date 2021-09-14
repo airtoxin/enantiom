@@ -10,5 +10,6 @@ jobs:
         with:
           node-version: "14"
           check-latest: true
-      - run: npm ci
+      - run: npm i -g npm@latest
+      - run: npm i --no-optional
       - run: npm run test
