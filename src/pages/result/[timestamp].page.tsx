@@ -94,16 +94,20 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
         <Col>
           {links.newer && (
             <Link href={`/result/${links.newer}`}>
-              <LeftOutlined />
-              {formatTimestamp(links.newer)}
+              <a>
+                <LeftOutlined />
+                {formatTimestamp(links.newer)}
+              </a>
             </Link>
           )}
         </Col>
         <Col>
           {links.older && (
             <Link href={`/result/${links.older}`}>
-              {formatTimestamp(links.older)}
-              <RightOutlined />
+              <a>
+                {formatTimestamp(links.older)}
+                <RightOutlined />
+              </a>
             </Link>
           )}
         </Col>
@@ -196,13 +200,13 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
               <Divider />
               <Descriptions size="small">
                 <Descriptions.Item label="URL">
-                  <Link
+                  <Typography.Link
                     href={screenshot.config.url}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     {screenshot.config.url}
-                  </Link>
+                  </Typography.Link>
                 </Descriptions.Item>
                 <Descriptions.Item label="Browser">
                   <Tag color="magenta">{screenshot.config.browser}</Tag>
