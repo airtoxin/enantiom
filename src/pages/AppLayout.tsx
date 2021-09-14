@@ -8,6 +8,8 @@ import {
   ExclamationCircleTwoTone,
 } from "@ant-design/icons";
 import Head from "next/head";
+import urljoin from "url-join";
+import { basePath } from "./constants";
 
 const { Header, Sider, Content } = Layout;
 
@@ -23,7 +25,7 @@ export const AppLayout: FunctionComponent<{
         <link
           key="favicon"
           rel="icon"
-          href="/images/enantiom_object.svg"
+          href={urljoin(basePath, "/images/enantiom_object.svg")}
           type="image/svg+xml"
         />
       </Head>
@@ -36,7 +38,7 @@ export const AppLayout: FunctionComponent<{
         <Link href="/">
           <a>
             <img
-              src="/images/enantiom_logo_white.svg"
+              src={urljoin(basePath, "/images/enantiom_logo_white.svg")}
               alt="enantiom logo"
               width={260}
               height={64}

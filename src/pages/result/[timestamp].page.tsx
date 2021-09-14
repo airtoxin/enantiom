@@ -33,8 +33,9 @@ import { formatTimestamp, switcher } from "../../utils";
 import Head from "next/head";
 import Lightbox from "react-image-lightbox";
 import JsonTree from "react-json-tree";
-
-const { Link } = Typography;
+import urljoin from "url-join";
+import { basePath } from "../constants";
+import Link from "next/link";
 
 type Props = {
   state: State;
@@ -62,7 +63,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
         screenshot.prevFilepath ?? [],
       ]
         .flat()
-        .map((p) => `/${p}`),
+        .map((p) => urljoin(basePath, `/${p}`)),
     []
   );
   return (
@@ -138,7 +139,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                 <Col span={8}>
                   <Image
                     alt={`Current screenshot of ${result.timestamp}`}
-                    src={`/${screenshot.filepath}`}
+                    src={urljoin(basePath, `/${screenshot.filepath}`)}
                     preview={false}
                     style={{ cursor: "pointer" }}
                     onClick={() =>
@@ -154,7 +155,10 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                   {screenshot.diff ? (
                     <Image
                       alt={`Screenshot diff of ${result.timestamp}`}
-                      src={`/${screenshot.diff.diffFilepath}`}
+                      src={urljoin(
+                        basePath,
+                        `/${screenshot.diff.diffFilepath}`
+                      )}
                       preview={false}
                       style={{ cursor: "pointer" }}
                       onClick={() =>
@@ -173,7 +177,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                   {screenshot.prevFilepath ? (
                     <Image
                       alt={`Previous screenshot of ${result.timestamp}`}
-                      src={`/${screenshot.prevFilepath}`}
+                      src={urljoin(basePath, `/${screenshot.prevFilepath}`)}
                       preview={false}
                       style={{ cursor: "pointer" }}
                       onClick={() =>
