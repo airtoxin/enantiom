@@ -31,7 +31,6 @@ The artifacts will be uploaded directly to the S3 bucket, and the metadata with 
 ## base_path
 
 **optional** `String`
-**default value `"/"`**
 
 Specifies the path to be appended as a prefix to all paths in the report HTML.  
 This will match the path from the root directory of the serve to the output directory of the report when statically serving the final output report HTML.
