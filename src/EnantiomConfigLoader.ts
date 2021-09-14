@@ -51,6 +51,7 @@ export class EnantiomConfigLoader {
     return {
       projectPath: this.projectPath,
       artifactPath: this.config.artifact_path,
+      basePath: this.config.base_path ?? "/",
       currentTimestamp: `${Date.now()}`,
       screenshotConfigs: this.createScreenshotConfigs(),
       prevTimestamp: state.results[0]?.timestamp,
@@ -73,7 +74,9 @@ export class EnantiomConfigLoader {
       const diffOptions =
         typeof screenshot === "string"
           ? this.config.diff_options ?? DEFAULT_DIFF_OPTIONS
-          : screenshot.diff_options ?? this.config.diff_options ?? DEFAULT_DIFF_OPTIONS;
+          : screenshot.diff_options ??
+            this.config.diff_options ??
+            DEFAULT_DIFF_OPTIONS;
       const scripts = this.createScriptsConfig(screenshot);
 
       return [
@@ -173,9 +176,7 @@ export class EnantiomConfigLoader {
         .flat()
         .map(this.parseScriptTypeString);
     } else {
-      return [contextScriptsConfig]
-        .flat()
-        .map(this.parseScriptTypeString);
+      return [contextScriptsConfig].flat().map(this.parseScriptTypeString);
     }
   }
 

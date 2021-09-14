@@ -34,10 +34,7 @@ Create `enantiom.config.json`.
 ```json
 {
   "artifact_path": "./dist",
-  "screenshots": [
-    "https://example.com",
-    "https://time.is"
-  ]
+  "screenshots": ["https://example.com", "https://time.is"]
 }
 ```
 
@@ -47,7 +44,7 @@ Then, run enantiom cli with config option.
 $ enantiom --config enantiom.config.json
 ```
 
-One more time, run same command to calculate pixel diff from previous result. 
+One more time, run same command to calculate pixel diff from previous result.
 
 ```shell
 $ enantiom --config enantiom.config.json
@@ -89,5 +86,4 @@ $ yarn site:dev
 ## Feature TODOs
 
 - Debug mode
-- Non-top-level artifact_path
 - Reuse browser object option

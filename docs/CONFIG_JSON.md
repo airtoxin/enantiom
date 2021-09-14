@@ -12,11 +12,41 @@ JSON file can have those fields.
 Path to result report output directory.  
 Allow both of path: absolute or relative from current directory (not from this json file).
 
-```json
+```json5
 {
-  "artifact_path": "./dist"
+  artifact_path: "./dist",
 }
 ```
+
+or, you can also specify the S3 bucket directly.  
+In this case, you need to have the appropriate AWS credential information set as an environment variable such as `AWS_ACCESS_KEY_ID` etc.  
+The artifacts will be uploaded directly to the S3 bucket, and the metadata with the past execution history will also be automatically synchronized from the relevant S3 bucket.
+
+```json5
+{
+  artifact_path: "s3://example_bucket/report",
+}
+```
+
+## base_path
+
+**optional** `String`
+**default value `"/"`**
+
+Specifies the path to be appended as a prefix to all paths in the report HTML.  
+This will match the path from the root directory of the serve to the output directory of the report when statically serving the final output report HTML.
+
+```json5
+{
+  artifact_path: "./dist",
+  base_path: "/enantiom/report",
+}
+```
+
+In the above example, the HTML report will be output to the `dist` directory created in the directory where you ran the CLI.  
+The report contains images and links to other report files, All of these start path from `/enantiom/report/...`.  
+If you are serving this report statically, for example in the `/www` directory, and you want to include its report there.  
+You will need to serve the artifacts in the `dist` directory as the `report` directory in `/www/enantiom/report`.
 
 ## screenshots
 
@@ -28,31 +58,32 @@ Or you can use more complex configurable [ScreenshotConfigObject](#ScreenshotCon
 
 ```json5
 {
-  "screenshots": [
+  screenshots: [
     "https://example.com/simple", // Simple url string
-    { // ScreenshotConfigObject
-      "url": "https://example.com/object",
-      "browsers": ["firefox", "webkit"],
-      "size": { "width": 500, "height": 500 }
-    }
-  ]
+    {
+      // ScreenshotConfigObject
+      url: "https://example.com/object",
+      browsers: ["firefox", "webkit"],
+      size: { width: 500, height: 500 },
+    },
+  ],
 }
 ```
 
 ## sizes
 
 **optional** `WidthAndHeight | Array<WidthAndHeight>`  
-**default value: `{ width: 800, height: 600 }`**
+**default value: `{ "width": 800, "height": 600 }`**
 
 Specifies the browser screen size.  
 If size is an array, screenshot of each URL will be taken for each of those sizes.
 
 ```json5
 {
-  "sizes": [
-    { "width": 600, "height": 400 },
-    { "width": 1200, "height": 800 }
-  ]
+  sizes: [
+    { width: 600, height: 400 },
+    { width: 1200, height: 800 },
+  ],
 }
 ```
 
@@ -68,13 +99,14 @@ If the browser type is an array, screenshot of each URL will be taken for each o
 
 ```json5
 {
-  "browsers": [
-    "chromium", // Simple 
-    { // BrowserConfigObject
-      "browser": "firefox", 
-      "size": { "width": 500, "height": 500 }
-    }
-  ]
+  browsers: [
+    "chromium", // Simple
+    {
+      // BrowserConfigObject
+      browser: "firefox",
+      size: { width: 500, height: 500 },
+    },
+  ],
 }
 ```
 
@@ -86,11 +118,11 @@ See [more details](./SCRIPTING.md).
 
 ```json5
 {
-  "scripting": {
-    "context_scripts": [],
-    "pre_scripts": [],
-    "post_scripts": []
-  }
+  scripting: {
+    context_scripts: [],
+    pre_scripts: [],
+    post_scripts: [],
+  },
 }
 ```
 
@@ -121,18 +153,18 @@ It pass-through to [odiff](https://github.com/dmtrKovalenko/odiff) library that 
 
 ```json5
 {
-  "url": "https://example.com",
-  "browsers": [
-    "chromium", 
-    { 
-      "browser": "firefox", 
-      "sizes": [
-        { "width": 500, "height": 500 },
-        { "width": 1200, "height": 800 }
-      ]
-    }
+  url: "https://example.com",
+  browsers: [
+    "chromium",
+    {
+      browser: "firefox",
+      sizes: [
+        { width: 500, height: 500 },
+        { width: 1200, height: 800 },
+      ],
+    },
   ],
-  "sizes": { "width": 800, "height": 600 }
+  sizes: { width: 800, height: 600 },
 }
 ```
 
@@ -156,7 +188,6 @@ Only accepts simple string URL.
 
 Specifies the browser screen size.  
 Same interface of top level [sizes](#sizes) field.
-
 
 ## ScreenshotConfigObject.browsers
 
@@ -185,11 +216,11 @@ See [more details](./SCRIPTING.md).
 
 ```json5
 {
-  "browser": "firefox",
-  "sizes": [
-    { "width": 500, "height": 500 },
-    { "width": 1200, "height": 800 }
-  ]
+  browser: "firefox",
+  sizes: [
+    { width: 500, height: 500 },
+    { width: 1200, height: 800 },
+  ],
 }
 ```
 

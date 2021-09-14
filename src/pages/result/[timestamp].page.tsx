@@ -33,8 +33,9 @@ import { formatTimestamp, switcher } from "../../utils";
 import Head from "next/head";
 import Lightbox from "react-image-lightbox";
 import JsonTree from "react-json-tree";
-
-const { Link } = Typography;
+import urljoin from "url-join";
+import { basePath } from "../constants";
+import Link from "next/link";
 
 type Props = {
   state: State;
@@ -62,7 +63,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
         screenshot.prevFilepath ?? [],
       ]
         .flat()
-        .map((p) => `/${p}`),
+        .map((p) => urljoin(basePath, `/${p}`)),
     []
   );
   return (
@@ -93,16 +94,20 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
         <Col>
           {links.newer && (
             <Link href={`/result/${links.newer}`}>
-              <LeftOutlined />
-              {formatTimestamp(links.newer)}
+              <a>
+                <LeftOutlined />
+                {formatTimestamp(links.newer)}
+              </a>
             </Link>
           )}
         </Col>
         <Col>
           {links.older && (
             <Link href={`/result/${links.older}`}>
-              {formatTimestamp(links.older)}
-              <RightOutlined />
+              <a>
+                {formatTimestamp(links.older)}
+                <RightOutlined />
+              </a>
             </Link>
           )}
         </Col>
@@ -138,7 +143,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                 <Col span={8}>
                   <Image
                     alt={`Current screenshot of ${result.timestamp}`}
-                    src={`/${screenshot.filepath}`}
+                    src={urljoin(basePath, `/${screenshot.filepath}`)}
                     preview={false}
                     style={{ cursor: "pointer" }}
                     onClick={() =>
@@ -154,7 +159,10 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                   {screenshot.diff ? (
                     <Image
                       alt={`Screenshot diff of ${result.timestamp}`}
-                      src={`/${screenshot.diff.diffFilepath}`}
+                      src={urljoin(
+                        basePath,
+                        `/${screenshot.diff.diffFilepath}`
+                      )}
                       preview={false}
                       style={{ cursor: "pointer" }}
                       onClick={() =>
@@ -173,7 +181,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                   {screenshot.prevFilepath ? (
                     <Image
                       alt={`Previous screenshot of ${result.timestamp}`}
-                      src={`/${screenshot.prevFilepath}`}
+                      src={urljoin(basePath, `/${screenshot.prevFilepath}`)}
                       preview={false}
                       style={{ cursor: "pointer" }}
                       onClick={() =>
@@ -192,13 +200,13 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
               <Divider />
               <Descriptions size="small">
                 <Descriptions.Item label="URL">
-                  <Link
+                  <Typography.Link
                     href={screenshot.config.url}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     {screenshot.config.url}
-                  </Link>
+                  </Typography.Link>
                 </Descriptions.Item>
                 <Descriptions.Item label="Browser">
                   <Tag color="magenta">{screenshot.config.browser}</Tag>
