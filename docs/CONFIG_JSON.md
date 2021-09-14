@@ -10,11 +10,11 @@ JSON file can have those fields.
 **required** `String`
 
 Path to result report output directory.  
-Allow both of path: absolute or relative from current directory (not from this json file).  
+Allow both of path: absolute or relative from current directory (not from this json file).
 
 ```json5
 {
-  "artifact_path": "./dist"
+  artifact_path: "./dist",
 }
 ```
 
@@ -24,7 +24,7 @@ The artifacts will be uploaded directly to the S3 bucket, and the metadata with 
 
 ```json5
 {
-  "artifact_path": "s3://example_bucket/report"
+  artifact_path: "s3://example_bucket/report",
 }
 ```
 
@@ -38,8 +38,8 @@ This will match the path from the root directory of the serve to the output dire
 
 ```json5
 {
-  "artifact_path": "./dist",
-  "base_path": "/enantiom/report"
+  artifact_path: "./dist",
+  base_path: "/enantiom/report",
 }
 ```
 
@@ -73,7 +73,7 @@ Or you can use more complex configurable [ScreenshotConfigObject](#ScreenshotCon
 ## sizes
 
 **optional** `WidthAndHeight | Array<WidthAndHeight>`  
-**default value: `{ width: 800, height: 600 }`**
+**default value: `{ "width": 800, "height": 600 }`**
 
 Specifies the browser screen size.  
 If size is an array, screenshot of each URL will be taken for each of those sizes.

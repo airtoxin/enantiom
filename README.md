@@ -86,5 +86,4 @@ $ yarn site:dev
 ## Feature TODOs
 
 - Debug mode
-- Non-top-level artifact_path
 - Reuse browser object option
