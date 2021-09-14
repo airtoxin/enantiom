@@ -28,14 +28,15 @@ Or you can use more complex configurable [ScreenshotConfigObject](#ScreenshotCon
 
 ```json5
 {
-  "screenshots": [
+  screenshots: [
     "https://example.com/simple", // Simple url string
-    { // ScreenshotConfigObject
-      "url": "https://example.com/object",
-      "browsers": ["firefox", "webkit"],
-      "size": { "width": 500, "height": 500 }
-    }
-  ]
+    {
+      // ScreenshotConfigObject
+      url: "https://example.com/object",
+      browsers: ["firefox", "webkit"],
+      size: { width: 500, height: 500 },
+    },
+  ],
 }
 ```
 
@@ -49,10 +50,10 @@ If size is an array, screenshot of each URL will be taken for each of those size
 
 ```json5
 {
-  "sizes": [
-    { "width": 600, "height": 400 },
-    { "width": 1200, "height": 800 }
-  ]
+  sizes: [
+    { width: 600, height: 400 },
+    { width: 1200, height: 800 },
+  ],
 }
 ```
 
@@ -68,13 +69,14 @@ If the browser type is an array, screenshot of each URL will be taken for each o
 
 ```json5
 {
-  "browsers": [
-    "chromium", // Simple 
-    { // BrowserConfigObject
-      "browser": "firefox", 
-      "size": { "width": 500, "height": 500 }
-    }
-  ]
+  browsers: [
+    "chromium", // Simple
+    {
+      // BrowserConfigObject
+      browser: "firefox",
+      size: { width: 500, height: 500 },
+    },
+  ],
 }
 ```
 
@@ -86,11 +88,11 @@ See [more details](./SCRIPTING.md).
 
 ```json5
 {
-  "scripting": {
-    "context_scripts": [],
-    "pre_scripts": [],
-    "post_scripts": []
-  }
+  scripting: {
+    context_scripts: [],
+    pre_scripts: [],
+    post_scripts: [],
+  },
 }
 ```
 
@@ -121,18 +123,18 @@ It pass-through to [odiff](https://github.com/dmtrKovalenko/odiff) library that 
 
 ```json5
 {
-  "url": "https://example.com",
-  "browsers": [
-    "chromium", 
-    { 
-      "browser": "firefox", 
-      "sizes": [
-        { "width": 500, "height": 500 },
-        { "width": 1200, "height": 800 }
-      ]
-    }
+  url: "https://example.com",
+  browsers: [
+    "chromium",
+    {
+      browser: "firefox",
+      sizes: [
+        { width: 500, height: 500 },
+        { width: 1200, height: 800 },
+      ],
+    },
   ],
-  "sizes": { "width": 800, "height": 600 }
+  sizes: { width: 800, height: 600 },
 }
 ```
 
@@ -156,7 +158,6 @@ Only accepts simple string URL.
 
 Specifies the browser screen size.  
 Same interface of top level [sizes](#sizes) field.
-
 
 ## ScreenshotConfigObject.browsers
 
@@ -185,11 +186,11 @@ See [more details](./SCRIPTING.md).
 
 ```json5
 {
-  "browser": "firefox",
-  "sizes": [
-    { "width": 500, "height": 500 },
-    { "width": 1200, "height": 800 }
-  ]
+  browser: "firefox",
+  sizes: [
+    { width: 500, height: 500 },
+    { width: 1200, height: 800 },
+  ],
 }
 ```
 

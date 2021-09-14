@@ -1,10 +1,6 @@
 import playwright, { Browser, BrowserContext, Page } from "playwright";
 import { join, resolve } from "path";
-import {
-  Result,
-  ScreenshotResult,
-  ScriptType,
-} from "./State";
+import { Result, ScreenshotResult, ScriptType } from "./State";
 import objectHash from "object-hash";
 import { access, ensureDir } from "fs-extra";
 import { compare } from "odiff-bin";

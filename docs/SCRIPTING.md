@@ -8,11 +8,11 @@ If you specify multiple of these ScriptString, those scripting operations will b
 
 ```json5
 {
-  "scripting": {
-    "context_scripts": ["..."],
-    "pre_scripts": ["..."],
-    "post_scripts": ["..."]
-  }
+  scripting: {
+    context_scripts: ["..."],
+    pre_scripts: ["..."],
+    post_scripts: ["..."],
+  },
 }
 ```
 
@@ -22,7 +22,7 @@ ScriptString is used for operates internally used page or browser.
 All of ScriptString should be formed with `[op_name]=...`  
 ScriptString can be one of the following
 
-- `[timeout]=time`:  Waits for the given `time` in milliseconds. Internally uses [Page.waitForTimeout](https://playwright.dev/docs/api/class-page/#page-wait-for-timeout).
+- `[timeout]=time`: Waits for the given `time` in milliseconds. Internally uses [Page.waitForTimeout](https://playwright.dev/docs/api/class-page/#page-wait-for-timeout).
 - `[selector]=selector`: Waits until the result of the querying `selector` becomes available. Internally uses [Page.waitForSelector](https://playwright.dev/docs/api/class-page/#page-wait-for-selector). List of [Selectors](https://playwright.dev/docs/selectors/)
 - `[url]=url`: Wait for the transition to the given `url`. Internally uses [Page.waitForURL](https://playwright.dev/docs/api/class-page#page-wait-for-url).
 - `[request]=url`: Waits for the matching `url` request. Internally uses [Page.waitForRequest](https://playwright.dev/docs/api/class-page#page-wait-for-request).

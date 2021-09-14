@@ -16,7 +16,7 @@ If set multiple times, output more verbose logs.
 ## --no-html (optional)
 
 Disable HTML report and output JSON only.  
-JSON report will be placed to `artifact_path/assets/state.json` 
+JSON report will be placed to `artifact_path/assets/state.json`
 
 ## --fail-in-diff (optional)
 
