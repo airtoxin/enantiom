@@ -30,6 +30,8 @@ ScriptString can be one of the following
 - `[navigation]=url`: Waits for the main frame navigation to `url`. Internally uses [Page.waitForNavigation](https://playwright.dev/docs/api/class-page#page-wait-for-navigation).
 - `[state]=event`: Waits for the required load state `event` has been reached. Available events are `load`, `domcontentloaded`, `networkidle`. Internally uses [Page.waitForLoadState](https://playwright.dev/docs/api/class-page#page-wait-for-load-state).
 - `[event]=event`: Waits for given `event` fired. Internally uses [Page.waitForEvent](https://playwright.dev/docs/api/class-page#page-wait-for-event).
+- `[click]=selector`: Click given `selector` element.
+- `[dblclick]=selector`: Double-click given `selector` element.
 - `[file]=path`: Executes JavaScript file on `path`. File must export default function that have below interface.
 
 ```typescript

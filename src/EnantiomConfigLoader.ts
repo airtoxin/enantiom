@@ -248,6 +248,10 @@ export class EnantiomConfigLoader {
       };
     } else if (str.startsWith("[event]=")) {
       return { type: "waitForEvent", event: str.slice("[event]=".length) };
+    } else if (str.startsWith("[click]=")) {
+      return { type: "click", selector: str.slice("[click]=".length) };
+    } else if (str.startsWith("[dblclick]=")) {
+      return { type: "dblclick", selector: str.slice("[dblclick]=".length) };
     }
 
     throw new Error(`Unsupported script string: ${str}.`);

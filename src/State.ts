@@ -86,6 +86,8 @@ export const ScriptType = z.lazy(() =>
       event: LoadStateEvent,
     }),
     z.object({ type: z.literal("waitForEvent"), event: z.string() }),
+    z.object({ type: z.literal("click"), selector: z.string() }),
+    z.object({ type: z.literal("dblclick"), selector: z.string() })
   ])
 );
 

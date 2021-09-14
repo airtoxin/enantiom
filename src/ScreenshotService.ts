@@ -234,5 +234,13 @@ const executeScript = async (
       logger.debug(`Waiting for event ${scriptConfig.event}.`);
       return page.waitForEvent(scriptConfig.event as any);
     }
+    case "click": {
+      logger.debug(`Click ${scriptConfig.selector} element.`);
+      return page.click(scriptConfig.selector);
+    }
+    case "dblclick": {
+      logger.debug(`Double-Click ${scriptConfig.selector} element.`);
+      return page.dblclick(scriptConfig.selector);
+    }
   }
 };
