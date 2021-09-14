@@ -51,7 +51,7 @@ export class EnantiomConfigLoader {
     return {
       projectPath: this.projectPath,
       artifactPath: this.config.artifact_path,
-      basePath: this.config.base_path ?? "/",
+      basePath: this.config.base_path ?? "",
       currentTimestamp: `${Date.now()}`,
       screenshotConfigs: this.createScreenshotConfigs(),
       prevTimestamp: state.results[0]?.timestamp,
