@@ -66,21 +66,21 @@ examples are exists in [example](./example) directory.
 
 ## Development
 
-Setup: just run `yarn`
+Setup: just run `npm install`
 
 ### Tool development
 
 ```shell
-$ yarn build
-$ yarn link
+$ npm run build
+$ npm link
 $ enantiom --config example/enantiom.config.json --no-html
 ```
 
 ### React console development
 
 ```shell
-$ yarn dev --config example/enantiom.config.json
-$ yarn site:dev
+$ npm run dev --config example/enantiom.config.json
+$ npm run site:dev
 ```
 
 ## Feature TODOs
