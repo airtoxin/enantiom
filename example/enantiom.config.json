@@ -1,5 +1,5 @@
 {
-  "artifact_path": "dist",
+  "artifact_path": "dist/a",
   "base_path": "/a",
   "sizes": [
     { "width": 800, "height": 600 },
