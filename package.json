@@ -71,9 +71,11 @@
     "ts-node": "^10.2.1"
   },
   "files": [
-    "src/**/*.js",
-    "src/**/*.jsx",
+    "src",
+    "tsconfig.json",
     "next.config.js",
-    "public/images"
+    "next-env.d.ts",
+    "public/images",
+    "yarn.lock"
   ]
 }
