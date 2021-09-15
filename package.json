@@ -30,7 +30,7 @@
     "@types/jest": "^27.0.1",
     "@types/mime-types": "^2.1.1",
     "@types/node": "^16.7.4",
-    "@types/object-hash": "^2.1.1",
+    "@types/object-hash": "2.1.1",
     "@types/p-limit": "^2.2.0",
     "@types/p-retry": "^3.0.1",
     "@types/react": "^17.0.19",
