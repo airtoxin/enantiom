@@ -21,6 +21,7 @@ export type ScreenshotConfig = z.infer<typeof ScreenshotConfig>;
 export const ScreenshotConfig = z.lazy(() =>
   z.object({
     url: z.string(),
+    name: z.string().optional(),
     browser: SupportedBrowser,
     size: z.object({
       width: z.number(),
@@ -87,7 +88,7 @@ export const ScriptType = z.lazy(() =>
     }),
     z.object({ type: z.literal("waitForEvent"), event: z.string() }),
     z.object({ type: z.literal("click"), selector: z.string() }),
-    z.object({ type: z.literal("dblclick"), selector: z.string() })
+    z.object({ type: z.literal("dblclick"), selector: z.string() }),
   ])
 );
 

@@ -44,6 +44,7 @@ export type ScreenshotConfigObject = z.infer<typeof ScreenshotConfigObject>;
 export const ScreenshotConfigObject = z.lazy(() =>
   z.object({
     url: z.string(),
+    name: z.string().optional(),
     browsers: arrayOrValue(
       z.union([SupportedBrowser, BrowserConfigObject])
     ).optional(),

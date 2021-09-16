@@ -129,7 +129,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
                 <Space>
                   <ResultSummaryIcon screenshot={screenshot} />
                   <Typography.Text strong>
-                    {screenshot.config.url}
+                    {screenshot.config.name || screenshot.config.url}
                   </Typography.Text>
                   <Tag color="magenta">{screenshot.config.browser}</Tag>
                   <Tag color="cyan">

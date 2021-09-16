@@ -180,6 +180,13 @@ Above settings takes those screenshots
 The URL to take screenshots.  
 Only accepts simple string URL.
 
+## ScreenshotConfigObject.name
+
+**optional** `String`
+
+Name of url.  
+It is only used to help you to understand the output report.
+
 ## ScreenshotConfigObject.sizes
 
 **optional** `WidthAndHeight | Array<WidthAndHeight>`  

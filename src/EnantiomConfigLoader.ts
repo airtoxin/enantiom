@@ -67,6 +67,7 @@ export class EnantiomConfigLoader {
       logger.trace(screenshot);
 
       const url = typeof screenshot === "string" ? screenshot : screenshot.url;
+      const name = typeof screenshot === "string" ? undefined : screenshot.name;
       const screenshotBrowserConfig =
         typeof screenshot === "string" ? null : screenshot.browsers;
       const screenshotSizeConfig =
@@ -89,6 +90,7 @@ export class EnantiomConfigLoader {
               .flat()
               .map((size) => ({
                 url,
+                name,
                 browser,
                 size,
                 scripts,
@@ -104,6 +106,7 @@ export class EnantiomConfigLoader {
               .flat()
               .map((size) => ({
                 url,
+                name,
                 browser: browser.browser,
                 size,
                 scripts,
