@@ -35,58 +35,62 @@ export class ScreenshotService {
               const browser = await playwright[
                 screenshotConfig.browser
               ].launch();
-              const context = await browser.newContext();
-              const page = await context.newPage();
-              await page.setViewportSize(screenshotConfig.size);
+              logger.debug(`Browser ${screenshotConfig.browser} launched.`);
 
-              for (const contextScript of screenshotConfig.scripts
-                ?.contextScripts ?? []) {
-                await executeScript(contextScript, page, browser, context);
+              try {
+                const context = await browser.newContext();
+                const page = await context.newPage();
+                await page.setViewportSize(screenshotConfig.size);
+
+                for (const contextScript of screenshotConfig.scripts
+                  ?.contextScripts ?? []) {
+                  await executeScript(contextScript, page, browser, context);
+                }
+
+                logger.debug(`loading page ${screenshotConfig.url}`);
+                await page.goto(screenshotConfig.url);
+
+                for (const preScript of screenshotConfig.scripts?.preScripts ??
+                  []) {
+                  await executeScript(preScript, page, browser, context);
+                }
+
+                const hash = objectHash(screenshotConfig);
+                logger.debug(`result hash: ${hash}`);
+                const filename = `${hash}.png`;
+                const dirname = join(
+                  this.config.projectPath,
+                  "public",
+                  "assets",
+                  this.config.currentTimestamp
+                );
+                await ensureDir(dirname);
+                const absoluteFilepath = join(dirname, filename);
+                const filepath = join(
+                  "assets",
+                  this.config.currentTimestamp,
+                  filename
+                );
+
+                logger.info(`Saving screenshot to ${absoluteFilepath}`);
+                await page.screenshot({
+                  path: absoluteFilepath,
+                });
+
+                for (const postScript of screenshotConfig.scripts
+                  ?.postScripts ?? []) {
+                  await executeScript(postScript, page, browser, context);
+                }
+
+                return {
+                  hash,
+                  config: screenshotConfig,
+                  filepath,
+                };
+              } finally {
+                await browser.close();
+                logger.debug(`Browser closed successfully.`);
               }
-
-              logger.debug(`loading page ${screenshotConfig.url}`);
-              await page.goto(screenshotConfig.url);
-
-              for (const preScript of screenshotConfig.scripts?.preScripts ??
-                []) {
-                await executeScript(preScript, page, browser, context);
-              }
-
-              const hash = objectHash(screenshotConfig);
-              logger.debug(`result hash: ${hash}`);
-              const filename = `${hash}.png`;
-              const dirname = join(
-                this.config.projectPath,
-                "public",
-                "assets",
-                this.config.currentTimestamp
-              );
-              await ensureDir(dirname);
-              const absoluteFilepath = join(dirname, filename);
-              const filepath = join(
-                "assets",
-                this.config.currentTimestamp,
-                filename
-              );
-
-              logger.info(`Saving screenshot to ${absoluteFilepath}`);
-              await page.screenshot({
-                path: absoluteFilepath,
-              });
-
-              for (const postScript of screenshotConfig.scripts?.postScripts ??
-                []) {
-                await executeScript(postScript, page, browser, context);
-              }
-
-              await browser.close();
-              logger.debug(`Browser closed successfully.`);
-
-              return {
-                hash,
-                config: screenshotConfig,
-                filepath,
-              };
             },
             { retries: this.config.retry }
           )
