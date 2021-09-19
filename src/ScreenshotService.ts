@@ -93,7 +93,12 @@ export class ScreenshotService {
                 logger.debug(`Browser closed successfully.`);
               }
             },
-            { retries: this.config.retry }
+            {
+              retries: this.config.retry,
+              onFailedAttempt: (error) => {
+                logger.info(error);
+              },
+            }
           )
         )
       )
