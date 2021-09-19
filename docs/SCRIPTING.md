@@ -22,17 +22,18 @@ ScriptString is used for operates internally used page or browser.
 All of ScriptString should be formed with `[op_name]=...`  
 ScriptString can be one of the following
 
-- `[timeout]=time`: Waits for the given `time` in milliseconds. Internally uses [Page.waitForTimeout](https://playwright.dev/docs/api/class-page/#page-wait-for-timeout).
-- `[selector]=selector`: Waits until the result of the querying `selector` becomes available. Internally uses [Page.waitForSelector](https://playwright.dev/docs/api/class-page/#page-wait-for-selector). List of [Selectors](https://playwright.dev/docs/selectors/)
-- `[url]=url`: Wait for the transition to the given `url`. Internally uses [Page.waitForURL](https://playwright.dev/docs/api/class-page#page-wait-for-url).
-- `[request]=url`: Waits for the matching `url` request. Internally uses [Page.waitForRequest](https://playwright.dev/docs/api/class-page#page-wait-for-request).
-- `[response]=url`: Waits for the matching `url` response. Internally uses [Page.waitForResponse](https://playwright.dev/docs/api/class-page#page-wait-for-response).
-- `[navigation]=url`: Waits for the main frame navigation to `url`. Internally uses [Page.waitForNavigation](https://playwright.dev/docs/api/class-page#page-wait-for-navigation).
-- `[state]=event`: Waits for the required load state `event` has been reached. Available events are `load`, `domcontentloaded`, `networkidle`. Internally uses [Page.waitForLoadState](https://playwright.dev/docs/api/class-page#page-wait-for-load-state).
-- `[event]=event`: Waits for given `event` fired. Internally uses [Page.waitForEvent](https://playwright.dev/docs/api/class-page#page-wait-for-event).
-- `[click]=selector`: Click given `selector` element.
-- `[dblclick]=selector`: Double-click given `selector` element.
-- `[file]=path`: Executes JavaScript file on `path`. File must export default function that have below interface.
+- `[wait-timeout]=time`: Waits for the given `time` in milliseconds. [details](https://playwright.dev/docs/api/class-page/#page-wait-for-timeout).
+- `[wait-selector]=selector`: Waits until the result of the querying `selector` becomes available. [details](https://playwright.dev/docs/api/class-page/#page-wait-for-selector).
+- `[wait-url]=url`: Waits for the transition to the given `url`. [details](https://playwright.dev/docs/api/class-page#page-wait-for-url).
+- `[wait-request]=url`: Waits for the matching `url` request. [details](https://playwright.dev/docs/api/class-page#page-wait-for-request).
+- `[wait-response]=url`: Waits for the matching `url` response. [details](https://playwright.dev/docs/api/class-page#page-wait-for-response).
+- `[wait-navigation]=url`: Waits for the main frame navigation to `url`. [details](https://playwright.dev/docs/api/class-page#page-wait-for-navigation).
+- `[wait-state]=event`: Waits for the required load state `event` has been reached. Available events are `load`, `domcontentloaded`, `networkidle`. [details](https://playwright.dev/docs/api/class-page#page-wait-for-load-state).
+- `[wait-event]=event`: Waits for given `event` fired. [details](https://playwright.dev/docs/api/class-page#page-wait-for-event).
+- `[set-timeout]=time`: Set given `time` as milliseconds to page scripting timeout. [details](https://playwright.dev/docs/api/class-page#page-set-default-timeout)
+- `[click]=selector`: Click given `selector` element. [details](https://playwright.dev/docs/api/class-page#page-click)
+- `[dblclick]=selector`: Double-click given `selector` element. [details](https://playwright.dev/docs/api/class-page#page-dblclick)
+- `[exec-file]=path`: Executes JavaScript file on `path`. File must export default function that have below interface.
 
 ```typescript
 import { Browser, BrowserContext, Page  } from "playwright";

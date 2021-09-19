@@ -218,39 +218,50 @@ export class EnantiomConfigLoader {
   }
 
   private parseScriptTypeString(str: string): ScriptType {
-    if (str.startsWith("[file]=")) {
-      return { type: "scriptFile", path: str.slice("[file]=".length) };
-    } else if (str.startsWith("[timeout]=")) {
+    if (str.startsWith("[exec-file]=")) {
+      return { type: "scriptFile", path: str.slice("[exec-file]=".length) };
+    } else if (str.startsWith("[set-timeout]=")) {
+      return {
+        type: "setTimeout",
+        timeout: Number.parseFloat(str.slice("[set-timeout]=".length)),
+      };
+    } else if (str.startsWith("[wait-timeout]=")) {
       return {
         type: "waitForTimeout",
-        timeout: Number.parseFloat(str.slice("[timeout]=".length)),
+        timeout: Number.parseFloat(str.slice("[wait-timeout]=".length)),
       };
-    } else if (str.startsWith("[selector]=")) {
+    } else if (str.startsWith("[wait-selector]=")) {
       return {
         type: "waitForSelector",
-        selector: str.slice("[selector]=".length),
+        selector: str.slice("[wait-selector]=".length),
       };
-    } else if (str.startsWith("[url]=")) {
+    } else if (str.startsWith("[wait-url]=")) {
       return {
         type: "waitForUrl",
-        url: str.slice("[url]=".length),
+        url: str.slice("[wait-url]=".length),
       };
-    } else if (str.startsWith("[request]=")) {
-      return { type: "waitForRequest", url: str.slice("[request]=".length) };
-    } else if (str.startsWith("[response]=")) {
-      return { type: "waitForResponse", url: str.slice("[response]=".length) };
-    } else if (str.startsWith("[navigation]=")) {
+    } else if (str.startsWith("[wait-request]=")) {
+      return {
+        type: "waitForRequest",
+        url: str.slice("[wait-request]=".length),
+      };
+    } else if (str.startsWith("[wait-response]=")) {
+      return {
+        type: "waitForResponse",
+        url: str.slice("[wait-response]=".length),
+      };
+    } else if (str.startsWith("[wait-navigation]=")) {
       return {
         type: "waitForNavigation",
-        url: str.slice("[navigation]=".length),
+        url: str.slice("[wait-navigation]=".length),
       };
-    } else if (str.startsWith("[state]=")) {
+    } else if (str.startsWith("[wait-state]=")) {
       return {
         type: "waitForLoadState",
-        event: LoadStateEvent.parse(str.slice("[state]=".length)),
+        event: LoadStateEvent.parse(str.slice("[wait-state]=".length)),
       };
-    } else if (str.startsWith("[event]=")) {
-      return { type: "waitForEvent", event: str.slice("[event]=".length) };
+    } else if (str.startsWith("[wait-event]=")) {
+      return { type: "waitForEvent", event: str.slice("[wait-event]=".length) };
     } else if (str.startsWith("[click]=")) {
       return { type: "click", selector: str.slice("[click]=".length) };
     } else if (str.startsWith("[dblclick]=")) {
