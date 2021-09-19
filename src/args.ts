@@ -16,8 +16,7 @@ runCommand.requiredOption("-c, --config <path>", "Path to config file");
 runCommand.option(
   "-v, --verbose",
   "Increase verbosity (allow multiple)",
-  (_, v) => v + 1,
-  0
+  (_, v: number = 0) => v + 1
 );
 runCommand.option("--no-html", "Disable HTML report and output JSON only");
 runCommand.option("--fail-in-diff", "CLI fails when diff exists");
