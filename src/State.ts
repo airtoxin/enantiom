@@ -29,6 +29,7 @@ export const ScreenshotConfig = z.lazy(() =>
     }),
     scripts: EnantiomInternalScriptConfig.optional(),
     diffOptions: z.object({}).passthrough(),
+    timeout: z.number(),
   })
 );
 

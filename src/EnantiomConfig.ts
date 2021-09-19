@@ -16,6 +16,7 @@ export const EnantiomConfig = z.lazy(() =>
     retry: z.number().optional(),
     diff_options: z.object({}).passthrough().optional(),
     scripting: ScriptingConfigObject.optional(),
+    timeout: z.number().optional(),
   })
 );
 
@@ -51,6 +52,7 @@ export const ScreenshotConfigObject = z.lazy(() =>
     sizes: arrayOrValue(BrowserSize).optional(),
     diff_options: z.object({}).passthrough().optional(),
     scripting: ScriptingConfigObject.optional(),
+    timeout: z.number().optional(),
   })
 );
 

@@ -18,6 +18,7 @@ const DEFAULT_RETRY = 0;
 const DEFAULT_DIFF_OPTIONS = {
   outputDiffMask: true,
 };
+const DEFAULT_TIMEOUT = 30 * 1000;
 
 export class EnantiomConfigLoader {
   private config!: z.infer<typeof EnantiomConfig>;
@@ -79,6 +80,10 @@ export class EnantiomConfigLoader {
             this.config.diff_options ??
             DEFAULT_DIFF_OPTIONS;
       const scripts = this.createScriptsConfig(screenshot);
+      const timeout =
+        typeof screenshot === "string"
+          ? this.config.timeout ?? DEFAULT_TIMEOUT
+          : screenshot.timeout ?? this.config.timeout ?? DEFAULT_TIMEOUT;
 
       return [
         screenshotBrowserConfig ?? this.config.browsers ?? DEFAULT_BROWSER,
@@ -95,6 +100,7 @@ export class EnantiomConfigLoader {
                 size,
                 scripts,
                 diffOptions,
+                timeout,
               }));
           } else {
             return [
@@ -111,6 +117,7 @@ export class EnantiomConfigLoader {
                 size,
                 scripts,
                 diffOptions,
+                timeout,
               }));
           }
         });
