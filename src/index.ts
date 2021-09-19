@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { handleRunCommand, exec } from "./args";
+import { handleRunCommand, exec } from "./cliCommand";
 import pAny from "p-any";
 import { runHandler } from "./handlers/runHandler";
 
