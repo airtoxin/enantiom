@@ -41,6 +41,7 @@ export class ScreenshotService {
                 const context = await browser.newContext();
                 const page = await context.newPage();
                 await page.setViewportSize(screenshotConfig.size);
+                await page.setDefaultTimeout(screenshotConfig.timeout);
 
                 for (const contextScript of screenshotConfig.scripts
                   ?.contextScripts ?? []) {
@@ -92,7 +93,12 @@ export class ScreenshotService {
                 logger.debug(`Browser closed successfully.`);
               }
             },
-            { retries: this.config.retry }
+            {
+              retries: this.config.retry,
+              onFailedAttempt: (error) => {
+                logger.info(error);
+              },
+            }
           )
         )
       )
@@ -237,6 +243,10 @@ const executeScript = async (
       // FIXME: more strict event type
       logger.debug(`Waiting for event ${scriptConfig.event}.`);
       return page.waitForEvent(scriptConfig.event as any);
+    }
+    case "setTimeout": {
+      logger.debug(`Set timeout milliseconds to ${scriptConfig.timeout}.`);
+      return page.setDefaultTimeout(scriptConfig.timeout);
     }
     case "click": {
       logger.debug(`Click ${scriptConfig.selector} element.`);

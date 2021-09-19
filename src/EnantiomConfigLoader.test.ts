@@ -4,6 +4,7 @@ import { EnantiomConfig } from "./EnantiomConfig";
 const DEFAULT_BROWSER = "chromium";
 const DEFAULT_SIZE = { width: 800, height: 600 };
 const DEFAULT_DIFF_OPTIONS = { outputDiffMask: true };
+const DEFAULT_TIMEOUT = 30000;
 
 const createDefaultContext = () => {
   const loader = new EnantiomConfigLoader(
@@ -30,6 +31,7 @@ describe("EnantiomConfigLoader", () => {
           browser: DEFAULT_BROWSER,
           size: DEFAULT_SIZE,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -44,12 +46,14 @@ describe("EnantiomConfigLoader", () => {
           browser: DEFAULT_BROWSER,
           size: DEFAULT_SIZE,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: DEFAULT_BROWSER,
           size: DEFAULT_SIZE,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -63,12 +67,14 @@ describe("EnantiomConfigLoader", () => {
           browser: "webkit",
           size: DEFAULT_SIZE,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "firefox",
           size: DEFAULT_SIZE,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -84,12 +90,14 @@ describe("EnantiomConfigLoader", () => {
           browser: DEFAULT_BROWSER,
           size: customSize1,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: DEFAULT_BROWSER,
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -108,48 +116,56 @@ describe("EnantiomConfigLoader", () => {
           browser: "webkit",
           size: customSize1,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "webkit",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "firefox",
           size: customSize1,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "firefox",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: "webkit",
           size: customSize1,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: "webkit",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: "firefox",
           size: customSize1,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: "firefox",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -163,6 +179,7 @@ describe("EnantiomConfigLoader", () => {
           browser: "firefox",
           size: DEFAULT_SIZE,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -177,6 +194,7 @@ describe("EnantiomConfigLoader", () => {
           browser: "firefox",
           size: customSize,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -194,12 +212,14 @@ describe("EnantiomConfigLoader", () => {
           browser: "firefox",
           size: customSize1,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "firefox",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -218,18 +238,21 @@ describe("EnantiomConfigLoader", () => {
           browser: "firefox",
           size: DEFAULT_SIZE,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "webkit",
           size: customSize1,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "webkit",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -243,6 +266,7 @@ describe("EnantiomConfigLoader", () => {
           browser: DEFAULT_BROWSER,
           size: DEFAULT_SIZE,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -256,6 +280,7 @@ describe("EnantiomConfigLoader", () => {
           browser: "firefox",
           size: DEFAULT_SIZE,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -272,6 +297,7 @@ describe("EnantiomConfigLoader", () => {
           browser: "firefox",
           size: customSize,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -298,30 +324,35 @@ describe("EnantiomConfigLoader", () => {
           browser: "chromium",
           size: DEFAULT_SIZE,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "firefox",
           size: customSize1,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "firefox",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "webkit",
           size: customSize3,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "webkit",
           size: customSize4,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -356,36 +387,42 @@ describe("EnantiomConfigLoader", () => {
           browser: "chromium",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url1,
           browser: "chromium",
           size: customSize3,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url1,
           browser: "firefox",
           size: customSize4,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url1,
           browser: "firefox",
           size: customSize5,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: "webkit",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: "webkit",
           size: customSize3,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -412,24 +449,28 @@ describe("EnantiomConfigLoader", () => {
           browser: "chromium",
           size: customSize3,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "chromium",
           size: customSize4,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "firefox",
           size: customSize1,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url,
           browser: "firefox",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });
@@ -472,144 +513,168 @@ describe("EnantiomConfigLoader", () => {
           browser: "chromium",
           size: customSize3,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url1,
           browser: "chromium",
           size: customSize4,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url1,
           browser: "firefox",
           size: customSize3,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url1,
           browser: "firefox",
           size: customSize4,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url1,
           browser: "webkit",
           size: customSize1,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url1,
           browser: "webkit",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: "chromium",
           size: customSize3,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: "chromium",
           size: customSize4,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: "firefox",
           size: customSize3,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: "firefox",
           size: customSize4,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: "webkit",
           size: customSize1,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url2,
           browser: "webkit",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url3,
           browser: "chromium",
           size: customSize5,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url3,
           browser: "chromium",
           size: customSize6,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url3,
           browser: "firefox",
           size: customSize5,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url3,
           browser: "firefox",
           size: customSize6,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url3,
           browser: "webkit",
           size: customSize1,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url3,
           browser: "webkit",
           size: customSize2,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url4,
           browser: "webkit",
           size: customSize3,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url4,
           browser: "webkit",
           size: customSize4,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url5,
           browser: "firefox",
           size: customSize3,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url5,
           browser: "firefox",
           size: customSize4,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url5,
           browser: "webkit",
           size: customSize5,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
         {
           url: url5,
           browser: "webkit",
           size: customSize6,
           diffOptions: DEFAULT_DIFF_OPTIONS,
+          timeout: DEFAULT_TIMEOUT,
         },
       ]);
     });

@@ -29,6 +29,7 @@ export const ScreenshotConfig = z.lazy(() =>
     }),
     scripts: EnantiomInternalScriptConfig.optional(),
     diffOptions: z.object({}).passthrough(),
+    timeout: z.number(),
   })
 );
 
@@ -76,6 +77,7 @@ export const ScriptType = z.lazy(() =>
       fn: z.function().args(z.any(), z.any(), z.any()),
     }),
     z.object({ type: z.literal("scriptFile"), path: z.string() }),
+    z.object({ type: z.literal("setTimeout"), timeout: z.number() }),
     z.object({ type: z.literal("waitForTimeout"), timeout: z.number() }),
     z.object({ type: z.literal("waitForSelector"), selector: z.string() }),
     z.object({ type: z.literal("waitForUrl"), url: z.string() }),
