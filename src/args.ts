@@ -1,46 +1,35 @@
-import { parse } from "ts-command-line-args";
+import { Command } from "commander";
+import { z } from "zod";
 
-export type EnantiomCliArgument = {
-  config: string;
-  verbose?: boolean[];
-  help?: boolean;
-  "no-html"?: boolean;
-  "fail-in-diff"?: boolean;
-};
+export type RunCommandOptions = z.infer<typeof RunCommandOptions>;
+const RunCommandOptions = z.object({
+  html: z.boolean().default(true),
+  verbose: z.number().default(0),
+  config: z.string(),
+  failInDiff: z.boolean().default(false),
+});
 
-export const args = parse<EnantiomCliArgument>(
-  {
-    config: { type: String, alias: "c", description: "Path to config file" },
-    verbose: {
-      type: Boolean,
-      alias: "v",
-      multiple: true,
-      optional: true,
-      description: "Output verbose log (allow multiple)",
-    },
-    "no-html": {
-      type: Boolean,
-      optional: true,
-      description: "Disable HTML report and output JSON only",
-    },
-    "fail-in-diff": {
-      type: Boolean,
-      optional: true,
-      description: "CLI fails when diff exists",
-    },
-    help: {
-      type: Boolean,
-      optional: true,
-      alias: "h",
-      description: "Prints this usage guide",
-    },
-  },
-  {
-    helpArg: "help",
-    headerContentSections: [
-      {
-        header: "enantiom CLI",
-      },
-    ],
-  }
+const program = new Command();
+
+const runCommand = program.command("run");
+runCommand.requiredOption("-c, --config <path>", "Path to config file");
+runCommand.option(
+  "-v, --verbose",
+  "Increase verbosity (allow multiple)",
+  (_, v) => v + 1,
+  0
 );
+runCommand.option("--no-html", "Disable HTML report and output JSON only");
+runCommand.option("--fail-in-diff", "CLI fails when diff exists");
+
+export const handleRunCommand = (
+  handler: (options: RunCommandOptions) => Promise<number>
+): Promise<number> =>
+  new Promise((resolve, reject) => {
+    runCommand.action((options) => {
+      const runOptions = RunCommandOptions.parse(options);
+      handler(runOptions).then(resolve).catch(reject);
+    });
+  });
+
+export const exec = () => program.parse(process.argv);
