@@ -1,8 +1,8 @@
 import sharp from "sharp";
 import { seq } from "./utils";
 
-export const getOpaqueRegions = () =>
-  sharp("a.png")
+export const getOpaqueRegions = (imagePath: string) =>
+  sharp(imagePath)
     .raw()
     .ensureAlpha()
     .toBuffer({ resolveWithObject: true })
