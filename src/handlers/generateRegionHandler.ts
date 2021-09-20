@@ -1,5 +1,5 @@
 import { GenerateRegionCommandOptions } from "../EnantiomCli";
-import { getOpaqueRegions } from "../sharp";
+import { getOpaqueRegions } from "../getOpaqueRegions";
 
 export const generateRegionHandler = async (
   commandOptions: GenerateRegionCommandOptions

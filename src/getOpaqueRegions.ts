@@ -1,13 +1,14 @@
 import sharp from "sharp";
 import { seq } from "./utils";
 
-export const getOpaqueRegions = (imagePath: string) =>
+export type Region = { x1: number; y1: number; x2: number; y2: number };
+export const getOpaqueRegions = (imagePath: string): Promise<Region[]> =>
   sharp(imagePath)
     .raw()
     .ensureAlpha()
     .toBuffer({ resolveWithObject: true })
     .then(({ data, info }) => {
-      const regions: { x1: number; y1: number; x2: number; y2: number }[] = [];
+      const regions: Region[] = [];
       let size = 0;
       for (const y of seq(info.height)) {
         for (const x of seq(info.width)) {
