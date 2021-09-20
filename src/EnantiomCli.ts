@@ -15,7 +15,7 @@ export class EnantiomCli {
     .option("--fail-in-diff", "CLI fails when diff exists");
   private generateRegionCommand = this.program
     .command("generate-region")
-    .requiredOption("-c, --config <path>", "Path to config file")
+    .requiredOption("-f, --diff-file <path>", "Path to diff file")
     .option(
       "-v, --verbose",
       "Increase verbosity (allow multiple)",
@@ -53,7 +53,7 @@ export type GenerateRegionCommandOptions = z.infer<
 >;
 const GenerateRegionCommandOptions = z.object({
   verbose: z.number().default(0),
-  config: z.string(),
+  diffFile: z.string(),
 });
 
 export type EnantiomCommandHandlers = {
