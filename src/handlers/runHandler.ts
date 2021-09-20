@@ -1,4 +1,4 @@
-import { RunCommandOptions } from "../cliCommand";
+import { RunCommandOptions } from "../EnantiomCli";
 import { join, resolve, sep } from "path";
 import { EnantiomConfigLoader } from "../EnantiomConfigLoader";
 import { ScreenshotService } from "../ScreenshotService";

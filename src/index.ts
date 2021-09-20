@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 
-import { execRunCommand } from "./cliCommand";
-import pAny from "p-any";
+import { EnantiomCli } from "./EnantiomCli";
 import { runHandler } from "./handlers/runHandler";
 import { logger } from "./Logger";
+import { generateRegionHandler } from "./handlers/generateRegionHandler";
 
-pAny([execRunCommand(runHandler)])
-  .then((code) => process.exit(code))
+new EnantiomCli({
+  run: runHandler,
+  generateRegion: generateRegionHandler,
+})
+  .execute(process.argv)
+  .then(process.exit)
   .catch((e) => {
     logger.error(e);
     process.exit(1);
