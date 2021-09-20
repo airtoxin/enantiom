@@ -9,26 +9,35 @@ const RunCommandOptions = z.object({
   failInDiff: z.boolean().default(false),
 });
 
-const program = new Command();
+const createCommand = () => {
+  const program = new Command();
 
-const runCommand = program.command("run");
-runCommand.requiredOption("-c, --config <path>", "Path to config file");
-runCommand.option(
-  "-v, --verbose",
-  "Increase verbosity (allow multiple)",
-  (_, v: number = 0) => v + 1
-);
-runCommand.option("--no-html", "Disable HTML report and output JSON only");
-runCommand.option("--fail-in-diff", "CLI fails when diff exists");
+  const runCommand = program.command("run");
+  runCommand.requiredOption("-c, --config <path>", "Path to config file");
+  runCommand.option(
+    "-v, --verbose",
+    "Increase verbosity (allow multiple)",
+    (_, v: number = 0) => v + 1
+  );
+  runCommand.option("--no-html", "Disable HTML report and output JSON only");
+  runCommand.option("--fail-in-diff", "CLI fails when diff exists");
 
-export const handleRunCommand = (
-  handler: (options: RunCommandOptions) => Promise<number>
-): Promise<number> =>
-  new Promise((resolve, reject) => {
+  return { runCommand, program };
+};
+
+export const execRunCommand = (
+  handler: (options: RunCommandOptions) => Promise<number>,
+  args = process.argv
+): Promise<number> => {
+  const { runCommand, program } = createCommand();
+
+  const p = new Promise<number>((resolve, reject) => {
     runCommand.action((options) => {
       const runOptions = RunCommandOptions.parse(options);
       handler(runOptions).then(resolve).catch(reject);
     });
   });
 
-export const exec = () => program.parse(process.argv);
+  program.parse(args);
+  return p;
+};
