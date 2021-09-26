@@ -1,6 +1,11 @@
 import playwright, { Browser, BrowserContext, Page } from "playwright";
 import { join, resolve } from "path";
-import { Result, ScreenshotResult, ScriptType } from "./State";
+import {
+  Result,
+  ScreenshotConfig,
+  ScreenshotResult,
+  ScriptType,
+} from "./State";
 import objectHash from "object-hash";
 import { access, ensureDir } from "fs-extra";
 import { compare } from "odiff-bin";
@@ -15,179 +20,165 @@ export class ScreenshotService {
   }
 
   public async takeScreenshotAndDiff(): Promise<Result> {
-    const results = await this.takeScreenshot();
-    const screenshots = await this.saveDiff(results);
+    const limit = pLimit(this.config.concurrency);
+    const results = await Promise.all(
+      this.config.screenshotConfigs.map((screenshotConfig) =>
+        limit(() =>
+          pRetry(() => this.takeScreenshot(screenshotConfig), {
+            retries: this.config.retry,
+            onFailedAttempt: (error) => {
+              logger.info(error);
+            },
+          })
+        )
+      )
+    );
+
+    const screenshots = await Promise.all(
+      results.map(this.saveDiff.bind(this))
+    );
     return {
       timestamp: this.config.currentTimestamp,
       screenshots,
     };
   }
 
-  private async takeScreenshot(): Promise<ScreenshotResult[]> {
-    const limit = pLimit(this.config.concurrency);
-    return Promise.all(
-      this.config.screenshotConfigs.map((screenshotConfig) =>
-        limit(() =>
-          pRetry(
-            async () => {
-              logger.info(`Taking screenshot with config:`, screenshotConfig);
+  private async takeScreenshot(
+    screenshotConfig: ScreenshotConfig
+  ): Promise<ScreenshotResult> {
+    logger.info(`Taking screenshot with config:`, screenshotConfig);
 
-              const browser = await playwright[
-                screenshotConfig.browser
-              ].launch();
+    const browser = await playwright[screenshotConfig.browser].launch();
 
-              try {
-                const context = await browser.newContext();
-                const page = await context.newPage();
-                logger.debug(`Set viewport size to`, screenshotConfig.size);
-                await page.setViewportSize(screenshotConfig.size);
-                logger.debug(
-                  `Set page default timeout milliseconds to ${screenshotConfig.timeout}`
-                );
-                await page.setDefaultTimeout(screenshotConfig.timeout);
+    try {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      logger.debug(`Set viewport size to`, screenshotConfig.size);
+      await page.setViewportSize(screenshotConfig.size);
+      logger.debug(
+        `Set page default timeout milliseconds to ${screenshotConfig.timeout}`
+      );
+      await page.setDefaultTimeout(screenshotConfig.timeout);
 
-                for (const contextScript of screenshotConfig.scripts
-                  ?.contextScripts ?? []) {
-                  await executeScript(contextScript, page, browser, context);
-                }
+      for (const contextScript of screenshotConfig.scripts?.contextScripts ??
+        []) {
+        await executeScript(contextScript, page, browser, context);
+      }
 
-                logger.debug(`loading page ${screenshotConfig.url}`);
-                await page.goto(screenshotConfig.url);
+      logger.debug(`loading page ${screenshotConfig.url}`);
+      await page.goto(screenshotConfig.url);
 
-                for (const preScript of screenshotConfig.scripts?.preScripts ??
-                  []) {
-                  await executeScript(preScript, page, browser, context);
-                }
+      for (const preScript of screenshotConfig.scripts?.preScripts ?? []) {
+        await executeScript(preScript, page, browser, context);
+      }
 
-                const hash = objectHash(screenshotConfig);
-                logger.debug(`result hash: ${hash}`);
-                const filename = `${hash}.png`;
-                const dirname = join(
-                  this.config.projectPath,
-                  "public",
-                  "assets",
-                  this.config.currentTimestamp
-                );
-                await ensureDir(dirname);
-                const absoluteFilepath = join(dirname, filename);
-                const filepath = join(
-                  "assets",
-                  this.config.currentTimestamp,
-                  filename
-                );
+      const hash = objectHash(screenshotConfig);
+      logger.debug(`result hash: ${hash}`);
+      const filename = `${hash}.png`;
+      const dirname = join(
+        this.config.projectPath,
+        "public",
+        "assets",
+        this.config.currentTimestamp
+      );
+      await ensureDir(dirname);
+      const absoluteFilepath = join(dirname, filename);
+      const filepath = join("assets", this.config.currentTimestamp, filename);
 
-                logger.info(`Saving screenshot to ${absoluteFilepath}`);
-                await page.screenshot({
-                  path: absoluteFilepath,
-                });
+      logger.info(`Saving screenshot to ${absoluteFilepath}`);
+      await page.screenshot({
+        path: absoluteFilepath,
+      });
 
-                for (const postScript of screenshotConfig.scripts
-                  ?.postScripts ?? []) {
-                  await executeScript(postScript, page, browser, context);
-                }
+      for (const postScript of screenshotConfig.scripts?.postScripts ?? []) {
+        await executeScript(postScript, page, browser, context);
+      }
 
-                return {
-                  hash,
-                  config: screenshotConfig,
-                  filepath,
-                };
-              } finally {
-                await browser.close();
-                logger.debug(`Browser closed successfully.`);
-              }
-            },
-            {
-              retries: this.config.retry,
-              onFailedAttempt: (error) => {
-                logger.info(error);
-              },
-            }
-          )
-        )
-      )
-    );
+      return {
+        hash,
+        config: screenshotConfig,
+        filepath,
+      };
+    } finally {
+      await browser.close();
+      logger.debug(`Browser closed successfully.`);
+    }
   }
 
-  private async saveDiff(
-    results: ScreenshotResult[]
-  ): Promise<ScreenshotResult[]> {
-    return Promise.all(
-      results.map(async (result) => {
-        if (this.config.prevTimestamp == null) {
-          logger.info(
-            `Calculating image diff step was skipped because previous result was not found`
-          );
-          return result;
-        }
+  private async saveDiff(result: ScreenshotResult): Promise<ScreenshotResult> {
+    if (this.config.prevTimestamp == null) {
+      logger.info(
+        `Calculating image diff step was skipped because previous result was not found`
+      );
+      return result;
+    }
 
-        const prevFilepath = join(
-          "assets",
-          this.config.prevTimestamp,
-          `${result.hash}.png`
-        );
-        logger.debug(`Previous file path: ${prevFilepath}`);
-        // Ensure existence of prevFile
-        try {
-          await access(join(this.config.projectPath, "public", prevFilepath));
-        } catch {
-          logger.warn(
-            `Failed to load previous file: ${join(
-              this.config.projectPath,
-              prevFilepath
-            )}`
-          );
-          return result;
-        }
-
-        const currentFilepath = result.filepath;
-
-        const diffFileHash = objectHash({
-          currentTimestamp: this.config.currentTimestamp,
-          prevTimestamp: this.config.prevTimestamp,
-          config: result.config,
-        });
-        const diffFilepath = join(
-          "assets",
-          this.config.currentTimestamp,
-          `${diffFileHash}.png`
-        );
-        logger.debug(`Diff file path: ${diffFilepath}`);
-
-        await ensureDir(
-          join(
-            this.config.projectPath,
-            "public",
-            "assets",
-            this.config.currentTimestamp
-          )
-        );
-        logger.info(`Calculate diff with options`, result.config.diffOptions);
-        const diff = await compare(
-          join(this.config.projectPath, "public", prevFilepath),
-          join(this.config.projectPath, "public", currentFilepath),
-          join(this.config.projectPath, "public", diffFilepath),
-          result.config.diffOptions
-        );
-        logger.info(
-          `Image diff result ${prevFilepath} vs ${currentFilepath}`,
-          diff
-        );
-
-        return diff.match
-          ? {
-              ...result,
-              prevFilepath,
-            }
-          : {
-              ...result,
-              prevFilepath,
-              diff: {
-                diffFilepath,
-                result: diff,
-              },
-            };
-      })
+    const prevFilepath = join(
+      "assets",
+      this.config.prevTimestamp,
+      `${result.hash}.png`
     );
+    logger.debug(`Previous file path: ${prevFilepath}`);
+    // Ensure existence of prevFile
+    try {
+      await access(join(this.config.projectPath, "public", prevFilepath));
+    } catch {
+      logger.warn(
+        `Failed to load previous file: ${join(
+          this.config.projectPath,
+          prevFilepath
+        )}`
+      );
+      return result;
+    }
+
+    const currentFilepath = result.filepath;
+
+    const diffFileHash = objectHash({
+      currentTimestamp: this.config.currentTimestamp,
+      prevTimestamp: this.config.prevTimestamp,
+      config: result.config,
+    });
+    const diffFilepath = join(
+      "assets",
+      this.config.currentTimestamp,
+      `${diffFileHash}.png`
+    );
+    logger.debug(`Diff file path: ${diffFilepath}`);
+
+    await ensureDir(
+      join(
+        this.config.projectPath,
+        "public",
+        "assets",
+        this.config.currentTimestamp
+      )
+    );
+    logger.info(`Calculate diff with options`, result.config.diffOptions);
+    const diff = await compare(
+      join(this.config.projectPath, "public", prevFilepath),
+      join(this.config.projectPath, "public", currentFilepath),
+      join(this.config.projectPath, "public", diffFilepath),
+      result.config.diffOptions
+    );
+    logger.info(
+      `Image diff result ${prevFilepath} vs ${currentFilepath}`,
+      diff
+    );
+
+    return diff.match
+      ? {
+          ...result,
+          prevFilepath,
+        }
+      : {
+          ...result,
+          prevFilepath,
+          diff: {
+            diffFilepath,
+            result: diff,
+          },
+        };
   }
 }
 
