@@ -12,12 +12,14 @@ import { seq } from "../utils";
 export const runHandler = async (
   commandOptions: RunCommandOptions
 ): Promise<number> => {
+  logger.debug(`CLI option`, commandOptions);
+
   seq(commandOptions.verbose).forEach(() => {
     logger.setVerbose();
   });
 
   const projectPath = resolve(__dirname, "..", "..");
-  logger.info(`enantiom projectPath: ${projectPath}`);
+  logger.debug(`enantiom projectPath configures to ${projectPath}`);
 
   const configService = new EnantiomConfigLoader(
     projectPath,
@@ -26,16 +28,19 @@ export const runHandler = async (
   const rawConfig = await configService.loadRaw();
 
   const syncer = new DirectorySyncer();
-  await remove(join(projectPath, "public", "assets"));
+  const temporalOutputDirectory = join(projectPath, "public", "assets");
+  logger.debug(`Cleaning temporal output directory ${temporalOutputDirectory}`);
+  await remove(temporalOutputDirectory);
   await syncer.sync(
     // artifact_path maybe s3://... so using join(artifact_path) reduces
     // slashes in protocol s3://... to s3:/... it breaks syncing logic
+    // FIXME: broken in windows
     [rawConfig.artifact_path, "assets"].join(sep),
-    join(projectPath, "public", "assets")
+    temporalOutputDirectory
   );
 
   const stateFileService = new StateFileService(
-    resolve(projectPath, "public", "assets", "state.json")
+    join(temporalOutputDirectory, "state.json")
   );
   const state = await stateFileService.load();
   const config = await configService.load(state);
@@ -45,15 +50,11 @@ export const runHandler = async (
 
   await stateFileService.appendSave(result);
 
-  const reportGenerator = new ReportGenerator(
-    config,
-    resolve(projectPath, "public", "assets")
-  );
+  const reportGenerator = new ReportGenerator(config, temporalOutputDirectory);
 
   const reportDirPath = commandOptions.html
     ? await reportGenerator.generateHtmlReport()
     : await reportGenerator.generateJsonReport();
-  logger.info(`Sync report output to artifact path.`);
   await syncer.sync(reportDirPath, config.artifactPath);
 
   return commandOptions.failInDiff &&

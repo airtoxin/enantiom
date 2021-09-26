@@ -26,13 +26,13 @@ export class EnantiomConfigLoader {
     private readonly projectPath: string,
     private readonly configPath: string
   ) {
-    logger.trace(
+    logger.debug(
       `Initialize EnantiomConfigLoader with projectPath:${projectPath} configPath:${configPath}`
     );
   }
 
   public async loadRaw(): Promise<EnantiomConfig> {
-    logger.debug(`Load raw config file ${this.configPath}`);
+    logger.debug(`Load raw config file from ${this.configPath}`);
     const raw = await readFile(this.configPath, {
       encoding: "utf-8",
     });
@@ -62,11 +62,8 @@ export class EnantiomConfigLoader {
   }
 
   private createScreenshotConfigs(): ScreenshotConfig[] {
-    logger.debug(`Expand screenshot configurations to ScreenshotConfig[]`);
-    return this.config.screenshots.flatMap((screenshot, i) => {
-      logger.debug(`Processing config.screenshots[${i}]`);
-      logger.trace(screenshot);
-
+    logger.debug(`Prepares ScreenshotConfigs`);
+    return this.config.screenshots.flatMap((screenshot) => {
       const url = typeof screenshot === "string" ? screenshot : screenshot.url;
       const name = typeof screenshot === "string" ? undefined : screenshot.name;
       const screenshotBrowserConfig =
@@ -93,15 +90,19 @@ export class EnantiomConfigLoader {
           if (typeof browser === "string") {
             return [screenshotSizeConfig ?? this.config.sizes ?? DEFAULT_SIZE]
               .flat()
-              .map((size) => ({
-                url,
-                name,
-                browser,
-                size,
-                scripts,
-                diffOptions,
-                timeout,
-              }));
+              .map((size) => {
+                const conf = {
+                  url,
+                  name,
+                  browser,
+                  size,
+                  scripts,
+                  diffOptions,
+                  timeout,
+                };
+                logger.debug(`Screenshot`, screenshot, `configures to`, conf);
+                return conf;
+              });
           } else {
             return [
               browser.sizes ??
@@ -110,15 +111,19 @@ export class EnantiomConfigLoader {
                 DEFAULT_SIZE,
             ]
               .flat()
-              .map((size) => ({
-                url,
-                name,
-                browser: browser.browser,
-                size,
-                scripts,
-                diffOptions,
-                timeout,
-              }));
+              .map((size) => {
+                const conf = {
+                  url,
+                  name,
+                  browser: browser.browser,
+                  size,
+                  scripts,
+                  diffOptions,
+                  timeout,
+                };
+                logger.debug(`Screenshot`, screenshot, `configures to`, conf);
+                return conf;
+              });
           }
         });
     });
