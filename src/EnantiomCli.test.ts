@@ -7,6 +7,7 @@ const createDefaultContext = () => {
     failInDiff: false,
     html: true,
     verbose: 0,
+    quiet: 0,
   };
   const handlers: EnantiomCommandHandlers = {
     run: async () => 0,
@@ -80,7 +81,7 @@ describe("EnantiomCli", () => {
       expect.assertions(1);
     });
 
-    test("It should raise verbosity as many times as the -v option is given", async () => {
+    test("It should raise verbosity as many times as the -v options are given", async () => {
       const { runArgv, parsedRunOptions, handlers } = createDefaultContext();
       handlers.run = async (options) => {
         expect(options).toEqual({
@@ -98,6 +99,29 @@ describe("EnantiomCli", () => {
         "--verbose",
         "-v",
         "-vv",
+      ]);
+
+      expect.assertions(1);
+    });
+
+    test("It should raise quietness as many times as the -q options are given", async () => {
+      const { runArgv, parsedRunOptions, handlers } = createDefaultContext();
+      handlers.run = async (options) => {
+        expect(options).toEqual({
+          ...parsedRunOptions,
+          quiet: 10,
+        });
+        return 0;
+      };
+      const cli = new EnantiomCli(handlers);
+
+      await cli.execute([
+        ...runArgv,
+        "-qqqqq",
+        "--quiet",
+        "--quiet",
+        "-q",
+        "-qq",
       ]);
 
       expect.assertions(1);

@@ -8,7 +8,12 @@ export class EnantiomCli {
     .requiredOption("-c, --config <path>", "Path to config file")
     .option(
       "-v, --verbose",
-      "Increase verbosity (allow multiple)",
+      "Increase verbosity, opposite quiet option (allow multiple)",
+      (_, v: number = 0) => v + 1
+    )
+    .option(
+      "-q, --quiet",
+      "Increase quietness, opposite verbose option (allow multiple)",
       (_, v: number = 0) => v + 1
     )
     .option("--no-html", "Disable HTML report and output JSON only")
@@ -18,7 +23,12 @@ export class EnantiomCli {
     .requiredOption("-f, --diff-file <path>", "Path to diff file")
     .option(
       "-v, --verbose",
-      "Increase verbosity (allow multiple)",
+      "Increase verbosity, opposite quiet option (allow multiple)",
+      (_, v: number = 0) => v + 1
+    )
+    .option(
+      "-q, --quiet",
+      "Increase quietness, opposite verbose option (allow multiple)",
       (_, v: number = 0) => v + 1
     );
   private exitCode = 0;
@@ -44,6 +54,7 @@ export type RunCommandOptions = z.infer<typeof RunCommandOptions>;
 const RunCommandOptions = z.object({
   html: z.boolean().default(true),
   verbose: z.number().default(0),
+  quiet: z.number().default(0),
   config: z.string(),
   failInDiff: z.boolean().default(false),
 });
@@ -53,6 +64,7 @@ export type GenerateRegionCommandOptions = z.infer<
 >;
 const GenerateRegionCommandOptions = z.object({
   verbose: z.number().default(0),
+  quiet: z.number().default(0),
   diffFile: z.string(),
 });
 
