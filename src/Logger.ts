@@ -25,6 +25,20 @@ class Logger {
     }
   }
 
+  public setQuiet() {
+    if (this.level === "error") {
+      logger.info(`Cannot up quietness anymore.`);
+    } else if (this.level === "warn") {
+      this.level = "error";
+    } else if (this.level === "info") {
+      this.level = "warn";
+    } else if (this.level === "debug") {
+      this.level = "info";
+    } else if (this.level === "trace") {
+      this.level = "debug";
+    }
+  }
+
   public isLogged(level: LogLevel): boolean {
     return LogLevelMap[this.level] <= LogLevelMap[level];
   }

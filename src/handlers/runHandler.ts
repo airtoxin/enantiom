@@ -12,11 +12,12 @@ import { seq } from "../utils";
 export const runHandler = async (
   commandOptions: RunCommandOptions
 ): Promise<number> => {
-  logger.debug(`CLI option`, commandOptions);
-
-  seq(commandOptions.verbose).forEach(() => {
-    logger.setVerbose();
+  const logLevel = commandOptions.verbose - commandOptions.quiet;
+  seq(Math.abs(logLevel)).forEach(() => {
+    logLevel < 0 ? logger.setQuiet() : logger.setVerbose();
   });
+
+  logger.debug(`CLI option`, commandOptions);
 
   const projectPath = resolve(__dirname, "..", "..");
   logger.debug(`enantiom projectPath configures to ${projectPath}`);
