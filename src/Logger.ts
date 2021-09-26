@@ -31,27 +31,27 @@ class Logger {
 
   public trace(...messages: unknown[]) {
     if (LogLevelMap[this.level] > LogLevelMap.trace) return;
-    console.trace(...messages);
+    console.trace(`trace  - `, ...messages);
   }
 
   public debug(...messages: unknown[]) {
     if (LogLevelMap[this.level] > LogLevelMap.debug) return;
-    console.debug(...messages);
+    console.debug(`debug  - `, ...messages);
   }
 
   public info(...messages: unknown[]) {
     if (LogLevelMap[this.level] > LogLevelMap.info) return;
-    console.info(...messages);
+    console.info(`info  - `, ...messages);
   }
 
   public warn(...messages: unknown[]) {
     if (LogLevelMap[this.level] > LogLevelMap.warn) return;
-    console.warn(...messages);
+    console.warn(`warn  - `, ...messages);
   }
 
   public error(...messages: unknown[]) {
     if (LogLevelMap[this.level] > LogLevelMap.error) return;
-    console.error(...messages);
+    console.error(`error  - `, ...messages);
   }
 }
 

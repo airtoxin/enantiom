@@ -1,12 +1,13 @@
 {
   "name": "enantiom",
-  "version": "2.2.0",
+  "version": "3.0.0-0",
   "bin": {
     "enantiom": "src/index.js"
   },
   "scripts": {
-    "predev": "run-s clean",
+    "predev:run": "run-s clean",
     "dev:run": "ts-node src/index.ts run --config example/enantiom.config.json -vvv",
+    "predev:gen": "run-s clean",
     "dev:gen": "ts-node src/index.ts generate-region -vvv",
     "preview": "serve dist",
     "prebuild": "run-s clean",

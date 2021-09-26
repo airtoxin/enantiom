@@ -11,7 +11,7 @@ import { logger } from "./Logger";
 
 export class ScreenshotService {
   constructor(private config: EnantiomInternalConfig) {
-    logger.trace(`Initialize ScreenshotService.`);
+    logger.debug(`Initialize ScreenshotService.`);
   }
 
   public async takeScreenshotAndDiff(): Promise<Result> {
@@ -30,17 +30,20 @@ export class ScreenshotService {
         limit(() =>
           pRetry(
             async () => {
-              logger.debug(`Taking screenshot with config`, screenshotConfig);
+              logger.info(`Taking screenshot with config:`, screenshotConfig);
 
               const browser = await playwright[
                 screenshotConfig.browser
               ].launch();
-              logger.debug(`Browser ${screenshotConfig.browser} launched.`);
 
               try {
                 const context = await browser.newContext();
                 const page = await context.newPage();
+                logger.debug(`Set viewport size to`, screenshotConfig.size);
                 await page.setViewportSize(screenshotConfig.size);
+                logger.debug(
+                  `Set page default timeout milliseconds to ${screenshotConfig.timeout}`
+                );
                 await page.setDefaultTimeout(screenshotConfig.timeout);
 
                 for (const contextScript of screenshotConfig.scripts
@@ -112,7 +115,7 @@ export class ScreenshotService {
       results.map(async (result) => {
         if (this.config.prevTimestamp == null) {
           logger.info(
-            `Calculate image diff step was skipped because previous result was not found`
+            `Calculating image diff step was skipped because previous result was not found`
           );
           return result;
         }
@@ -158,7 +161,7 @@ export class ScreenshotService {
             this.config.currentTimestamp
           )
         );
-        logger.info(`Use diff options`, result.config.diffOptions);
+        logger.info(`Calculate diff with options`, result.config.diffOptions);
         const diff = await compare(
           join(this.config.projectPath, "public", prevFilepath),
           join(this.config.projectPath, "public", currentFilepath),
@@ -240,8 +243,8 @@ const executeScript = async (
       return page.waitForLoadState(scriptConfig.event);
     }
     case "waitForEvent": {
-      // FIXME: more strict event type
       logger.debug(`Waiting for event ${scriptConfig.event}.`);
+      // FIXME: more strict event type
       return page.waitForEvent(scriptConfig.event as any);
     }
     case "setTimeout": {
