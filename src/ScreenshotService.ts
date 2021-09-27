@@ -1,11 +1,6 @@
 import playwright, { Browser, BrowserContext, Page } from "playwright";
 import { join, resolve } from "path";
-import {
-  Result,
-  ScreenshotConfig,
-  ScreenshotResult,
-  ScriptType,
-} from "./State";
+import { Result, ScreenshotConfig, ScreenshotResult } from "./State";
 import objectHash from "object-hash";
 import { access, ensureDir } from "fs-extra";
 import { compare } from "odiff-bin";
@@ -13,6 +8,7 @@ import { EnantiomInternalConfig } from "./EnantiomInternalConfig";
 import pLimit from "p-limit";
 import pRetry from "p-retry";
 import { logger } from "./Logger";
+import { ScriptType } from "./ScriptStringParser";
 
 export class ScreenshotService {
   constructor(private config: EnantiomInternalConfig) {

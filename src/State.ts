@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { SupportedBrowser } from "./EnantiomConfig";
+import { ScriptType } from "./ScriptStringParser";
 
 export type State = z.infer<typeof State>;
 export const State = z.lazy(() =>
@@ -67,38 +68,4 @@ export const EnantiomInternalScriptConfig = z.lazy(() =>
     preScripts: z.array(ScriptType).optional(),
     postScripts: z.array(ScriptType).optional(),
   })
-);
-
-export type ScriptType = z.infer<typeof ScriptType>;
-export const ScriptType = z.lazy(() =>
-  z.union([
-    z.object({
-      type: z.literal("function"),
-      fn: z.function().args(z.any(), z.any(), z.any()),
-    }),
-    z.object({ type: z.literal("scriptFile"), path: z.string() }),
-    z.object({ type: z.literal("setTimeout"), timeout: z.number() }),
-    z.object({ type: z.literal("waitForTimeout"), timeout: z.number() }),
-    z.object({ type: z.literal("waitForSelector"), selector: z.string() }),
-    z.object({ type: z.literal("waitForUrl"), url: z.string() }),
-    z.object({ type: z.literal("waitForRequest"), url: z.string() }),
-    z.object({ type: z.literal("waitForResponse"), url: z.string() }),
-    z.object({ type: z.literal("waitForNavigation"), url: z.string() }),
-    z.object({
-      type: z.literal("waitForLoadState"),
-      event: LoadStateEvent,
-    }),
-    z.object({ type: z.literal("waitForEvent"), event: z.string() }),
-    z.object({ type: z.literal("click"), selector: z.string() }),
-    z.object({ type: z.literal("dblclick"), selector: z.string() }),
-  ])
-);
-
-export type LoadStateEvent = z.infer<typeof LoadStateEvent>;
-export const LoadStateEvent = z.lazy(() =>
-  z.union([
-    z.literal("domcontentloaded"),
-    z.literal("load"),
-    z.literal("networkidle"),
-  ])
 );

@@ -1,15 +1,10 @@
 import { z } from "zod";
 import { readFile } from "fs/promises";
 import { EnantiomConfig, ScreenshotConfigObject } from "./EnantiomConfig";
-import {
-  EnantiomInternalScriptConfig,
-  LoadStateEvent,
-  ScreenshotConfig,
-  ScriptType,
-  State,
-} from "./State";
+import { EnantiomInternalScriptConfig, ScreenshotConfig, State } from "./State";
 import { EnantiomInternalConfig } from "./EnantiomInternalConfig";
 import { logger } from "./Logger";
+import { parseScriptType, ScriptFunc, ScriptType } from "./ScriptStringParser";
 
 const DEFAULT_BROWSER = "chromium";
 const DEFAULT_SIZE = { width: 800, height: 600 };
@@ -179,7 +174,7 @@ export class EnantiomConfigLoader {
   }
 
   private createContextScripts(
-    contextScriptsConfig?: string | string[]
+    contextScriptsConfig?: string | ScriptFunc | (string | ScriptFunc)[]
   ): ScriptType[] | undefined {
     if (contextScriptsConfig == null) {
       if (
@@ -189,14 +184,14 @@ export class EnantiomConfigLoader {
         return undefined;
       return [this.config.scripting.context_scripts]
         .flat()
-        .map(this.parseScriptTypeString);
+        .map(parseScriptType);
     } else {
-      return [contextScriptsConfig].flat().map(this.parseScriptTypeString);
+      return [contextScriptsConfig].flat().map(parseScriptType);
     }
   }
 
   private createPreScripts(
-    preScriptsConfig?: string | string[]
+    preScriptsConfig?: string | ScriptFunc | (string | ScriptFunc)[]
   ): ScriptType[] | undefined {
     if (preScriptsConfig == null) {
       if (
@@ -204,16 +199,14 @@ export class EnantiomConfigLoader {
         this.config.scripting.pre_scripts == null
       )
         return undefined;
-      return [this.config.scripting.pre_scripts]
-        .flat()
-        .map(this.parseScriptTypeString);
+      return [this.config.scripting.pre_scripts].flat().map(parseScriptType);
     } else {
-      return [preScriptsConfig].flat().map(this.parseScriptTypeString);
+      return [preScriptsConfig].flat().map(parseScriptType);
     }
   }
 
   private createPostScripts(
-    postScriptsConfig?: string | string[]
+    postScriptsConfig?: string | ScriptFunc | (string | ScriptFunc)[]
   ): ScriptType[] | undefined {
     if (postScriptsConfig == null) {
       if (
@@ -221,65 +214,9 @@ export class EnantiomConfigLoader {
         this.config.scripting.post_scripts == null
       )
         return undefined;
-      return [this.config.scripting.post_scripts]
-        .flat()
-        .map(this.parseScriptTypeString);
+      return [this.config.scripting.post_scripts].flat().map(parseScriptType);
     } else {
-      return [postScriptsConfig].flat().map(this.parseScriptTypeString);
+      return [postScriptsConfig].flat().map(parseScriptType);
     }
-  }
-
-  private parseScriptTypeString(str: string): ScriptType {
-    if (str.startsWith("[exec-file]=")) {
-      return { type: "scriptFile", path: str.slice("[exec-file]=".length) };
-    } else if (str.startsWith("[set-timeout]=")) {
-      return {
-        type: "setTimeout",
-        timeout: Number.parseFloat(str.slice("[set-timeout]=".length)),
-      };
-    } else if (str.startsWith("[wait-timeout]=")) {
-      return {
-        type: "waitForTimeout",
-        timeout: Number.parseFloat(str.slice("[wait-timeout]=".length)),
-      };
-    } else if (str.startsWith("[wait-selector]=")) {
-      return {
-        type: "waitForSelector",
-        selector: str.slice("[wait-selector]=".length),
-      };
-    } else if (str.startsWith("[wait-url]=")) {
-      return {
-        type: "waitForUrl",
-        url: str.slice("[wait-url]=".length),
-      };
-    } else if (str.startsWith("[wait-request]=")) {
-      return {
-        type: "waitForRequest",
-        url: str.slice("[wait-request]=".length),
-      };
-    } else if (str.startsWith("[wait-response]=")) {
-      return {
-        type: "waitForResponse",
-        url: str.slice("[wait-response]=".length),
-      };
-    } else if (str.startsWith("[wait-navigation]=")) {
-      return {
-        type: "waitForNavigation",
-        url: str.slice("[wait-navigation]=".length),
-      };
-    } else if (str.startsWith("[wait-state]=")) {
-      return {
-        type: "waitForLoadState",
-        event: LoadStateEvent.parse(str.slice("[wait-state]=".length)),
-      };
-    } else if (str.startsWith("[wait-event]=")) {
-      return { type: "waitForEvent", event: str.slice("[wait-event]=".length) };
-    } else if (str.startsWith("[click]=")) {
-      return { type: "click", selector: str.slice("[click]=".length) };
-    } else if (str.startsWith("[dblclick]=")) {
-      return { type: "dblclick", selector: str.slice("[dblclick]=".length) };
-    }
-
-    throw new Error(`Unsupported script string: ${str}.`);
   }
 }

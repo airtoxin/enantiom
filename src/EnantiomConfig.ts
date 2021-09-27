@@ -59,8 +59,10 @@ export const ScreenshotConfigObject = z.lazy(() =>
 export type ScriptingConfigObject = z.infer<typeof ScriptingConfigObject>;
 export const ScriptingConfigObject = z.lazy(() =>
   z.object({
-    context_scripts: arrayOrValue(z.string()).optional(),
-    pre_scripts: arrayOrValue(z.string()).optional(),
-    post_scripts: arrayOrValue(z.string()).optional(),
+    context_scripts: arrayOrValue(
+      z.union([z.string(), z.function()])
+    ).optional(),
+    pre_scripts: arrayOrValue(z.union([z.string(), z.function()])).optional(),
+    post_scripts: arrayOrValue(z.union([z.string(), z.function()])).optional(),
   })
 );
