@@ -88,6 +88,7 @@ export class ScreenshotService {
       logger.info(`Saving screenshot to ${absoluteFilepath}`);
       await page.screenshot({
         path: absoluteFilepath,
+        fullPage: screenshotConfig.fullPage
       });
 
       for (const postScript of screenshotConfig.scripts?.postScripts ?? []) {
