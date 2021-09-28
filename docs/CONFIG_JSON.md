@@ -109,6 +109,19 @@ If the browser type is an array, screenshot of each URL will be taken for each o
 }
 ```
 
+## fullPage
+
+**optional** `Boolean`  
+**default value: `false`**
+
+If true, take full page screenshot.
+
+```json5
+{
+  fullPage: true
+}
+```
+
 ## scripting
 
 **optional** `ScriptingConfigObject`
@@ -161,6 +174,7 @@ It pass-through to [odiff](https://github.com/dmtrKovalenko/odiff) library that 
         { width: 500, height: 500 },
         { width: 1200, height: 800 },
       ],
+      fullPage: false
     },
   ],
   sizes: { width: 800, height: 600 },
@@ -198,10 +212,17 @@ Same interface of top level [sizes](#sizes) field.
 ## ScreenshotConfigObject.browsers
 
 **optional** `BrowserType | BrowserConfigObject | Array<BrowserType | BrowserConfigObject>`  
-**default value: ScreenshotConfigObject.sizes field value**
+**default value: top level `"browsers"` field value**
 
 Specifies the browser type to be used for taking screenshot.  
 Same interface of top level [browsers](#browsers) field.
+
+## ScreenshotConfigObject.fullPage
+
+**optional** `Boolean`  
+**default value: top level `"fullPage"` field value**
+
+If true, take full page screenshot.
 
 ## ScreenshotConfigObject.diff_options
 
