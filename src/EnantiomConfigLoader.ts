@@ -15,6 +15,7 @@ const DEFAULT_BROWSER = "chromium";
 const DEFAULT_SIZE = { width: 800, height: 600 };
 const DEFAULT_CONCURRENCY = 1;
 const DEFAULT_RETRY = 0;
+const DEFAULT_FULL_PAGE = false;
 const DEFAULT_DIFF_OPTIONS = {
   outputDiffMask: true,
 };
@@ -70,6 +71,9 @@ export class EnantiomConfigLoader {
         typeof screenshot === "string" ? null : screenshot.browsers;
       const screenshotSizeConfig =
         typeof screenshot === "string" ? null : screenshot.sizes;
+      const fullPage = typeof screenshot === "string"
+        ? this.config.fullPage ?? DEFAULT_FULL_PAGE
+        : screenshot.fullPage ?? this.config.fullPage ?? DEFAULT_FULL_PAGE;
       const diffOptions =
         typeof screenshot === "string"
           ? this.config.diff_options ?? DEFAULT_DIFF_OPTIONS
@@ -96,6 +100,7 @@ export class EnantiomConfigLoader {
                   name,
                   browser,
                   size,
+                  fullPage,
                   scripts,
                   diffOptions,
                   timeout,
@@ -117,6 +122,7 @@ export class EnantiomConfigLoader {
                   name,
                   browser: browser.browser,
                   size,
+                  fullPage,
                   scripts,
                   diffOptions,
                   timeout,

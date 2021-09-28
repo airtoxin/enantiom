@@ -27,6 +27,7 @@ export const ScreenshotConfig = z.lazy(() =>
       width: z.number(),
       height: z.number(),
     }),
+    fullPage: z.boolean(),
     scripts: EnantiomInternalScriptConfig.optional(),
     diffOptions: z.object({}).passthrough(),
     timeout: z.number(),
