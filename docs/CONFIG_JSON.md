@@ -257,10 +257,9 @@ If true, take full page screenshot.
 
 ## ScreenshotConfigObject.diff_options
 
-**optional** `ODiffOptions`  
+**optional** `DiffOptions`  
 **default value: top level `"diff_options"` field value**
 
-Options of calculating diff image.  
 Same interface of top level [diff_options](#diff_options) field.
 
 ## ScreenshotConfigObject.scripting
