@@ -41,6 +41,7 @@ export const ScreenshotResult = z.lazy(() =>
     config: ScreenshotConfig,
     filepath: z.string(),
     prevFilepath: z.string().optional(),
+    ok: z.boolean(),
     diff: z
       .object({
         diffFilepath: z.string(),

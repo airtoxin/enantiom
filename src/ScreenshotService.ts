@@ -99,6 +99,7 @@ export class ScreenshotService {
         hash,
         config: screenshotConfig,
         filepath,
+        ok: true,
       };
     } finally {
       await browser.close();
@@ -163,7 +164,7 @@ export class ScreenshotService {
       {
         outputDiffMask: true,
         diffColor: result.config.diffOptions.color,
-        ignoreRegions: result.config.diffOptions.ignoreRegions,
+        ignoreRegions: result.config.diffOptions.ignore_regions,
       }
     );
     logger.info(
@@ -171,16 +172,18 @@ export class ScreenshotService {
       diff
     );
 
-    return diff.match ||
-      (diff.reason === "pixel-diff" &&
-        diff.diffPercentage < (result.config.diffOptions.threshold ?? 0))
+    return diff.match
       ? {
           ...result,
+          ok: true,
           prevFilepath,
         }
       : {
           ...result,
           prevFilepath,
+          ok:
+            diff.reason === "pixel-diff" &&
+            diff.diffPercentage < (result.config.diffOptions.threshold ?? 0),
           diff: {
             diffFilepath,
             result: diff,

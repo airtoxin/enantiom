@@ -46,7 +46,7 @@ export type DiffOptions = z.infer<typeof DiffOptions>;
 export const DiffOptions = z.lazy(() =>
   z.object({
     color: z.string().optional(),
-    ignoreRegions: z
+    ignore_regions: z
       .array(
         z.object({
           x1: z.number(),
