@@ -88,7 +88,7 @@ export class ScreenshotService {
       logger.info(`Saving screenshot to ${absoluteFilepath}`);
       await page.screenshot({
         path: absoluteFilepath,
-        fullPage: screenshotConfig.fullPage
+        fullPage: screenshotConfig.fullPage,
       });
 
       for (const postScript of screenshotConfig.scripts?.postScripts ?? []) {
@@ -160,14 +160,20 @@ export class ScreenshotService {
       join(this.config.projectPath, "public", prevFilepath),
       join(this.config.projectPath, "public", currentFilepath),
       join(this.config.projectPath, "public", diffFilepath),
-      result.config.diffOptions
+      {
+        outputDiffMask: true,
+        diffColor: result.config.diffOptions.color,
+        ignoreRegions: result.config.diffOptions.ignoreRegions,
+      }
     );
     logger.info(
       `Image diff result ${prevFilepath} vs ${currentFilepath}`,
       diff
     );
 
-    return diff.match
+    return diff.match ||
+      (diff.reason === "pixel-diff" &&
+        diff.diffPercentage < (result.config.diffOptions.threshold ?? 0))
       ? {
           ...result,
           prevFilepath,

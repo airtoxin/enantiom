@@ -17,7 +17,7 @@ const DEFAULT_CONCURRENCY = 1;
 const DEFAULT_RETRY = 0;
 const DEFAULT_FULL_PAGE = false;
 const DEFAULT_DIFF_OPTIONS = {
-  outputDiffMask: true,
+  color: "#ff0000",
 };
 const DEFAULT_TIMEOUT = 30 * 1000;
 

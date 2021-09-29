@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SupportedBrowser } from "./EnantiomConfig";
+import { DiffOptions, SupportedBrowser } from "./EnantiomConfig";
 
 export type State = z.infer<typeof State>;
 export const State = z.lazy(() =>
@@ -29,7 +29,7 @@ export const ScreenshotConfig = z.lazy(() =>
     }),
     fullPage: z.boolean(),
     scripts: EnantiomInternalScriptConfig.optional(),
-    diffOptions: z.object({}).passthrough(),
+    diffOptions: DiffOptions,
     timeout: z.number(),
   })
 );

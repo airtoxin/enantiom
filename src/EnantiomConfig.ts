@@ -15,7 +15,7 @@ export const EnantiomConfig = z.lazy(() =>
     screenshots: z.array(z.union([z.string(), ScreenshotConfigObject])),
     concurrency: z.number().optional(),
     retry: z.number().optional(),
-    diff_options: z.object({}).passthrough().optional(),
+    diff_options: DiffOptions.optional(),
     scripting: ScriptingConfigObject.optional(),
     timeout: z.number().optional(),
   })
@@ -42,6 +42,24 @@ export const BrowserSize = z.lazy(() =>
   })
 );
 
+export type DiffOptions = z.infer<typeof DiffOptions>;
+export const DiffOptions = z.lazy(() =>
+  z.object({
+    color: z.string().optional(),
+    ignoreRegions: z
+      .array(
+        z.object({
+          x1: z.number(),
+          y1: z.number(),
+          x2: z.number(),
+          y2: z.number(),
+        })
+      )
+      .optional(),
+    threshold: z.number().optional(),
+  })
+);
+
 export type ScreenshotConfigObject = z.infer<typeof ScreenshotConfigObject>;
 export const ScreenshotConfigObject = z.lazy(() =>
   z.object({
@@ -52,7 +70,7 @@ export const ScreenshotConfigObject = z.lazy(() =>
     ).optional(),
     sizes: arrayOrValue(BrowserSize).optional(),
     fullPage: z.boolean().optional(),
-    diff_options: z.object({}).passthrough().optional(),
+    diff_options: DiffOptions.optional(),
     scripting: ScriptingConfigObject.optional(),
     timeout: z.number().optional(),
   })
