@@ -154,12 +154,43 @@ Num of retry count if error occurred in screenshot taking.
 
 ## diff_options
 
-**optional** `ODiffOptions`  
-**default value: `{ "outputDiffMask": true }`**
+**optional** `DiffOptions`
 
-Options of calculating diff image.  
-It pass-through to [odiff](https://github.com/dmtrKovalenko/odiff) library that internally uses.  
-[ODiffOptions](https://github.com/dmtrKovalenko/odiff#nodejs-1)
+# DiffOptions
+
+```json5
+{
+  diff_options: {
+    color: "#ff00ff",
+    ignore_regions: [{ x1: 100, y1: 100, x2: 300, y2: 500 }],
+    threshold: 0.5
+  }
+}
+```
+
+## DiffOptions.color
+
+**optional** `ColorString`  
+**default value: `"#ff0000"`**
+
+Color of diff pixel.
+
+## DiffOptions.ignore_regions
+
+**optional** `Array<Region>`  
+**default value: `[]`**
+
+The diff pixel regions to ignore.  
+Only accept rectangle region but multiple allowed.
+
+## DiffOptions.threshold
+
+**optional** `Number`
+**default value: `0`**
+
+Diff threshold percentage.  
+If diff percentage is higher than this value, enantiom will mark its screenshot capturing to failure.  
+Value range is 0 to 100.
 
 # ScreenshotConfigObject
 
