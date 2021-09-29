@@ -51,7 +51,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
   const activeScreenshots = useMemo(
     () =>
       result.screenshots
-        .filter((s) => s.diff != null)
+        .filter((s) => !s.ok)
         .map((s) => `${result.timestamp}_${s.hash}`),
     [result]
   );
@@ -256,12 +256,11 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
 const ResultSummaryIcon: VoidFunctionComponent<{
   screenshot: ScreenshotResult;
 }> = ({ screenshot }) => {
-  const resultType =
-    screenshot.diff != null
-      ? "diff"
-      : screenshot.prevFilepath != null
-      ? "noDiff"
-      : "add";
+  const resultType = !screenshot.ok
+    ? "diff"
+    : screenshot.prevFilepath != null
+    ? "noDiff"
+    : "add";
   return switcher({
     diff: <ExclamationCircleTwoTone twoToneColor="#f5222d" />,
     noDiff: <CheckCircleTwoTone twoToneColor="#52c41a" />,
