@@ -55,10 +55,10 @@ export const AppLayout: FunctionComponent<{
               <Menu.Item
                 key={result.timestamp}
                 icon={
-                  result.screenshots.some((s) => s.diff != null) ? (
-                    <ExclamationCircleTwoTone twoToneColor="#f5222d" />
-                  ) : (
+                  result.screenshots.some((s) => s.ok) ? (
                     <CheckCircleTwoTone twoToneColor="#52c41a" />
+                  ) : (
+                    <ExclamationCircleTwoTone twoToneColor="#f5222d" />
                   )
                 }
                 style={i === 0 ? { marginTop: 0 } : {}}
