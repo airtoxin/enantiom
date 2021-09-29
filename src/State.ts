@@ -29,7 +29,7 @@ export const ScreenshotConfig = z.lazy(() =>
     }),
     fullPage: z.boolean(),
     scripts: EnantiomInternalScriptConfig.optional(),
-    diffOptions: DiffOptions,
+    diffOptions: DiffOptions.optional(),
     timeout: z.number(),
   })
 );

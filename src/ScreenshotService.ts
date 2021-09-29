@@ -163,8 +163,8 @@ export class ScreenshotService {
       join(this.config.projectPath, "public", diffFilepath),
       {
         outputDiffMask: true,
-        diffColor: result.config.diffOptions.color,
-        ignoreRegions: result.config.diffOptions.ignore_regions,
+        diffColor: result.config.diffOptions?.color ?? "#ff0000",
+        ignoreRegions: result.config.diffOptions?.ignore_regions ?? [],
       }
     );
     logger.info(
@@ -183,7 +183,7 @@ export class ScreenshotService {
           prevFilepath,
           ok:
             diff.reason === "pixel-diff" &&
-            diff.diffPercentage < (result.config.diffOptions.threshold ?? 0),
+            diff.diffPercentage < (result.config.diffOptions?.threshold ?? 0),
           diff: {
             diffFilepath,
             result: diff,

@@ -16,9 +16,6 @@ const DEFAULT_SIZE = { width: 800, height: 600 };
 const DEFAULT_CONCURRENCY = 1;
 const DEFAULT_RETRY = 0;
 const DEFAULT_FULL_PAGE = false;
-const DEFAULT_DIFF_OPTIONS = {
-  color: "#ff0000",
-};
 const DEFAULT_TIMEOUT = 30 * 1000;
 
 export class EnantiomConfigLoader {
@@ -71,15 +68,14 @@ export class EnantiomConfigLoader {
         typeof screenshot === "string" ? null : screenshot.browsers;
       const screenshotSizeConfig =
         typeof screenshot === "string" ? null : screenshot.sizes;
-      const fullPage = typeof screenshot === "string"
-        ? this.config.fullPage ?? DEFAULT_FULL_PAGE
-        : screenshot.fullPage ?? this.config.fullPage ?? DEFAULT_FULL_PAGE;
+      const fullPage =
+        typeof screenshot === "string"
+          ? this.config.fullPage ?? DEFAULT_FULL_PAGE
+          : screenshot.fullPage ?? this.config.fullPage ?? DEFAULT_FULL_PAGE;
       const diffOptions =
         typeof screenshot === "string"
-          ? this.config.diff_options ?? DEFAULT_DIFF_OPTIONS
-          : screenshot.diff_options ??
-            this.config.diff_options ??
-            DEFAULT_DIFF_OPTIONS;
+          ? this.config.diff_options
+          : screenshot.diff_options ?? this.config.diff_options;
       const scripts = this.createScriptsConfig(screenshot);
       const timeout =
         typeof screenshot === "string"
