@@ -122,4 +122,5 @@ const write = (filepath: string, stream: ReadableStream): Promise<void> =>
   });
 
 // S3 path is URL, so don't use path.join
-const s3Join = (...pathFragments: string[]) => pathFragments.join("/");
+const s3Join = (...pathFragments: string[]) =>
+  pathFragments.filter((pf) => pf !== "").join("/");
