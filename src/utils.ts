@@ -13,3 +13,7 @@ export const assertUnreachable = (x: never): never => {
 
 export const seq = (num: number): number[] =>
   Array.from(Array(num)).map((_, i) => i);
+
+// S3 path is URL, so don't use path.join
+export const s3Join = (...pathFragments: string[]) =>
+  pathFragments.filter((pf) => pf !== "").join("/");
