@@ -30,8 +30,10 @@ export const runHandler = async (
 
   const syncer = new DirectorySyncer();
   const syncTargetDir = join(projectPath, "public");
-  logger.debug(`Cleaning temporal output directory ${syncTargetDir}`);
-  await remove(syncTargetDir);
+  const temporalOutputDirectory = join(syncTargetDir, "assets");
+
+  logger.debug(`Cleaning temporal output directory ${temporalOutputDirectory}`);
+  await remove(temporalOutputDirectory);
   await syncer.sync(
     // artifact_path maybe s3://... so using join(artifact_path) reduces
     // slashes in protocol s3://... to s3:/... it breaks syncing logic
@@ -41,7 +43,6 @@ export const runHandler = async (
       : join(rawConfig.artifact_path, "assets"),
     syncTargetDir
   );
-  const temporalOutputDirectory = join(syncTargetDir, "assets");
 
   const stateFileService = new StateFileService(
     join(temporalOutputDirectory, "state.json")
