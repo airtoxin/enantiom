@@ -93,7 +93,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
       <Row justify="space-between" style={{ paddingBottom: 24 }}>
         <Col>
           {links.newer && (
-            <Link href={`/result/${links.newer}`}>
+            <Link href={`/result/${links.newer}.html`}>
               <a>
                 <LeftOutlined />
                 {formatTimestamp(links.newer)}
@@ -103,7 +103,7 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
         </Col>
         <Col>
           {links.older && (
-            <Link href={`/result/${links.older}`}>
+            <Link href={`/result/${links.older}.html`}>
               <a>
                 {formatTimestamp(links.older)}
                 <RightOutlined />

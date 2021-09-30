@@ -63,7 +63,7 @@ export const AppLayout: FunctionComponent<{
                 }
                 style={i === 0 ? { marginTop: 0 } : {}}
               >
-                <Link href={`/result/${result.timestamp}`}>
+                <Link href={`/result/${result.timestamp}.html`}>
                   {formatTimestamp(result.timestamp)}
                 </Link>
               </Menu.Item>

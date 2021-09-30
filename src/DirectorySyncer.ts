@@ -1,18 +1,14 @@
-import {
-  GetObjectCommand,
-  ListObjectsCommand,
-  PutObjectCommand,
-  S3Client,
-} from "@aws-sdk/client-s3";
+import { GetObjectCommand, ListObjectsCommand, PutObjectCommand, S3Client, } from "@aws-sdk/client-s3";
 import { copy, ensureDir, ensureFile, readFile } from "fs-extra";
 import { join, resolve } from "path";
 import { ListObjectsOutput } from "@aws-sdk/client-s3/models/models_0";
 import { Required } from "utility-types";
 import { createWriteStream } from "fs";
 import recursiveReadDir from "recursive-readdir";
-import ReadableStream = NodeJS.ReadableStream;
 import { logger } from "./Logger";
 import mime from "mime-types";
+import { s3Join } from "./utils";
+import ReadableStream = NodeJS.ReadableStream;
 
 export class DirectorySyncer {
   private client = new S3Client({});
@@ -121,6 +117,3 @@ const write = (filepath: string, stream: ReadableStream): Promise<void> =>
     stream.pipe(ws).on("error", reject).on("finish", resolve);
   });
 
-// S3 path is URL, so don't use path.join
-const s3Join = (...pathFragments: string[]) =>
-  pathFragments.filter((pf) => pf !== "").join("/");

@@ -1,5 +1,5 @@
 import { RunCommandOptions } from "../EnantiomCli";
-import { join, resolve, sep } from "path";
+import { join, resolve } from "path";
 import { EnantiomConfigLoader } from "../EnantiomConfigLoader";
 import { ScreenshotService } from "../ScreenshotService";
 import { StateFileService } from "../StateFileService";
@@ -7,7 +7,7 @@ import { logger } from "../Logger";
 import { DirectorySyncer } from "../DirectorySyncer";
 import { ReportGenerator } from "../ReportGenerator";
 import { remove } from "fs-extra";
-import { seq } from "../utils";
+import { s3Join, seq } from "../utils";
 
 export const runHandler = async (
   commandOptions: RunCommandOptions
@@ -29,15 +29,19 @@ export const runHandler = async (
   const rawConfig = await configService.loadRaw();
 
   const syncer = new DirectorySyncer();
-  const temporalOutputDirectory = join(projectPath, "public", "assets");
+  const syncTargetDir = join(projectPath, "public");
+  const temporalOutputDirectory = join(syncTargetDir, "assets");
+
   logger.debug(`Cleaning temporal output directory ${temporalOutputDirectory}`);
   await remove(temporalOutputDirectory);
   await syncer.sync(
     // artifact_path maybe s3://... so using join(artifact_path) reduces
     // slashes in protocol s3://... to s3:/... it breaks syncing logic
     // FIXME: broken in windows
-    [rawConfig.artifact_path, "assets"].join(sep),
-    temporalOutputDirectory
+    rawConfig.artifact_path.startsWith("s3://")
+      ? s3Join(rawConfig.artifact_path, "assets")
+      : join(rawConfig.artifact_path, "assets"),
+    syncTargetDir
   );
 
   const stateFileService = new StateFileService(
