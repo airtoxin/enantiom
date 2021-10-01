@@ -41,7 +41,7 @@ export const runHandler = async (
     rawConfig.artifact_path.startsWith("s3://")
       ? s3Join(rawConfig.artifact_path, "assets")
       : join(rawConfig.artifact_path, "assets"),
-    syncTargetDir
+    temporalOutputDirectory
   );
 
   const stateFileService = new StateFileService(
