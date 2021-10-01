@@ -10,6 +10,7 @@ import {
 import Head from "next/head";
 import urljoin from "url-join";
 import { basePath } from "./constants";
+import { ResultFilter } from "./ResultFilter";
 
 const { Header, Sider, Content } = Layout;
 
@@ -33,6 +34,7 @@ export const AppLayout: FunctionComponent<{
       <Header
         style={{
           padding: 0,
+          display: "flex",
         }}
       >
         <Link href="/">
@@ -46,6 +48,7 @@ export const AppLayout: FunctionComponent<{
             />
           </a>
         </Link>
+        <ResultFilter />
       </Header>
 
       <Layout>
@@ -55,7 +58,7 @@ export const AppLayout: FunctionComponent<{
               <Menu.Item
                 key={result.timestamp}
                 icon={
-                  result.screenshots.some((s) => s.diff != null) ? (
+                  result.screenshots.some((s) => !s.ok) ? (
                     <ExclamationCircleTwoTone twoToneColor="#f5222d" />
                   ) : (
                     <CheckCircleTwoTone twoToneColor="#52c41a" />
@@ -63,7 +66,7 @@ export const AppLayout: FunctionComponent<{
                 }
                 style={i === 0 ? { marginTop: 0 } : {}}
               >
-                <Link href={`/result/${result.timestamp}`}>
+                <Link href={`/result/${result.timestamp}.html`}>
                   {formatTimestamp(result.timestamp)}
                 </Link>
               </Menu.Item>

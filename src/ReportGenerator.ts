@@ -15,14 +15,8 @@ export class ReportGenerator {
     const temp = t.track();
     const reportDirPath = await temp.mkdir();
 
-    logger.info(`Generate JSON report.`);
-    await copy(
-      this.outputDirPath,
-      reportDirPath,
-      // resolve(process.cwd(), rawConfig.artifact_path, "assets"),
-      { overwrite: true }
-    );
-    logger.info(`Generate JSON report success.`);
+    logger.info(`Generate JSON report to ${reportDirPath}`);
+    await copy(this.outputDirPath, reportDirPath, { overwrite: true });
     return reportDirPath;
   }
 
@@ -30,7 +24,7 @@ export class ReportGenerator {
     const temp = t.track();
     const reportDirPath = await temp.mkdir();
 
-    logger.info(`Generate HTML report.`);
+    logger.info(`Generate HTML report to ${reportDirPath}`);
 
     const next = resolve(this.config.projectPath, "node_modules/.bin/next");
     logger.debug(`next cli path: ${next}`);
@@ -45,18 +39,16 @@ export class ReportGenerator {
         logger.isLogged("debug") ? [] : ["-s"],
         "-o",
         reportDirPath,
-        // resolve(process.cwd(), config.artifactPath),
       ].flat()
     );
 
-    logger.info(`Generate HTML report success.`);
     return reportDirPath;
   }
 
   spawn(cmd: string, args: string[], { silent = false } = {}) {
     return new Promise<void>((resolvePromise, reject) => {
       const projectPath = resolve(__dirname, "..");
-      logger.trace(`Spawning child process:${cmd} with args:${args}`);
+      logger.debug(`Spawning child process:${cmd} with args:${args}`);
       const p = cspawn(cmd, args, {
         cwd: projectPath,
         env: { ...process.env, NEXT_PUBLIC_BASE_PATH: this.config.basePath },

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SupportedBrowser } from "./EnantiomConfig";
+import { DiffOptions, SupportedBrowser } from "./EnantiomConfig";
 
 export type State = z.infer<typeof State>;
 export const State = z.lazy(() =>
@@ -27,8 +27,10 @@ export const ScreenshotConfig = z.lazy(() =>
       width: z.number(),
       height: z.number(),
     }),
+    fullPage: z.boolean(),
     scripts: EnantiomInternalScriptConfig.optional(),
-    diffOptions: z.object({}).passthrough(),
+    diffOptions: DiffOptions.optional(),
+    timeout: z.number(),
   })
 );
 
@@ -39,6 +41,7 @@ export const ScreenshotResult = z.lazy(() =>
     config: ScreenshotConfig,
     filepath: z.string(),
     prevFilepath: z.string().optional(),
+    ok: z.boolean(),
     diff: z
       .object({
         diffFilepath: z.string(),
@@ -76,6 +79,7 @@ export const ScriptType = z.lazy(() =>
       fn: z.function().args(z.any(), z.any(), z.any()),
     }),
     z.object({ type: z.literal("scriptFile"), path: z.string() }),
+    z.object({ type: z.literal("setTimeout"), timeout: z.number() }),
     z.object({ type: z.literal("waitForTimeout"), timeout: z.number() }),
     z.object({ type: z.literal("waitForSelector"), selector: z.string() }),
     z.object({ type: z.literal("waitForUrl"), url: z.string() }),

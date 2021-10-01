@@ -15,9 +15,8 @@ const DEFAULT_BROWSER = "chromium";
 const DEFAULT_SIZE = { width: 800, height: 600 };
 const DEFAULT_CONCURRENCY = 1;
 const DEFAULT_RETRY = 0;
-const DEFAULT_DIFF_OPTIONS = {
-  outputDiffMask: true,
-};
+const DEFAULT_FULL_PAGE = false;
+const DEFAULT_TIMEOUT = 30 * 1000;
 
 export class EnantiomConfigLoader {
   private config!: z.infer<typeof EnantiomConfig>;
@@ -25,13 +24,13 @@ export class EnantiomConfigLoader {
     private readonly projectPath: string,
     private readonly configPath: string
   ) {
-    logger.trace(
+    logger.debug(
       `Initialize EnantiomConfigLoader with projectPath:${projectPath} configPath:${configPath}`
     );
   }
 
   public async loadRaw(): Promise<EnantiomConfig> {
-    logger.debug(`Load raw config file ${this.configPath}`);
+    logger.debug(`Load raw config file from ${this.configPath}`);
     const raw = await readFile(this.configPath, {
       encoding: "utf-8",
     });
@@ -61,24 +60,27 @@ export class EnantiomConfigLoader {
   }
 
   private createScreenshotConfigs(): ScreenshotConfig[] {
-    logger.debug(`Expand screenshot configurations to ScreenshotConfig[]`);
-    return this.config.screenshots.flatMap((screenshot, i) => {
-      logger.debug(`Processing config.screenshots[${i}]`);
-      logger.trace(screenshot);
-
+    logger.debug(`Prepares ScreenshotConfigs`);
+    return this.config.screenshots.flatMap((screenshot) => {
       const url = typeof screenshot === "string" ? screenshot : screenshot.url;
       const name = typeof screenshot === "string" ? undefined : screenshot.name;
       const screenshotBrowserConfig =
         typeof screenshot === "string" ? null : screenshot.browsers;
       const screenshotSizeConfig =
         typeof screenshot === "string" ? null : screenshot.sizes;
+      const fullPage =
+        typeof screenshot === "string"
+          ? this.config.fullPage ?? DEFAULT_FULL_PAGE
+          : screenshot.fullPage ?? this.config.fullPage ?? DEFAULT_FULL_PAGE;
       const diffOptions =
         typeof screenshot === "string"
-          ? this.config.diff_options ?? DEFAULT_DIFF_OPTIONS
-          : screenshot.diff_options ??
-            this.config.diff_options ??
-            DEFAULT_DIFF_OPTIONS;
+          ? this.config.diff_options
+          : screenshot.diff_options ?? this.config.diff_options;
       const scripts = this.createScriptsConfig(screenshot);
+      const timeout =
+        typeof screenshot === "string"
+          ? this.config.timeout ?? DEFAULT_TIMEOUT
+          : screenshot.timeout ?? this.config.timeout ?? DEFAULT_TIMEOUT;
 
       return [
         screenshotBrowserConfig ?? this.config.browsers ?? DEFAULT_BROWSER,
@@ -88,14 +90,20 @@ export class EnantiomConfigLoader {
           if (typeof browser === "string") {
             return [screenshotSizeConfig ?? this.config.sizes ?? DEFAULT_SIZE]
               .flat()
-              .map((size) => ({
-                url,
-                name,
-                browser,
-                size,
-                scripts,
-                diffOptions,
-              }));
+              .map((size) => {
+                const conf = {
+                  url,
+                  name,
+                  browser,
+                  size,
+                  fullPage,
+                  scripts,
+                  diffOptions,
+                  timeout,
+                };
+                logger.debug(`Screenshot`, screenshot, `configures to`, conf);
+                return conf;
+              });
           } else {
             return [
               browser.sizes ??
@@ -104,14 +112,20 @@ export class EnantiomConfigLoader {
                 DEFAULT_SIZE,
             ]
               .flat()
-              .map((size) => ({
-                url,
-                name,
-                browser: browser.browser,
-                size,
-                scripts,
-                diffOptions,
-              }));
+              .map((size) => {
+                const conf = {
+                  url,
+                  name,
+                  browser: browser.browser,
+                  size,
+                  fullPage,
+                  scripts,
+                  diffOptions,
+                  timeout,
+                };
+                logger.debug(`Screenshot`, screenshot, `configures to`, conf);
+                return conf;
+              });
           }
         });
     });
@@ -218,39 +232,50 @@ export class EnantiomConfigLoader {
   }
 
   private parseScriptTypeString(str: string): ScriptType {
-    if (str.startsWith("[file]=")) {
-      return { type: "scriptFile", path: str.slice("[file]=".length) };
-    } else if (str.startsWith("[timeout]=")) {
+    if (str.startsWith("[exec-file]=")) {
+      return { type: "scriptFile", path: str.slice("[exec-file]=".length) };
+    } else if (str.startsWith("[set-timeout]=")) {
+      return {
+        type: "setTimeout",
+        timeout: Number.parseFloat(str.slice("[set-timeout]=".length)),
+      };
+    } else if (str.startsWith("[wait-timeout]=")) {
       return {
         type: "waitForTimeout",
-        timeout: Number.parseFloat(str.slice("[timeout]=".length)),
+        timeout: Number.parseFloat(str.slice("[wait-timeout]=".length)),
       };
-    } else if (str.startsWith("[selector]=")) {
+    } else if (str.startsWith("[wait-selector]=")) {
       return {
         type: "waitForSelector",
-        selector: str.slice("[selector]=".length),
+        selector: str.slice("[wait-selector]=".length),
       };
-    } else if (str.startsWith("[url]=")) {
+    } else if (str.startsWith("[wait-url]=")) {
       return {
         type: "waitForUrl",
-        url: str.slice("[url]=".length),
+        url: str.slice("[wait-url]=".length),
       };
-    } else if (str.startsWith("[request]=")) {
-      return { type: "waitForRequest", url: str.slice("[request]=".length) };
-    } else if (str.startsWith("[response]=")) {
-      return { type: "waitForResponse", url: str.slice("[response]=".length) };
-    } else if (str.startsWith("[navigation]=")) {
+    } else if (str.startsWith("[wait-request]=")) {
+      return {
+        type: "waitForRequest",
+        url: str.slice("[wait-request]=".length),
+      };
+    } else if (str.startsWith("[wait-response]=")) {
+      return {
+        type: "waitForResponse",
+        url: str.slice("[wait-response]=".length),
+      };
+    } else if (str.startsWith("[wait-navigation]=")) {
       return {
         type: "waitForNavigation",
-        url: str.slice("[navigation]=".length),
+        url: str.slice("[wait-navigation]=".length),
       };
-    } else if (str.startsWith("[state]=")) {
+    } else if (str.startsWith("[wait-state]=")) {
       return {
         type: "waitForLoadState",
-        event: LoadStateEvent.parse(str.slice("[state]=".length)),
+        event: LoadStateEvent.parse(str.slice("[wait-state]=".length)),
       };
-    } else if (str.startsWith("[event]=")) {
-      return { type: "waitForEvent", event: str.slice("[event]=".length) };
+    } else if (str.startsWith("[wait-event]=")) {
+      return { type: "waitForEvent", event: str.slice("[wait-event]=".length) };
     } else if (str.startsWith("[click]=")) {
       return { type: "click", selector: str.slice("[click]=".length) };
     } else if (str.startsWith("[dblclick]=")) {

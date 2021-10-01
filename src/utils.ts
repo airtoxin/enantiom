@@ -10,3 +10,10 @@ export const switcher =
 export const assertUnreachable = (x: never): never => {
   throw new Error(`Expect unreachable code but ${x} has non never type.`);
 };
+
+export const seq = (num: number): number[] =>
+  Array.from(Array(num)).map((_, i) => i);
+
+// S3 path is URL, so don't use path.join
+export const s3Join = (...pathFragments: string[]) =>
+  pathFragments.filter((pf) => pf !== "").join("/");

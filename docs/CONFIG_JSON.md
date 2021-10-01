@@ -109,6 +109,19 @@ If the browser type is an array, screenshot of each URL will be taken for each o
 }
 ```
 
+## fullPage
+
+**optional** `Boolean`  
+**default value: `false`**
+
+If true, take full page screenshot.
+
+```json5
+{
+  fullPage: true
+}
+```
+
 ## scripting
 
 **optional** `ScriptingConfigObject`
@@ -141,12 +154,43 @@ Num of retry count if error occurred in screenshot taking.
 
 ## diff_options
 
-**optional** `ODiffOptions`  
-**default value: `{ "outputDiffMask": true }`**
+**optional** `DiffOptions`
 
-Options of calculating diff image.  
-It pass-through to [odiff](https://github.com/dmtrKovalenko/odiff) library that internally uses.  
-[ODiffOptions](https://github.com/dmtrKovalenko/odiff#nodejs-1)
+# DiffOptions
+
+```json5
+{
+  diff_options: {
+    color: "#ff00ff",
+    ignore_regions: [{ x1: 100, y1: 100, x2: 300, y2: 500 }],
+    threshold: 0.5
+  }
+}
+```
+
+## DiffOptions.color
+
+**optional** `ColorString`  
+**default value: `"#ff0000"`**
+
+Color of diff pixel.
+
+## DiffOptions.ignore_regions
+
+**optional** `Array<Region>`  
+**default value: `[]`**
+
+The diff pixel regions to ignore.  
+Only accept rectangle region but multiple allowed.
+
+## DiffOptions.threshold
+
+**optional** `Number`
+**default value: `0`**
+
+Diff threshold percentage.  
+If diff percentage is higher than this value, enantiom will mark its screenshot capturing to failure.  
+Value range is 0 to 100.
 
 # ScreenshotConfigObject
 
@@ -161,6 +205,7 @@ It pass-through to [odiff](https://github.com/dmtrKovalenko/odiff) library that 
         { width: 500, height: 500 },
         { width: 1200, height: 800 },
       ],
+      fullPage: false
     },
   ],
   sizes: { width: 800, height: 600 },
@@ -198,17 +243,23 @@ Same interface of top level [sizes](#sizes) field.
 ## ScreenshotConfigObject.browsers
 
 **optional** `BrowserType | BrowserConfigObject | Array<BrowserType | BrowserConfigObject>`  
-**default value: ScreenshotConfigObject.sizes field value**
+**default value: top level `"browsers"` field value**
 
 Specifies the browser type to be used for taking screenshot.  
 Same interface of top level [browsers](#browsers) field.
 
+## ScreenshotConfigObject.fullPage
+
+**optional** `Boolean`  
+**default value: top level `"fullPage"` field value**
+
+If true, take full page screenshot.
+
 ## ScreenshotConfigObject.diff_options
 
-**optional** `ODiffOptions`  
+**optional** `DiffOptions`  
 **default value: top level `"diff_options"` field value**
 
-Options of calculating diff image.  
 Same interface of top level [diff_options](#diff_options) field.
 
 ## ScreenshotConfigObject.scripting
