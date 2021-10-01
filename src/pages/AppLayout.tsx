@@ -10,6 +10,7 @@ import {
 import Head from "next/head";
 import urljoin from "url-join";
 import { basePath } from "./constants";
+import { ResultFilter } from "./ResultFilter";
 
 const { Header, Sider, Content } = Layout;
 
@@ -33,6 +34,7 @@ export const AppLayout: FunctionComponent<{
       <Header
         style={{
           padding: 0,
+          display: "flex",
         }}
       >
         <Link href="/">
@@ -46,6 +48,7 @@ export const AppLayout: FunctionComponent<{
             />
           </a>
         </Link>
+        <ResultFilter />
       </Header>
 
       <Layout>

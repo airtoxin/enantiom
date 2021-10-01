@@ -36,6 +36,7 @@ import JsonTree from "react-json-tree";
 import urljoin from "url-join";
 import { basePath } from "../constants";
 import Link from "next/link";
+import { useResultFilter } from "../ResultFilterContext";
 
 type Props = {
   state: State;
@@ -66,6 +67,8 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
         .map((p) => urljoin(basePath, `/${p}`)),
     []
   );
+  const resultFilter = useResultFilter();
+
   return (
     <AppLayout state={state} timestamp={result.timestamp}>
       <Head>
@@ -113,154 +116,155 @@ export const ResultPage: VoidFunctionComponent<Props> = ({
         </Col>
       </Row>
 
-      {result.screenshots.map((screenshot) => (
-        <Space
-          key={`${result.timestamp}_${screenshot.hash}`}
-          direction="vertical"
-          style={{ width: "100%" }}
-        >
-          <Collapse
-            defaultActiveKey={activeScreenshots}
+      {result.screenshots
+        .filter((sc) => switcher(resultFilter)(getResultType(sc)))
+        .map((screenshot) => (
+          <Space
+            key={`${result.timestamp}_${screenshot.hash}`}
+            direction="vertical"
             style={{ width: "100%" }}
           >
-            <Collapse.Panel
-              key={`${result.timestamp}_${screenshot.hash}`}
-              header={
-                <Space>
-                  <ResultSummaryIcon screenshot={screenshot} />
-                  <Typography.Text strong>
-                    {screenshot.config.name || screenshot.config.url}
-                  </Typography.Text>
-                  <Tag color="magenta">{screenshot.config.browser}</Tag>
-                  <Tag color="cyan">
-                    {screenshot.config.size.width}x
-                    {screenshot.config.size.height}
-                  </Tag>
-                </Space>
-              }
+            <Collapse
+              defaultActiveKey={activeScreenshots}
+              style={{ width: "100%" }}
             >
-              <Row>
-                <Col span={8}>
-                  <Image
-                    alt={`Current screenshot of ${result.timestamp}`}
-                    src={urljoin(basePath, `/${screenshot.filepath}`)}
-                    preview={false}
-                    style={{ cursor: "pointer" }}
-                    onClick={() =>
-                      dispatch({
-                        type: "open",
-                        images: getImages(screenshot),
-                        index: 0,
-                      })
-                    }
-                  />
-                </Col>
-                <Col span={8}>
-                  {screenshot.diff ? (
+              <Collapse.Panel
+                key={`${result.timestamp}_${screenshot.hash}`}
+                header={
+                  <Space>
+                    <ResultSummaryIcon screenshot={screenshot} />
+                    <Typography.Text strong>
+                      {screenshot.config.name || screenshot.config.url}
+                    </Typography.Text>
+                    <Tag color="magenta">{screenshot.config.browser}</Tag>
+                    <Tag color="cyan">
+                      {screenshot.config.size.width}x
+                      {screenshot.config.size.height}
+                    </Tag>
+                  </Space>
+                }
+              >
+                <Row>
+                  <Col span={8}>
                     <Image
-                      alt={`Screenshot diff of ${result.timestamp}`}
-                      src={urljoin(
-                        basePath,
-                        `/${screenshot.diff.diffFilepath}`
-                      )}
+                      alt={`Current screenshot of ${result.timestamp}`}
+                      src={urljoin(basePath, `/${screenshot.filepath}`)}
                       preview={false}
                       style={{ cursor: "pointer" }}
                       onClick={() =>
                         dispatch({
                           type: "open",
                           images: getImages(screenshot),
-                          index: 1,
+                          index: 0,
                         })
                       }
                     />
-                  ) : (
-                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                  )}
-                </Col>
-                <Col span={8}>
-                  {screenshot.prevFilepath ? (
-                    <Image
-                      alt={`Previous screenshot of ${result.timestamp}`}
-                      src={urljoin(basePath, `/${screenshot.prevFilepath}`)}
-                      preview={false}
-                      style={{ cursor: "pointer" }}
-                      onClick={() =>
-                        dispatch({
-                          type: "open",
-                          images: getImages(screenshot),
-                          index: getImages(screenshot).length - 1,
-                        })
-                      }
+                  </Col>
+                  <Col span={8}>
+                    {screenshot.diff ? (
+                      <Image
+                        alt={`Screenshot diff of ${result.timestamp}`}
+                        src={urljoin(
+                          basePath,
+                          `/${screenshot.diff.diffFilepath}`
+                        )}
+                        preview={false}
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          dispatch({
+                            type: "open",
+                            images: getImages(screenshot),
+                            index: 1,
+                          })
+                        }
+                      />
+                    ) : (
+                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    )}
+                  </Col>
+                  <Col span={8}>
+                    {screenshot.prevFilepath ? (
+                      <Image
+                        alt={`Previous screenshot of ${result.timestamp}`}
+                        src={urljoin(basePath, `/${screenshot.prevFilepath}`)}
+                        preview={false}
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          dispatch({
+                            type: "open",
+                            images: getImages(screenshot),
+                            index: getImages(screenshot).length - 1,
+                          })
+                        }
+                      />
+                    ) : (
+                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    )}
+                  </Col>
+                </Row>
+                <Divider />
+                <Descriptions size="small">
+                  <Descriptions.Item label="URL">
+                    <Typography.Link
+                      href={screenshot.config.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {screenshot.config.url}
+                    </Typography.Link>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Browser">
+                    <Tag color="magenta">{screenshot.config.browser}</Tag>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Size">
+                    <Tag color="cyan">
+                      {screenshot.config.size.width}x
+                      {screenshot.config.size.height}
+                    </Tag>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Hash">
+                    {screenshot.hash}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Diff options">
+                    <JsonTree
+                      theme="threezerotwofour"
+                      data={screenshot.config.diffOptions}
                     />
-                  ) : (
-                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                  )}
-                </Col>
-              </Row>
-              <Divider />
-              <Descriptions size="small">
-                <Descriptions.Item label="URL">
-                  <Typography.Link
-                    href={screenshot.config.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {screenshot.config.url}
-                  </Typography.Link>
-                </Descriptions.Item>
-                <Descriptions.Item label="Browser">
-                  <Tag color="magenta">{screenshot.config.browser}</Tag>
-                </Descriptions.Item>
-                <Descriptions.Item label="Size">
-                  <Tag color="cyan">
-                    {screenshot.config.size.width}x
-                    {screenshot.config.size.height}
-                  </Tag>
-                </Descriptions.Item>
-                <Descriptions.Item label="Hash">
-                  {screenshot.hash}
-                </Descriptions.Item>
-                <Descriptions.Item label="Diff options">
-                  <JsonTree
-                    theme="threezerotwofour"
-                    data={screenshot.config.diffOptions}
-                  />
-                </Descriptions.Item>
-                <Descriptions.Item label="context script">
-                  <JsonTree
-                    theme="threezerotwofour"
-                    data={screenshot.config.scripts?.contextScripts}
-                  />
-                </Descriptions.Item>
-                <Descriptions.Item label="pre script">
-                  <JsonTree
-                    theme="threezerotwofour"
-                    data={screenshot.config.scripts?.preScripts}
-                  />
-                </Descriptions.Item>
-                <Descriptions.Item label="post script">
-                  <JsonTree
-                    theme="threezerotwofour"
-                    data={screenshot.config.scripts?.postScripts}
-                  />
-                </Descriptions.Item>
-              </Descriptions>
-            </Collapse.Panel>
-          </Collapse>
-        </Space>
-      ))}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="context script">
+                    <JsonTree
+                      theme="threezerotwofour"
+                      data={screenshot.config.scripts?.contextScripts}
+                    />
+                  </Descriptions.Item>
+                  <Descriptions.Item label="pre script">
+                    <JsonTree
+                      theme="threezerotwofour"
+                      data={screenshot.config.scripts?.preScripts}
+                    />
+                  </Descriptions.Item>
+                  <Descriptions.Item label="post script">
+                    <JsonTree
+                      theme="threezerotwofour"
+                      data={screenshot.config.scripts?.postScripts}
+                    />
+                  </Descriptions.Item>
+                </Descriptions>
+              </Collapse.Panel>
+            </Collapse>
+          </Space>
+        ))}
     </AppLayout>
   );
 };
 
+const getResultType = (screenshot: ScreenshotResult) =>
+  !screenshot.ok ? "diff" : screenshot.prevFilepath != null ? "noDiff" : "add";
+
 const ResultSummaryIcon: VoidFunctionComponent<{
   screenshot: ScreenshotResult;
 }> = ({ screenshot }) => {
-  const resultType = !screenshot.ok
-    ? "diff"
-    : screenshot.prevFilepath != null
-    ? "noDiff"
-    : "add";
+  const resultType = getResultType(screenshot);
   return switcher({
     diff: <ExclamationCircleTwoTone twoToneColor="#f5222d" />,
     noDiff: <CheckCircleTwoTone twoToneColor="#52c41a" />,
