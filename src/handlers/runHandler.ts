@@ -62,8 +62,7 @@ export const runHandler = async (
     : await reportGenerator.generateJsonReport();
   await syncer.sync(reportDirPath, config.artifactPath);
 
-  return commandOptions.failInDiff &&
-    result.screenshots.some((s) => s.diff != null)
-    ? 1
-    : 0;
+  return commandOptions.failInDiff && result.screenshots.every((s) => s.ok)
+    ? 0
+    : 1;
 };
