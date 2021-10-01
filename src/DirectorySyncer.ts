@@ -61,7 +61,8 @@ export class DirectorySyncer {
       (bucketObjects.Contents ?? [])
         .filter((c): c is RequiredContentKey => !!c.Key && !c.Key.endsWith("/"))
         .map(async (c) => {
-          const filepath = join(resolve(process.cwd(), targetDir), c.Key!);
+          // The Key of s3 returns full path from bucket root
+          const filepath = join(resolve(process.cwd(), targetDir), c.Key!.slice(path.length));
           await ensureFile(filepath);
           logger.debug(`Fetch s3 object. s3://${s3Join(bucket, c.Key)}`);
           const result = await this.client.send(
