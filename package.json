@@ -41,7 +41,7 @@
     "date-fns": "^2.23.0",
     "fs-extra": "^10.0.0",
     "mime-types": "^2.1.32",
-    "next": "^11.1.1",
+    "next": "^12.1.0",
     "object-hash": "^2.2.0",
     "odiff-bin": "^2.4.2",
     "p-limit": "^3.1.0",
